@@ -8,11 +8,15 @@
 </a>
 
 <a href="https://github.com/ma7555/evalify/actions">
-    <img src="https://github.com/ma7555/evalify/actions/workflows/main.yml/badge.svg?branch=release" alt="CI Status">
+    <img src="https://github.com/ma7555/evalify/actions/workflows/dev.yml/badge.svg?branch=main" alt="CI Status">
 </a>
 
 <a href="https://evalify.readthedocs.io/en/latest/?badge=latest">
     <img src="https://readthedocs.org/projects/evalify/badge/?version=latest" alt="Documentation Status">
+</a>
+
+<a href="https://github.com/psf/black">
+    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
 </a>
 
 </p>
