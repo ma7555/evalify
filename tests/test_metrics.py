@@ -19,8 +19,8 @@ class TestEvalify(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures, if any."""
 
-        self.embs = np.array([[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]])
-        self.ix_for_metrics = [0, 1, 2, 3]
+        self.embs = np.arange(12).reshape(4, 3)
+        self.ix_for_metrics = range(4)
         self.norms = np.linalg.norm(self.embs, axis=1)
 
     def tearDown(self):
@@ -29,7 +29,7 @@ class TestEvalify(unittest.TestCase):
     def test_cosine_similarity(self):
         """Test cosine_similarity"""
         result = metrics.cosine_similarity(
-            self.embs, self.norms, self.ix_for_metrics, self.ix_for_metrics
+            self.embs, self.ix_for_metrics, self.ix_for_metrics, self.norms
         )
         self.assertEqual(result.shape, (len(self.ix_for_metrics),))
         self.assertAlmostEqual(result.sum(), len(self.ix_for_metrics))
@@ -38,6 +38,14 @@ class TestEvalify(unittest.TestCase):
         """Test euclidean_distance"""
         result = metrics.euclidean_distance(
             self.embs, self.ix_for_metrics, self.ix_for_metrics
+        )
+        self.assertEqual(result.shape, (len(self.ix_for_metrics),))
+        self.assertAlmostEqual(result.sum(), 0)
+
+    def test_euclidean_distance_l2(self):
+        """Test euclidean_distance"""
+        result = metrics.euclidean_distance(
+            self.embs, self.ix_for_metrics, self.ix_for_metrics, self.norms
         )
         self.assertEqual(result.shape, (len(self.ix_for_metrics),))
         self.assertAlmostEqual(result.sum(), 0)

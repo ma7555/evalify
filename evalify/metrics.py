@@ -1,15 +1,21 @@
 """Metrics module."""
 import numpy as np
-from sklearn.metrics import auc,, roc_curve
+from sklearn.metrics import auc, roc_curve
 from collections.abc import Iterable
 
 
-def cosine_similarity(embs, norms, ix, iy):
+def cosine_similarity(embs, ix, iy, norms):
     return np.einsum("ij,ij->i", embs[ix], embs[iy]) / (norms[ix] * norms[iy])
 
 
-def euclidean_distance(embs, ix, iy):
-    return np.linalg.norm(embs[ix] - embs[iy], axis=1)
+def euclidean_distance(embs, ix, iy, norms=None):
+    if norms is None:
+        return np.linalg.norm(embs[ix] - embs[iy], axis=1)
+    else:
+        return np.linalg.norm(
+            embs[ix] / norms[ix].reshape(-1, 1) - embs[iy] / norms[iy].reshape(-1, 1),
+            axis=1,
+        )
 
 
 def roc_auc(one_to_one_df, metrics=None):
@@ -53,4 +59,5 @@ def roc_auc(one_to_one_df, metrics=None):
 metrics_caller = {
     "cosine_similarity": cosine_similarity,
     "euclidean_distance": euclidean_distance,
+    "euclidean_distance_l2": euclidean_distance,
 }

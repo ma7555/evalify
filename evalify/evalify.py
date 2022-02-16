@@ -108,15 +108,14 @@ def create_experiment(
     Xs = np.array_split(one_to_one_df.img_a.to_numpy(), nsplits)
     ys = np.array_split(one_to_one_df.img_b.to_numpy(), nsplits)
 
-    if metric == "cosine_similarity":
+    if metric in ["cosine_similarity", "euclidean_distance_l2"]:
         norms = np.linalg.norm(X, axis=1)
-        one_to_one_df[metric] = np.hstack(
-            [metric_fn(X, norms, ix, iy) for (ix, iy) in zip(Xs, ys)]
-        )
     else:
-        one_to_one_df[metric] = np.hstack(
-            [metric_fn(X, ix, iy) for (ix, iy) in zip(Xs, ys)]
-        )
+        norms = None
+
+    one_to_one_df[metric] = np.hstack(
+        [metric_fn(X, ix, iy, norms) for (ix, iy) in zip(Xs, ys)]
+    )
 
     if return_embeddings:
         one_to_one_df["img_a"] = X[one_to_one_df.img_a.to_numpy()].tolist()
