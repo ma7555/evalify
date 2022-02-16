@@ -4,29 +4,56 @@ import itertools
 import numpy as np
 import pandas as pd
 from metrics import metrics_caller
-from utils import calc_available_memory, keep_to_max_rows
-
-
-def calculate_best_split_size(X, experiment_size):
-    available_mem = calc_available_memory()
-    max_rows = keep_to_max_rows(X, available_mem)
-    nsplits = int(experiment_size / max_rows)
-    # add a split to avoid 0 splits
-    nsplits += 1
-    return nsplits
+from utils import calculate_best_split_size
+from typing import Union
 
 
 def create_experiment(
     X: np.ndarray,
     y: np.ndarray,
-    metric="cosine_similarity",
-    same_class_samples="full",
-    different_class_samples="minimal",
-    nsplits="best",
-    shuffle=False,
-    return_embeddings=False,
+    metric: str = "cosine_similarity",
+    same_class_samples: Union[str, int] = "full",
+    different_class_samples: str = "minimal",
+    nsplits: Union[str, int] = "best",
+    shuffle: bool = False,
+    return_embeddings: bool = False,
 ):
+    """Creates an experiment for face verification
 
+    Args:
+        X: Embeddings array
+        y: Targets for X as integers
+        metric: metric used for comparing embeddings distance
+        same_class_samples:
+            - 'full': Sampling all possible pairs within each class
+            -  int: Sampling specify number of pairs for
+                every class. If the provided number is greater than
+                the achievable for the class, the maximum possible
+                combinations are used.
+        different_class_samples:
+            - 'full': Samples all possible pairs within different classes.
+                This can grow exponentially as the number of images increase.
+            - 'minimal': Samples one image from every class with one image of
+                all other classes. (Default)
+            - int: Samples one image from every class with X images of
+                every other class. If the provided number is greater than
+                the achievable for the class, the maximum possible combinations
+                are used.
+        nsplits:
+            - 'best': Let the program decide based on available memory such
+                that every split will fit into the available memory. (Default)
+            - int: Manually decide the number of splits.
+        shuffle: Whether to shuffle the returned experiment dataframe.
+            Default: False.
+        return_embeddings: Whether to return the embeddings instead of indexes.
+            Default: False
+
+    Returns:
+        pandas.DataFrame: A DataFrame representing the experiment results.
+
+    Raises:
+        ValueError: An error occurred with the provided arguments.
+    """
     if same_class_samples != "full" and not isinstance(same_class_samples, int):
         raise ValueError(
             '`same_class_samples` argument must be one of "full" or an integer '
