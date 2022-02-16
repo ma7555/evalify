@@ -1,7 +1,7 @@
 import numpy as np
-import psutil
-from sklearn.metrics import roc_curve, confusion_matrix
 import pandas as pd
+import psutil
+from sklearn.metrics import confusion_matrix, roc_curve
 
 
 def _calc_available_memory():
@@ -42,7 +42,7 @@ def find_optimal_cutoff(target, predicted):
         predicted: Matrix with predicted data, where rows are observations
 
     Returns:
-        float type, with optimal cutoff value
+        float: optimal cutoff value
 
     """
     fpr, tpr, threshold = roc_curve(target, predicted)
@@ -58,8 +58,16 @@ def find_optimal_cutoff(target, predicted):
     return roc_t["threshold"].item()
 
 
-def evaluate_at_threshold(one_to_one_df, thr, metric):
-    pred = one_to_one_df[metric].apply(lambda x: 1 if x > thr else 0)
+def evaluate_at_threshold(one_to_one_df: pd.DataFrame, threshold: float, metric):
+    """Evaluate performance at specific threshold
+    Args:
+        one_to_one_df: Experiment dataframe.
+        threshold: cut-off threshold.
+
+    Returns:
+        dict: containing all evaluation metrics.
+    """
+    pred = one_to_one_df[metric].apply(lambda x: 1 if x > threshold else 0)
     cm = confusion_matrix(one_to_one_df["target"], pred)
     tn, fp, fn, tp = cm.ravel()
     TPR = tp / (tp + fn)  # recall / true positive rate

@@ -1,7 +1,12 @@
 """Metrics module."""
+from collections.abc import Iterable
+
 import numpy as np
 from sklearn.metrics import auc, roc_curve
-from collections.abc import Iterable
+
+
+def _get_norms(X):
+    return np.sqrt(np.einsum("ij,ij->i", X, X))
 
 
 def cosine_similarity(embs, ix, iy, norms):
@@ -9,6 +14,7 @@ def cosine_similarity(embs, ix, iy, norms):
 
 
 def euclidean_distance(embs, ix, iy, norms=None):
+
     if norms is None:
         return np.linalg.norm(embs[ix] - embs[iy], axis=1)
     else:

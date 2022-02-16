@@ -1,11 +1,12 @@
 """Main module."""
 import itertools
+from typing import Union
 
 import numpy as np
 import pandas as pd
-from metrics import metrics_caller
-from utils import calculate_best_split_size
-from typing import Union
+
+from evalify.metrics import metrics_caller
+from evalify.utils import calculate_best_split_size
 
 
 def create_experiment(
@@ -81,6 +82,7 @@ def create_experiment(
     all_targets = np.unique(y)
     all_pairs = list()
     metric_fn = metrics_caller.get(metric)
+
     for target in all_targets:
         same_ixs = np.argwhere(y == target).ravel()
         same_pairs = itertools.combinations(same_ixs, 2)
