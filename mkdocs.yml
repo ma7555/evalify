@@ -70,5 +70,5 @@ extra:
   # disqus: disqus_id
 # uncomment the following and put your google tracking id below to enable GA
 #google_analytics:
-  #- UA-xxx
-  #- auto
+#- UA-xxx
+#- auto
