@@ -1,5 +1,7 @@
 import numpy as np
 import psutil
+from sklearn.metrics import roc_curve, confusion_matrix
+import pandas as pd
 
 
 def _calc_available_memory():
@@ -31,3 +33,57 @@ def calculate_best_split_size(X, experiment_size):
     # add a split to avoid 0 splits
     nsplits += 1
     return nsplits
+
+
+def find_optimal_cutoff(target, predicted):
+    """Find the optimal cutoff point
+    Args:
+        target: Matrix with dependent or target data, where rows are observations
+        predicted: Matrix with predicted data, where rows are observations
+
+    Returns:
+        float type, with optimal cutoff value
+
+    """
+    fpr, tpr, threshold = roc_curve(target, predicted)
+    i = np.arange(len(tpr))
+    roc = pd.DataFrame(
+        {
+            "tf": pd.Series(tpr - (1 - fpr), index=i),
+            "threshold": pd.Series(threshold, index=i),
+        }
+    )
+    roc_t = roc.iloc[(roc.tf - 0).abs().argsort()[:1]]
+
+    return roc_t["threshold"].item()
+
+
+def evaluate_at_threshold(one_to_one_df, thr, metric):
+    pred = one_to_one_df[metric].apply(lambda x: 1 if x > thr else 0)
+    cm = confusion_matrix(one_to_one_df["target"], pred)
+    tn, fp, fn, tp = cm.ravel()
+    TPR = tp / (tp + fn)  # recall / true positive rate
+    TNR = tn / (tn + fp)  # true negative rate
+    PPV = tp / (tp + fp)  # precision / positive predicted value
+    NPV = tn / (tn + fn)  # negative predictive value
+    FPR = fp / (fp + tn)  # false positive rate
+    FNR = 1 - TPR  # false negative rate
+    FDR = 1 - PPV  # false discovery rate
+    FOR = 1 - NPV  # false omission rate
+    LRp = TPR / FPR  # positive likelihood ratio (LR+)
+    LRn = FNR / TNR  # negative likelihood ratio (LR+)
+
+    evaluation = {
+        "TPR": TPR,
+        "TNR": TNR,
+        "PPV": PPV,
+        "NPV": NPV,
+        "FPR": FPR,
+        "FNR": FNR,
+        "FDR": FDR,
+        "FOR": FOR,
+        "LR+": LRp,
+        "LR-": LRn,
+    }
+
+    return evaluation
