@@ -82,8 +82,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="evalify" class="md-header__button md-logo" aria-label="evalify" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="https://user-images.githubusercontent.com/7144929/154332210-fa1fee34-faae-4567-858a-49fa53e99a2b.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -277,8 +276,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="evalify" class="md-nav__button md-logo" aria-label="evalify" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <img src="https://user-images.githubusercontent.com/7144929/154332210-fa1fee34-faae-4567-858a-49fa53e99a2b.svg" alt="logo">
 
     </a>
     evalify
@@ -430,6 +428,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#evalify.utils.evaluate_at_threshold" class="md-nav__link">
+    evaluate_at_threshold()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#evalify.utils.find_optimal_cutoff" class="md-nav__link">
     find_optimal_cutoff()
   </a>
@@ -563,6 +568,13 @@
           <li class="md-nav__item">
   <a href="#evalify.utils.calculate_best_split_size" class="md-nav__link">
     calculate_best_split_size()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.utils.evaluate_at_threshold" class="md-nav__link">
+    evaluate_at_threshold()
   </a>
   
 </li>
@@ -848,6 +860,7 @@ Default: False</p></td>
     <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">all_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">metric_fn</span> <span class="o">=</span> <span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
         <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">same_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -1006,6 +1019,106 @@ Default: False</p></td>
 
 
 
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="evalify.utils.evaluate_at_threshold" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">evaluate_at_threshold</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></code>
+
+
+<a href="#evalify.utils.evaluate_at_threshold" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Evaluate performance at specific threshold</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>one_to_one_df</code></td>
+        <td><code>DataFrame</code></td>
+        <td><p>Experiment dataframe.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>threshold</code></td>
+        <td><code>float</code></td>
+        <td><p>cut-off threshold.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>dict</code></td>
+      <td><p>containing all evaluation metrics.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\utils.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
+<span class="sd">    Args:</span>
+<span class="sd">        one_to_one_df: Experiment dataframe.</span>
+<span class="sd">        threshold: cut-off threshold.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: containing all evaluation metrics.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">one_to_one_df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">pred</span><span class="p">)</span>
+    <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">TPR</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>  <span class="c1"># recall / true positive rate</span>
+    <span class="n">TNR</span> <span class="o">=</span> <span class="n">tn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>  <span class="c1"># true negative rate</span>
+    <span class="n">PPV</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>  <span class="c1"># precision / positive predicted value</span>
+    <span class="n">NPV</span> <span class="o">=</span> <span class="n">tn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>  <span class="c1"># negative predictive value</span>
+    <span class="n">FPR</span> <span class="o">=</span> <span class="n">fp</span> <span class="o">/</span> <span class="p">(</span><span class="n">fp</span> <span class="o">+</span> <span class="n">tn</span><span class="p">)</span>  <span class="c1"># false positive rate</span>
+    <span class="n">FNR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">TPR</span>  <span class="c1"># false negative rate</span>
+    <span class="n">FDR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">PPV</span>  <span class="c1"># false discovery rate</span>
+    <span class="n">FOR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">NPV</span>  <span class="c1"># false omission rate</span>
+    <span class="n">LRp</span> <span class="o">=</span> <span class="n">TPR</span> <span class="o">/</span> <span class="n">FPR</span>  <span class="c1"># positive likelihood ratio (LR+)</span>
+    <span class="n">LRn</span> <span class="o">=</span> <span class="n">FNR</span> <span class="o">/</span> <span class="n">TNR</span>  <span class="c1"># negative likelihood ratio (LR+)</span>
+
+    <span class="n">evaluation</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;TPR&quot;</span><span class="p">:</span> <span class="n">TPR</span><span class="p">,</span>
+        <span class="s2">&quot;TNR&quot;</span><span class="p">:</span> <span class="n">TNR</span><span class="p">,</span>
+        <span class="s2">&quot;PPV&quot;</span><span class="p">:</span> <span class="n">PPV</span><span class="p">,</span>
+        <span class="s2">&quot;NPV&quot;</span><span class="p">:</span> <span class="n">NPV</span><span class="p">,</span>
+        <span class="s2">&quot;FPR&quot;</span><span class="p">:</span> <span class="n">FPR</span><span class="p">,</span>
+        <span class="s2">&quot;FNR&quot;</span><span class="p">:</span> <span class="n">FNR</span><span class="p">,</span>
+        <span class="s2">&quot;FDR&quot;</span><span class="p">:</span> <span class="n">FDR</span><span class="p">,</span>
+        <span class="s2">&quot;FOR&quot;</span><span class="p">:</span> <span class="n">FOR</span><span class="p">,</span>
+        <span class="s2">&quot;LR+&quot;</span><span class="p">:</span> <span class="n">LRp</span><span class="p">,</span>
+        <span class="s2">&quot;LR-&quot;</span><span class="p">:</span> <span class="n">LRn</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">evaluation</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
   <div class="doc doc-object doc-function">
 
@@ -1056,8 +1169,8 @@ Default: False</p></td>
   </thead>
   <tbody>
     <tr>
-      <td></td>
-      <td><p>float type, with optimal cutoff value</p></td>
+      <td><code>float</code></td>
+      <td><p>optimal cutoff value</p></td>
     </tr>
   </tbody>
 </table>
@@ -1070,7 +1183,7 @@ Default: False</p></td>
 <span class="sd">        predicted: Matrix with predicted data, where rows are observations</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float type, with optimal cutoff value</span>
+<span class="sd">        float: optimal cutoff value</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span>
