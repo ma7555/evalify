@@ -1,7 +1,13 @@
 # evalify
 
+<p align="center">
+
+![smallcover](https://user-images.githubusercontent.com/7144929/154177435-c9f4d731-495d-4d63-80b4-46da852208f1.png)
+
+</p>
 
 <p align="center">
+
 <a href="https://pypi.python.org/pypi/evalify">
     <img src="https://img.shields.io/pypi/v/evalify.svg"
         alt = "Release Status">
