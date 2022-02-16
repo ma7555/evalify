@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#evalify" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -353,9 +358,92 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          modules
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         modules
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#evalify" class="md-nav__link">
+    evalify
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.evalify" class="md-nav__link">
+    evalify
+  </a>
+  
+    <nav class="md-nav" aria-label="evalify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.create_experiment" class="md-nav__link">
+    create_experiment()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.metrics" class="md-nav__link">
+    metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.utils" class="md-nav__link">
+    utils
+  </a>
+  
+    <nav class="md-nav" aria-label="utils">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evalify.utils.calculate_best_split_size" class="md-nav__link">
+    calculate_best_split_size()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.utils.find_optimal_cutoff" class="md-nav__link">
+    find_optimal_cutoff()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -413,6 +501,91 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#evalify" class="md-nav__link">
+    evalify
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.evalify" class="md-nav__link">
+    evalify
+  </a>
+  
+    <nav class="md-nav" aria-label="evalify">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.create_experiment" class="md-nav__link">
+    create_experiment()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.metrics" class="md-nav__link">
+    metrics
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evalify.utils" class="md-nav__link">
+    utils
+  </a>
+  
+    <nav class="md-nav" aria-label="utils">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evalify.utils.calculate_best_split_size" class="md-nav__link">
+    calculate_best_split_size()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.utils.find_optimal_cutoff" class="md-nav__link">
+    find_optimal_cutoff()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
@@ -425,7 +598,517 @@
 
   <h1>modules</h1>
 
-<p>:: evalify</p>
+<div class="doc doc-object doc-module">
+
+<a id="evalify"></a>
+    <div class="doc doc-contents first">
+
+      <p>Top-level package for evalify.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="evalify.evalify" class="doc doc-heading">
+        <code>evalify</code>
+
+
+
+<a href="#evalify.evalify" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Main module.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="evalify.evalify.create_experiment" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_experiment</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cosine_similarity&#39;</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="o">=</span><span class="s1">&#39;minimal&#39;</span><span class="p">,</span> <span class="n">nsplits</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_embeddings</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#evalify.evalify.create_experiment" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates an experiment for face verification</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>X</code></td>
+        <td><code>ndarray</code></td>
+        <td><p>Embeddings array</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>y</code></td>
+        <td><code>ndarray</code></td>
+        <td><p>Targets for X as integers</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>metric</code></td>
+        <td><code>str</code></td>
+        <td><p>metric used for comparing embeddings distance</p></td>
+        <td><code>&#39;cosine_similarity&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>same_class_samples</code></td>
+        <td><code>Union[str, int]</code></td>
+        <td><ul>
+<li>'full': Sampling all possible pairs within each class</li>
+<li>int: Sampling specify number of pairs for
+    every class. If the provided number is greater than
+    the achievable for the class, the maximum possible
+    combinations are used.</li>
+</ul></td>
+        <td><code>&#39;full&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>different_class_samples</code></td>
+        <td><code>str</code></td>
+        <td><ul>
+<li>'full': Samples all possible pairs within different classes.
+    This can grow exponentially as the number of images increase.</li>
+<li>'minimal': Samples one image from every class with one image of
+    all other classes. (Default)</li>
+<li>int: Samples one image from every class with X images of
+    every other class. If the provided number is greater than
+    the achievable for the class, the maximum possible combinations
+    are used.</li>
+</ul></td>
+        <td><code>&#39;minimal&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>nsplits</code></td>
+        <td><code>Union[str, int]</code></td>
+        <td><ul>
+<li>'best': Let the program decide based on available memory such
+    that every split will fit into the available memory. (Default)</li>
+<li>int: Manually decide the number of splits.</li>
+</ul></td>
+        <td><code>&#39;best&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>shuffle</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to shuffle the returned experiment dataframe.
+Default: False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>return_embeddings</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to return the embeddings instead of indexes.
+Default: False</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>pandas.DataFrame</code></td>
+      <td><p>A DataFrame representing the experiment results.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>An error occurred with the provided arguments.</p></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_experiment</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
+    <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
+    <span class="n">different_class_samples</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
+    <span class="n">nsplits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates an experiment for face verification</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        X: Embeddings array</span>
+<span class="sd">        y: Targets for X as integers</span>
+<span class="sd">        metric: metric used for comparing embeddings distance</span>
+<span class="sd">        same_class_samples:</span>
+<span class="sd">            - &#39;full&#39;: Sampling all possible pairs within each class</span>
+<span class="sd">            -  int: Sampling specify number of pairs for</span>
+<span class="sd">                every class. If the provided number is greater than</span>
+<span class="sd">                the achievable for the class, the maximum possible</span>
+<span class="sd">                combinations are used.</span>
+<span class="sd">        different_class_samples:</span>
+<span class="sd">            - &#39;full&#39;: Samples all possible pairs within different classes.</span>
+<span class="sd">                This can grow exponentially as the number of images increase.</span>
+<span class="sd">            - &#39;minimal&#39;: Samples one image from every class with one image of</span>
+<span class="sd">                all other classes. (Default)</span>
+<span class="sd">            - int: Samples one image from every class with X images of</span>
+<span class="sd">                every other class. If the provided number is greater than</span>
+<span class="sd">                the achievable for the class, the maximum possible combinations</span>
+<span class="sd">                are used.</span>
+<span class="sd">        nsplits:</span>
+<span class="sd">            - &#39;best&#39;: Let the program decide based on available memory such</span>
+<span class="sd">                that every split will fit into the available memory. (Default)</span>
+<span class="sd">            - int: Manually decide the number of splits.</span>
+<span class="sd">        shuffle: Whether to shuffle the returned experiment dataframe.</span>
+<span class="sd">            Default: False.</span>
+<span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
+<span class="sd">            Default: False</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: A DataFrame representing the experiment results.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: An error occurred with the provided arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">same_class_samples</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;`same_class_samples` argument must be one of &quot;full&quot; or an integer &#39;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received: same_class_samples=</span><span class="si">{</span><span class="n">same_class_samples</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">different_class_samples</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="s2">&quot;minimal&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">different_class_samples</span><span class="p">,</span> <span class="nb">int</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;`different_class_samples` argument must be one of &quot;full&quot;, &quot;minimal&quot; &#39;</span>
+            <span class="s2">&quot;or an integer &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received: different_class_samples=</span><span class="si">{</span><span class="n">different_class_samples</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">nsplits</span> <span class="o">!=</span> <span class="s2">&quot;best&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nsplits</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;`nsplits` argument must be either &quot;best&quot; or of type integer &#39;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received: nsplits=</span><span class="si">{</span><span class="n">nsplits</span><span class="si">}</span><span class="s2"> with type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metrics_caller</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;`metric` argument must be one of </span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">metrics_caller</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Received: metric=</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">all_pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">metric_fn</span> <span class="o">=</span> <span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
+        <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">same_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">same_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">same_pairs</span><span class="p">]</span>
+        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">!=</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ix&quot;</span><span class="p">:</span> <span class="n">different_ixs</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">different_ixs</span><span class="p">]})</span>
+
+        <span class="k">if</span> <span class="n">different_class_samples</span> <span class="o">==</span> <span class="s2">&quot;minimal&quot;</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">])</span>
+
+        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">different_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">)],</span> <span class="n">different_ixs</span><span class="p">)</span>
+        <span class="n">different_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">different_pairs</span><span class="p">]</span>
+        <span class="n">all_pairs</span> <span class="o">+=</span> <span class="n">same_pairs</span> <span class="o">+</span> <span class="n">different_pairs</span>
+
+    <span class="n">one_to_one_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+        <span class="n">one_to_one_df</span> <span class="o">=</span> <span class="n">one_to_one_df</span><span class="o">.</span><span class="n">frac</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
+        <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="p">))</span>
+
+    <span class="n">Xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">one_to_one_df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span> <span class="s2">&quot;euclidean_distance_l2&quot;</span><span class="p">]:</span>
+        <span class="n">norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">norms</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">one_to_one_df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">norms</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_embeddings</span><span class="p">:</span>
+        <span class="n">one_to_one_df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">one_to_one_df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">one_to_one_df</span><span class="p">[</span><span class="s2">&quot;img_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">one_to_one_df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">one_to_one_df</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="evalify.metrics" class="doc doc-heading">
+        <code>metrics</code>
+
+
+
+<a href="#evalify.metrics" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Metrics module.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+
+
+<h2 id="evalify.utils" class="doc doc-heading">
+        <code>utils</code>
+
+
+
+<a href="#evalify.utils" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="evalify.utils.calculate_best_split_size" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">)</span></code>
+
+
+<a href="#evalify.utils.calculate_best_split_size" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate best number of splits.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>evalify\utils.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate best number of splits.&quot;&quot;&quot;</span>
+    <span class="n">available_mem</span> <span class="o">=</span> <span class="n">_calc_available_memory</span><span class="p">()</span>
+    <span class="n">max_rows</span> <span class="o">=</span> <span class="n">_keep_to_max_rows</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">available_mem</span><span class="p">)</span>
+    <span class="n">nsplits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">max_rows</span><span class="p">)</span>
+    <span class="c1"># add a split to avoid 0 splits</span>
+    <span class="n">nsplits</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">nsplits</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="evalify.utils.find_optimal_cutoff" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">find_optimal_cutoff</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span></code>
+
+
+<a href="#evalify.utils.find_optimal_cutoff" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Find the optimal cutoff point</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>target</code></td>
+        <td></td>
+        <td><p>Matrix with dependent or target data, where rows are observations</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>predicted</code></td>
+        <td></td>
+        <td><p>Matrix with predicted data, where rows are observations</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>float type, with optimal cutoff value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\utils.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">predicted</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
+<span class="sd">    Args:</span>
+<span class="sd">        target: Matrix with dependent or target data, where rows are observations</span>
+<span class="sd">        predicted: Matrix with predicted data, where rows are observations</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float type, with optimal cutoff value</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">threshold</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tpr</span><span class="p">))</span>
+    <span class="n">roc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;tf&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">tpr</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">),</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">roc_t</span> <span class="o">=</span> <span class="n">roc</span><span class="o">.</span><span class="n">iloc</span><span class="p">[(</span><span class="n">roc</span><span class="o">.</span><span class="n">tf</span> <span class="o">-</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[:</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">roc_t</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
               
             </article>
