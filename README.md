@@ -2,8 +2,7 @@
 
 <p align="center">
 
-![default-monochrome](https://user-images.githubusercontent.com/7144929/154332210-fa1fee34-faae-4567-858a-49fa53e99a2b.svg)
-
+<img src="https://user-images.githubusercontent.com/7144929/154332210-fa1fee34-faae-4567-858a-49fa53e99a2b.svg" width="292" height="120" alt="Logo"/>
 
 </p>
 
