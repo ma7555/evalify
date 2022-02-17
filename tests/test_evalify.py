@@ -29,27 +29,24 @@ class TestEvalify(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures, if any."""
 
-    def test_create_experiment_euclidean_distance(self):
-        """Test create_experiment with euclidean_distance"""
-        df = evalify.create_experiment(
-            self.embs, self.targets, metric="euclidean_distance"
-        )
-        df_l2 = evalify.create_experiment(
-            self.embs, self.targets, metric="euclidean_distance_l2"
-        )
+    def test_run_euclidean_distance(self):
+        """Test run with euclidean_distance"""
+        experiment = evalify.Experiment()
+        df = experiment.run(self.embs, self.targets, metrics="euclidean_distance")
+        df_l2 = experiment.run(self.embs, self.targets, metrics="euclidean_distance_l2")
         self.assertGreater(df.euclidean_distance.max(), 0)
         self.assertGreater(df_l2.euclidean_distance_l2.max(), 0)
 
-    def test_create_experiment_cosine_similarity(self):
-        """Test create_experiment with cosine_similarity"""
-        df = evalify.create_experiment(
-            self.embs, self.targets, metric="cosine_similarity"
-        )
+    def test_run_cosine_similarity(self):
+        """Test run with cosine_similarity"""
+        experiment = evalify.Experiment()
+        df = experiment.run(self.embs, self.targets, metrics="cosine_similarity")
         self.assertLessEqual(df.cosine_similarity.max(), 1)
 
-    def test_create_experiment_full_class_samples(self):
-        """Test create_experiment with return_embeddings"""
-        df = evalify.create_experiment(
+    def test_run_full_class_samples(self):
+        """Test run with return_embeddings"""
+        experiment = evalify.Experiment()
+        df = experiment.run(
             self.embs,
             self.targets,
             same_class_samples="full",
@@ -57,13 +54,14 @@ class TestEvalify(unittest.TestCase):
         )
         self.assertEqual(len(df), comb(self.nphotos, 2))
 
-    def test_create_experiment_custom_class_samples(self):
-        """Test create_experiment with custom same_class_samples and
+    def test_run_custom_class_samples(self):
+        """Test run with custom same_class_samples and
         different_class_samples
         """
+        experiment = evalify.Experiment()
         N, M = (2, 5)
         same_class_samples = 3
-        df = evalify.create_experiment(
+        df = experiment.run(
             self.embs,
             self.targets,
             same_class_samples=2,
@@ -76,33 +74,47 @@ class TestEvalify(unittest.TestCase):
             + (self.nclasses * (self.nclasses - 1)) * M * N,
         )
 
-    def test_create_experiment_return_embeddings(self):
-        """Test create_experiment with return_embeddings"""
-        df = evalify.create_experiment(self.embs, self.targets, return_embeddings=True)
+    def test_run_return_embeddings(self):
+        """Test run with return_embeddings"""
+        experiment = evalify.Experiment()
+        df = experiment.run(self.embs, self.targets, return_embeddings=True)
         self.assertLessEqual(len(df.at[0, "img_a"]), self.emb_size)
 
-    def test_create_experiment_errors(self):
-        """Test create_experiment errors"""
+    def test_run_evaluate_at_threshold(self):
+        """Test run with return_embeddings"""
+        experiment = evalify.Experiment()
+        metrics = ["cosine_similarity", "euclidean_distance_l2"]
+        experiment.run(
+            self.embs,
+            self.targets,
+            metrics=metrics,
+        )
+        evaluations = experiment.evaluate_at_threshold(0.5)
+        self.assertEqual(len(evaluations), len(metrics))
+        self.assertEqual(len(evaluations[metrics[0]]), 10)
+
+    def test_run_errors(self):
+        """Test run errors"""
         with self.assertRaisesRegex(
             ValueError,
             "`same_class_samples` argument must be one of 'full' or an integer ",
         ):
-            _ = evalify.create_experiment(
-                self.embs, self.targets, same_class_samples=54.4
-            )
+            experiment = evalify.Experiment()
+            _ = experiment.run(self.embs, self.targets, same_class_samples=54.4)
 
         with self.assertRaisesRegex(
             ValueError,
             "`different_class_samples` argument must be one of 'full', 'minimal', ",
         ):
-            _ = evalify.create_experiment(
-                self.embs, self.targets, different_class_samples="all"
-            )
+            experiment = evalify.Experiment()
+            _ = experiment.run(self.embs, self.targets, different_class_samples="all")
 
         with self.assertRaisesRegex(
             ValueError, '`nsplits` argument must be either "best" or of type integer'
         ):
-            _ = evalify.create_experiment(self.embs, self.targets, nsplits="all")
+            experiment = evalify.Experiment()
+            _ = experiment.run(self.embs, self.targets, nsplits="all")
 
         with self.assertRaisesRegex(ValueError, "`metric` argument must be one of "):
-            _ = evalify.create_experiment(self.embs, self.targets, metric="dot_prod")
+            experiment = evalify.Experiment()
+            _ = experiment.run(self.embs, self.targets, metrics="dot_prod")

@@ -67,3 +67,6 @@ metrics_caller = {
     "euclidean_distance": euclidean_distance,
     "euclidean_distance_l2": euclidean_distance,
 }
+
+METRICS_NEED_NORM = ["cosine_similarity", "euclidean_distance_l2"]
+DISTANCE_TO_SIMILARITY = {"euclidean_distance": lambda x: 1/(1+x),"euclidean_distance_l2": lambda x: 1-x}
