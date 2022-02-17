@@ -7,6 +7,7 @@ import pandas as pd
 
 from evalify.metrics import metrics_caller
 from evalify.utils import calculate_best_split_size
+from sklearn.metrics import confusion_matrix, roc_curve
 
 
 def create_experiment(
