@@ -81,7 +81,7 @@ class TestEvalify(unittest.TestCase):
         self.assertLessEqual(len(df.at[0, "img_a"]), self.emb_size)
 
     def test_run_evaluate_at_threshold(self):
-        """Test run with return_embeddings"""
+        """Test run with evaluate_at_threshold"""
         experiment = evalify.Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
         experiment.run(

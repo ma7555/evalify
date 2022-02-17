@@ -73,4 +73,4 @@ class TestEvalify(unittest.TestCase):
 
     def test_get_norm(self):
         """Test get_norm"""
-        self.assertTrue(np.allclose(self.norms, metrics._get_norms(self.embs)))
+        self.assertTrue(np.allclose(self.norms, metrics.get_norms(self.embs)))

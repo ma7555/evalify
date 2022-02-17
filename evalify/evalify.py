@@ -1,14 +1,26 @@
-"""Main module."""
+"""Evalify main module used for creating the verification experiments.
+
+Creates experiments with embedding pairs to compare for face verification tasks
+including positive pairs, negative pairs and metrics calculations using a very
+optimized einstein sum. Many operations are dispatched to canonical BLAS, cuBLAS,
+or other specialized routines. Extremely large arrays are split into smaller batches,
+every batch would consume the roughly the maximum available memory.
+
+  Typical usage example:
+
+  experiment = Experiment()
+  experiment.run()
+  print(experiment.df.head())
+"""
 import itertools
-from typing import Union, Sequence, Any
+from typing import Any, Iterable, Sequence, Union
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import confusion_matrix, roc_curve
+from sklearn.metrics import auc, confusion_matrix, roc_curve
 
-from metrics import metrics_caller, _get_norms, METRICS_NEED_NORM
-from utils import calculate_best_split_size
-
+from evalify.metrics import METRICS_NEED_NORM, get_norms, metrics_caller
+from evalify.utils import calculate_best_split_size
 
 T_str_int = Union[str, int]
 
@@ -39,7 +51,7 @@ class Experiment:
         Args:
             X: Embeddings array
             y: Targets for X as integers
-            metric: metric or metrics used for comparing embeddings distance. Can be either a string
+            metrics: metric or metrics used for comparing embeddings distance. Can be either a string
                 from "cosine_similarity", "euclidean_distance", "euclidean_distance_l2" or
                 a list/tuple containing more than one of them.
             same_class_samples:
@@ -82,52 +94,13 @@ class Experiment:
         Raises:
             ValueError: An error occurred with the provided arguments.
         """
-        if same_class_samples != "full" and not isinstance(same_class_samples, int):
-            raise ValueError(
-                "`same_class_samples` argument must be one of 'full' or an integer "
-                f"Received: same_class_samples={same_class_samples}"
-            )
-        if different_class_samples not in ("full", "minimal"):
-            if not isinstance(different_class_samples, (int, list, tuple)):
-                raise ValueError(
-                    "`different_class_samples` argument must be one of 'full', 'minimal', "
-                    "an integer, a list or tuple of integers or keyword 'full'."
-                    f"Received: different_class_samples={different_class_samples}."
-                )
-            elif isinstance(different_class_samples, (list, tuple)):
-                if (
-                    not (
-                        all(
-                            isinstance(i, int) or i == "full"
-                            for i in different_class_samples
-                        )
-                    )
-                    or (len(different_class_samples)) != 2
-                ):
-                    raise ValueError(
-                        "When passing `different_class_samples` as a tuple or list, "
-                        "elements must be exactly two of integer type or keyword 'full' "
-                        f"(N, M). "
-                        "Received: different_class_samples={different_class_samples}."
-                    )
-
-        if nsplits != "best" and not isinstance(nsplits, int):
-            raise ValueError(
-                '`nsplits` argument must be either "best" or of type integer '
-                f"Received: nsplits={nsplits} with type {type(nsplits)}."
-            )
-
         if isinstance(metrics, str):
             metrics = (metrics,)
 
-        if not all(metric in metrics_caller for metric in metrics):
-            raise ValueError(
-                f"`metric` argument must be one of {tuple(metrics_caller.keys())} "
-                f"Received: metric={metrics}"
-            )
+        self.arg_checks(metrics, same_class_samples, different_class_samples, nsplits)
 
         all_targets = np.unique(y)
-        all_pairs = list()
+        all_pairs = []
         metric_fns = list(map(metrics_caller.get, metrics))
         rng = np.random.default_rng(seed)
         already_added = set()
@@ -185,7 +158,7 @@ class Experiment:
         ys = np.array_split(self.df.img_b.to_numpy(), nsplits)
 
         if any(metric in METRICS_NEED_NORM for metric in metrics):
-            norms = _get_norms(X)
+            norms = get_norms(X)
 
         for metric, metric_fn in zip(metrics, metric_fns):
             if metric in METRICS_NEED_NORM:
@@ -205,25 +178,56 @@ class Experiment:
         self.metrics = metrics
         return self.df
 
-    def find_optimal_cutoff(
-        self,
-        # target: Union[np.ndarray, pd.Series] = None,
-        # predicted: Union[np.ndarray, pd.Series] = None,
-    ):
-        """Find the optimal cutoff point
-        Args:
-            target: Matrix with dependent or target data, where rows are observations
-            predicted: Matrix with predicted data, where rows are observations
+    def arg_checks(self, metrics, same_class_samples, different_class_samples, nsplits):
+        if same_class_samples != "full" and not isinstance(same_class_samples, int):
+            raise ValueError(
+                "`same_class_samples` argument must be one of 'full' or an integer "
+                f"Received: same_class_samples={same_class_samples}"
+            )
 
+        if different_class_samples not in ("full", "minimal"):
+            if not isinstance(different_class_samples, (int, list, tuple)):
+                raise ValueError(
+                    "`different_class_samples` argument must be one of 'full', 'minimal', "
+                    "an integer, a list or tuple of integers or keyword 'full'."
+                    f"Received: different_class_samples={different_class_samples}."
+                )
+            elif isinstance(different_class_samples, (list, tuple)):
+                if (
+                    not (
+                        all(
+                            isinstance(i, int) or i == "full"
+                            for i in different_class_samples
+                        )
+                    )
+                    or (len(different_class_samples)) != 2
+                ):
+                    raise ValueError(
+                        "When passing `different_class_samples` as a tuple or list, "
+                        "elements must be exactly two of integer type or keyword 'full' "
+                        "(N, M). "
+                        f"Received: different_class_samples={different_class_samples}."
+                    )
+
+        if nsplits != "best" and not isinstance(nsplits, int):
+            raise ValueError(
+                '`nsplits` argument must be either "best" or of type integer '
+                f"Received: nsplits={nsplits} with type {type(nsplits)}."
+            )
+
+        if any(metric not in metrics_caller for metric in metrics):
+            raise ValueError(
+                f"`metric` argument must be one of {tuple(metrics_caller.keys())} "
+                f"Received: metric={metrics}"
+            )
+
+    def find_optimal_cutoff(self):
+        """Find the optimal cutoff point
         Returns:
             float: optimal cutoff value
 
         """
-        if not self.experiment_sucess:
-            raise NotImplementedError(
-                "`find_optimal_cutoff` function can only be run after running "
-                "`run_experiment`."
-            )
+        self.check_experiment_run()
         self.optimal_cutoff = {}
         for metric in self.metrics:
             fpr, tpr, threshold = roc_curve(self.df["target"], self.df[metric])
@@ -239,7 +243,7 @@ class Experiment:
         return self.optimal_cutoff
 
     def find_thr_at_fpr(self, fpr):
-        pass
+        raise NotImplementedError
 
     def evaluate_at_threshold(self, threshold: float):
         """Evaluate performance at specific threshold
@@ -250,11 +254,7 @@ class Experiment:
             dict: containing all evaluation metrics.
         """
         self.metrics_evaluation = {}
-        if not self.experiment_sucess:
-            raise NotImplementedError(
-                "`evaluate_at_threshold` function can only be run after running "
-                "`run_experiment`."
-            )
+        self.check_experiment_run()
         for metric in self.metrics:
             pred = self.df[metric].apply(lambda x: 1 if x > threshold else 0)
             cm = confusion_matrix(self.df["target"], pred)
@@ -286,3 +286,18 @@ class Experiment:
             self.metrics_evaluation[metric] = evaluation
 
         return self.metrics_evaluation
+
+    def check_experiment_run(self):
+        if not self.experiment_sucess:
+            raise NotImplementedError(
+                "`evaluate_at_threshold` function can only be run after running "
+                "`run_experiment`."
+            )
+
+    def roc_auc(self):
+        self.check_experiment_run()
+        self.roc_auc = {}
+        for metric in self.metrics:
+            fpr, tpr, thresholds = roc_curve(self.df["target"], self.df[metric])
+            self.roc_auc[metric] = auc(fpr, tpr)
+        return self.roc_auc

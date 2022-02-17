@@ -32,7 +32,7 @@ evalify contains tools needed to evaluate your face verification models literall
 
 
 * Free software: BSD-3-Clause
-* Documentation: <https://evalify.readthedocs.io>
+* Documentation: <https://ma7555.github.io/evalify/>
 
 
 ## Features
