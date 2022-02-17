@@ -1,6 +1,8 @@
 import numpy as np
 import psutil
 
+GB_TO_BYTE = 1024**3
+
 
 def _calc_available_memory():
     mem = psutil.virtual_memory()
@@ -12,8 +14,8 @@ def _keep_to_max_rows(embs, available_mem):
 
     We need 3 big arrays to be held in memory (A, B, A*B)
     """
-    if available_mem > 2e9:
-        max_total_rows = np.floor(available_mem - 1e9 / (embs[0].nbytes))
+    if available_mem > 2 * GB_TO_BYTE:
+        max_total_rows = np.floor(available_mem - GB_TO_BYTE / (embs[0].nbytes))
         return int(max_total_rows / 3)
     else:
         max_total_rows = np.floor(available_mem / (embs[0].nbytes))
