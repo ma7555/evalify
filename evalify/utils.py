@@ -1,3 +1,4 @@
+"""Evalify utils module contains various utilites serving other modules."""
 import numpy as np
 import psutil
 
@@ -5,6 +6,7 @@ GB_TO_BYTE = 1024**3
 
 
 def _calc_available_memory():
+    """Calculate available memory in system"""
     mem = psutil.virtual_memory()
     return mem[1]
 
