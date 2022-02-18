@@ -769,22 +769,22 @@ Experiment        </code>
 <span class="sd">            return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">                Default: False</span>
 
-<span class="sd">        Rules:</span>
-<span class="sd">            same_class_samples:</span>
-<span class="sd">                If the provided number is greater than the achievable for the class,</span>
-<span class="sd">                the maximum possible combinations are used.</span>
-<span class="sd">            different_class_samples:</span>
-<span class="sd">                If the provided number is greater than the achievable for the class,</span>
-<span class="sd">                the maximum possible combinations are used. (N, M) can also be</span>
-<span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
-<span class="sd">                between all posibile negative samples. If the dataset is not small</span>
-<span class="sd">                this will probably result in an extremely large array!.</span>
-
 <span class="sd">        Returns:</span>
 <span class="sd">            pandas.DataFrame: A DataFrame representing the experiment results.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: An error occurred with the provided arguments.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            regarding same_class_samples:</span>
+<span class="sd">                If the provided number is greater than the achievable for the class,</span>
+<span class="sd">                the maximum possible combinations are used.</span>
+<span class="sd">            regarding different_class_samples:</span>
+<span class="sd">                If the provided number is greater than the achievable for the class,</span>
+<span class="sd">                the maximum possible combinations are used. (N, M) can also be</span>
+<span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
+<span class="sd">                between all posibile negative samples. If the dataset is not small</span>
+<span class="sd">                this will probably result in an extremely large array!.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
@@ -1271,23 +1271,7 @@ Default: False</p></td>
         <td><code>False</code></td>
       </tr>
   </tbody>
-</table>      <div class="admonition rules">
-<p class="admonition-title">Rules</p>
-<div class="admonition same_class_samples">
-<p class="admonition-title">Same_class_samples</p>
-<p>If the provided number is greater than the achievable for the class,
-the maximum possible combinations are used.</p>
-</div>
-<div class="admonition different_class_samples">
-<p class="admonition-title">Different_class_samples</p>
-<p>If the provided number is greater than the achievable for the class,
-the maximum possible combinations are used. (N, M) can also be
-('full', 'full') but this will calculate all possible combinations
-between all posibile negative samples. If the dataset is not small
-this will probably result in an extremely large array!.</p>
-</div>
-</div>
-
+</table>
 <p><strong>Returns:</strong></p>
 <table>
   <thead>
@@ -1317,7 +1301,19 @@ this will probably result in an extremely large array!.</p>
         <td><p>An error occurred with the provided arguments.</p></td>
       </tr>
   </tbody>
-</table>
+</table>      <div class="admonition notes">
+<p class="admonition-title">Notes</p>
+<p>regarding same_class_samples:
+    If the provided number is greater than the achievable for the class,
+    the maximum possible combinations are used.
+regarding different_class_samples:
+    If the provided number is greater than the achievable for the class,
+    the maximum possible combinations are used. (N, M) can also be
+    ('full', 'full') but this will calculate all possible combinations
+    between all posibile negative samples. If the dataset is not small
+    this will probably result in an extremely large array!.</p>
+</div>
+
         <details class="quote">
           <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
@@ -1369,22 +1365,22 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">            Default: False</span>
 
-<span class="sd">    Rules:</span>
-<span class="sd">        same_class_samples:</span>
-<span class="sd">            If the provided number is greater than the achievable for the class,</span>
-<span class="sd">            the maximum possible combinations are used.</span>
-<span class="sd">        different_class_samples:</span>
-<span class="sd">            If the provided number is greater than the achievable for the class,</span>
-<span class="sd">            the maximum possible combinations are used. (N, M) can also be</span>
-<span class="sd">            (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
-<span class="sd">            between all posibile negative samples. If the dataset is not small</span>
-<span class="sd">            this will probably result in an extremely large array!.</span>
-
 <span class="sd">    Returns:</span>
 <span class="sd">        pandas.DataFrame: A DataFrame representing the experiment results.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: An error occurred with the provided arguments.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        regarding same_class_samples:</span>
+<span class="sd">            If the provided number is greater than the achievable for the class,</span>
+<span class="sd">            the maximum possible combinations are used.</span>
+<span class="sd">        regarding different_class_samples:</span>
+<span class="sd">            If the provided number is greater than the achievable for the class,</span>
+<span class="sd">            the maximum possible combinations are used. (N, M) can also be</span>
+<span class="sd">            (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
+<span class="sd">            between all posibile negative samples. If the dataset is not small</span>
+<span class="sd">            this will probably result in an extremely large array!.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
