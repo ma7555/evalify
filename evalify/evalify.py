@@ -13,7 +13,7 @@ every batch would consume the roughly the maximum available memory.
   experiment = Experiment()
   experiment.run(X, y)
   ```
-"""
+  
 import itertools
 from typing import Any, Iterable, Sequence, Union
 
@@ -85,7 +85,7 @@ class Experiment:
 
         Raises:
             ValueError: An error occurred with the provided arguments.
-
+              
         Notes:
             same_class_samples:
                 If the provided number is greater than the achievable for the class,
