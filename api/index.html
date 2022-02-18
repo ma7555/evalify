@@ -770,14 +770,15 @@ Experiment        </code>
 <span class="sd">                Default: False</span>
 
 <span class="sd">        Rules:</span>
-<span class="sd">            same_class_samples: If the provided number is greater than the achievable</span>
-<span class="sd">                for the class, the maximum possible combinations are used.</span>
-<span class="sd">            different_class_samples: If the provided number is greater than the</span>
-<span class="sd">                achievable for the class, the maximum possible combinations are used.</span>
-<span class="sd">                (N, M) can also be (&#39;full&#39;, &#39;full&#39;) but this will calculate all</span>
-<span class="sd">                possible combinations between all posibile negative samples. If the</span>
-<span class="sd">                dataset is not small this will probably result in an extremely large</span>
-<span class="sd">                array!.</span>
+<span class="sd">            same_class_samples:</span>
+<span class="sd">                If the provided number is greater than the achievable for the class,</span>
+<span class="sd">                the maximum possible combinations are used.</span>
+<span class="sd">            different_class_samples:</span>
+<span class="sd">                If the provided number is greater than the achievable for the class,</span>
+<span class="sd">                the maximum possible combinations are used. (N, M) can also be</span>
+<span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
+<span class="sd">                between all posibile negative samples. If the dataset is not small</span>
+<span class="sd">                this will probably result in an extremely large array!.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            pandas.DataFrame: A DataFrame representing the experiment results.</span>
@@ -1273,16 +1274,17 @@ Default: False</p></td>
 </table>      <div class="admonition rules">
 <p class="admonition-title">Rules</p>
 <div class="admonition same_class_samples">
-<p class="admonition-title">If the provided number is greater than the achievable</p>
-<p>for the class, the maximum possible combinations are used.</p>
+<p class="admonition-title">Same_class_samples</p>
+<p>If the provided number is greater than the achievable for the class,
+the maximum possible combinations are used.</p>
 </div>
 <div class="admonition different_class_samples">
-<p class="admonition-title">If the provided number is greater than the</p>
-<p>achievable for the class, the maximum possible combinations are used.
-(N, M) can also be ('full', 'full') but this will calculate all
-possible combinations between all posibile negative samples. If the
-dataset is not small this will probably result in an extremely large
-array!.</p>
+<p class="admonition-title">Different_class_samples</p>
+<p>If the provided number is greater than the achievable for the class,
+the maximum possible combinations are used. (N, M) can also be
+('full', 'full') but this will calculate all possible combinations
+between all posibile negative samples. If the dataset is not small
+this will probably result in an extremely large array!.</p>
 </div>
 </div>
 
@@ -1368,14 +1370,15 @@ array!.</p>
 <span class="sd">            Default: False</span>
 
 <span class="sd">    Rules:</span>
-<span class="sd">        same_class_samples: If the provided number is greater than the achievable</span>
-<span class="sd">            for the class, the maximum possible combinations are used.</span>
-<span class="sd">        different_class_samples: If the provided number is greater than the</span>
-<span class="sd">            achievable for the class, the maximum possible combinations are used.</span>
-<span class="sd">            (N, M) can also be (&#39;full&#39;, &#39;full&#39;) but this will calculate all</span>
-<span class="sd">            possible combinations between all posibile negative samples. If the</span>
-<span class="sd">            dataset is not small this will probably result in an extremely large</span>
-<span class="sd">            array!.</span>
+<span class="sd">        same_class_samples:</span>
+<span class="sd">            If the provided number is greater than the achievable for the class,</span>
+<span class="sd">            the maximum possible combinations are used.</span>
+<span class="sd">        different_class_samples:</span>
+<span class="sd">            If the provided number is greater than the achievable for the class,</span>
+<span class="sd">            the maximum possible combinations are used. (N, M) can also be</span>
+<span class="sd">            (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
+<span class="sd">            between all posibile negative samples. If the dataset is not small</span>
+<span class="sd">            this will probably result in an extremely large array!.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pandas.DataFrame: A DataFrame representing the experiment results.</span>
