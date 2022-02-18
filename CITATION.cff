@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: evalify
+message: " If you use this software, please cite it using the   metadata from this file."
+type: software
+authors:
+  - given-names: Mahmoud
+    family-names: Bahaa
+    email: mah.alaa@nu.edu.eg
+    affiliation: Nile University
+    orcid: "https://orcid.org/0000-0001-8688-6495"

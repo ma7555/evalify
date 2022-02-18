@@ -1,5 +1,5 @@
 """Top-level package for evalify."""
 
 __author__ = """Mahmoud Bahaa"""
-__email__ = 'mah.alaa@nu.edu.eg'
-__version__ = '0.1.0'
+__email__ = "mah.alaa@nu.edu.eg"
+__version__ = "0.1.0"

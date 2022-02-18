@@ -14,7 +14,8 @@ nav:
 theme:
   name: material
   language: en
-  #logo: assets/logo.png
+  logo: https://user-images.githubusercontent.com/7144929/154332210-fa1fee34-faae-4567-858a-49fa53e99a2b.svg
+
   palette:
     primary: light blue
   features:
@@ -70,5 +71,5 @@ extra:
   # disqus: disqus_id
 # uncomment the following and put your google tracking id below to enable GA
 #google_analytics:
-  #- UA-xxx
-  #- auto
+#- UA-xxx
+#- auto
