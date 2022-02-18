@@ -17,8 +17,8 @@
     <img src="https://github.com/ma7555/evalify/actions/workflows/dev.yml/badge.svg?branch=main" alt="CI Status">
 </a>
 
-<a href="https://evalify.readthedocs.io/en/latest/?badge=latest">
-    <img src="https://readthedocs.org/projects/evalify/badge/?version=latest" alt="Documentation Status">
+<a href="https://ma7555.github.io/evalify/">
+    <img src="https://img.shields.io/website/https/ma7555.github.io/evalify/index.html.svg?label=docs&down_message=unavailable&up_message=available" alt="Documentation Status">
 </a>
 
 <a href="https://github.com/psf/black">
@@ -36,9 +36,14 @@ evalify contains tools needed to evaluate your face verification models literall
 pip install evalify
 ```
 #### Bleeding edge
-```bash
-pip install git+https://github.com/ma7555/evalify.git
-```
+* From source
+    ```bash
+    pip install git+https://github.com/ma7555/evalify.git
+    ```
+* From TestPyPI
+    ```bash
+    pip install --index-url https://test.pypi.org/simple/evalify
+    ```
 
 ## Usage
 
