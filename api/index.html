@@ -680,8 +680,7 @@ or other specialized routines. Extremely large arrays are split into smaller bat
 every batch would consume the roughly the maximum available memory.</p>
 <p>Typical usage example:</p>
 <p>experiment = Experiment()
-  experiment.run(X, y)
-  print(experiment.df.head())</p>
+  experiment.run(X, y)</p>
 
 
 
@@ -741,14 +740,13 @@ Experiment        </code>
 <span class="sd">                from &quot;cosine_similarity&quot;, &quot;euclidean_distance&quot;, &quot;euclidean_distance_l2&quot; or</span>
 <span class="sd">                a list/tuple containing more than one of them.</span>
 <span class="sd">            same_class_samples:</span>
-<span class="sd">                For creating positive examples.</span>
 <span class="sd">                - &#39;full&#39;: Samples all possible images within each class to create all</span>
 <span class="sd">                    all possible positive pairs.</span>
 <span class="sd">                -  int: Samples specific number of images for every class to create</span>
 <span class="sd">                    nC2 pairs where n is passed integer. If the provided number is greater</span>
 <span class="sd">                    than the achievable for the class, the maximum possible combinations</span>
 <span class="sd">                    are used.</span>
-<span class="sd">            different_class_samples: For creating negative samples.</span>
+<span class="sd">            different_class_samples:</span>
 <span class="sd">                - &#39;full&#39;: Samples one image from every class with all possible pairs</span>
 <span class="sd">                    of different classes. This can grow exponentially as the number</span>
 <span class="sd">                    of images increase. (N, M) = (1, &quot;full&quot;)</span>
@@ -1213,34 +1211,36 @@ a list/tuple containing more than one of them.</p></td>
       <tr>
         <td><code>same_class_samples</code></td>
         <td><code>Union[str, int, Sequence[Union[str, int]]]</code></td>
-        <td><p>For creating positive examples.
-- 'full': Samples all possible images within each class to create all
-    all possible positive pairs.
--  int: Samples specific number of images for every class to create
+        <td><ul>
+<li>'full': Samples all possible images within each class to create all
+    all possible positive pairs.</li>
+<li>int: Samples specific number of images for every class to create
     nC2 pairs where n is passed integer. If the provided number is greater
     than the achievable for the class, the maximum possible combinations
-    are used.</p></td>
+    are used.</li>
+</ul></td>
         <td><code>&#39;full&#39;</code></td>
       </tr>
       <tr>
         <td><code>different_class_samples</code></td>
         <td><code>Union[str, int]</code></td>
-        <td><p>For creating negative samples.
-- 'full': Samples one image from every class with all possible pairs
+        <td><ul>
+<li>'full': Samples one image from every class with all possible pairs
     of different classes. This can grow exponentially as the number
-    of images increase. (N, M) = (1, "full")
-- 'minimal': Samples one image from every class with one image of
-    all other classes. (N, M) = (1, 1). (Default)
-- int: Samples one image from every class with provided number of
+    of images increase. (N, M) = (1, "full")</li>
+<li>'minimal': Samples one image from every class with one image of
+    all other classes. (N, M) = (1, 1). (Default)</li>
+<li>int: Samples one image from every class with provided number of
     images of every other class. If the provided number is greater than
     the achievable for the class, the maximum possible combinations
-    are used.
-- tuple or list: (N, M) Samples N images from every class with M images of
+    are used.</li>
+<li>tuple or list: (N, M) Samples N images from every class with M images of
     every other class. If either is greater than the achievable, the
     maximum possible combinations are used.(N, M) can also be
     ('full', 'full') but this will calculate all possible combinations
     between all posibile negative samples. If the dataset is not small this
-    will probably result in an extremely large array!.</p></td>
+    will probably result in an extremely large array!.</li>
+</ul></td>
         <td><code>&#39;minimal&#39;</code></td>
       </tr>
       <tr>
@@ -1323,14 +1323,13 @@ Default: False</p></td>
 <span class="sd">            from &quot;cosine_similarity&quot;, &quot;euclidean_distance&quot;, &quot;euclidean_distance_l2&quot; or</span>
 <span class="sd">            a list/tuple containing more than one of them.</span>
 <span class="sd">        same_class_samples:</span>
-<span class="sd">            For creating positive examples.</span>
 <span class="sd">            - &#39;full&#39;: Samples all possible images within each class to create all</span>
 <span class="sd">                all possible positive pairs.</span>
 <span class="sd">            -  int: Samples specific number of images for every class to create</span>
 <span class="sd">                nC2 pairs where n is passed integer. If the provided number is greater</span>
 <span class="sd">                than the achievable for the class, the maximum possible combinations</span>
 <span class="sd">                are used.</span>
-<span class="sd">        different_class_samples: For creating negative samples.</span>
+<span class="sd">        different_class_samples:</span>
 <span class="sd">            - &#39;full&#39;: Samples one image from every class with all possible pairs</span>
 <span class="sd">                of different classes. This can grow exponentially as the number</span>
 <span class="sd">                of images increase. (N, M) = (1, &quot;full&quot;)</span>
