@@ -8,9 +8,11 @@ every batch would consume the roughly the maximum available memory.
 
   Typical usage example:
 
+
+  ```
   experiment = Experiment()
   experiment.run(X, y)
-  print(experiment.df.head())
+  ```
 """
 import itertools
 from typing import Any, Iterable, Sequence, Union
@@ -55,30 +57,20 @@ class Experiment:
                 from "cosine_similarity", "euclidean_distance", "euclidean_distance_l2" or
                 a list/tuple containing more than one of them.
             same_class_samples:
-                For creating positive examples.
                 - 'full': Samples all possible images within each class to create all
                     all possible positive pairs.
                 -  int: Samples specific number of images for every class to create
-                    nC2 pairs where n is passed integer. If the provided number is greater
-                    than the achievable for the class, the maximum possible combinations
-                    are used.
+                    nC2 pairs where n is passed integer.
             different_class_samples:
-                For creating negative samples.
                 - 'full': Samples one image from every class with all possible pairs
                     of different classes. This can grow exponentially as the number
                     of images increase. (N, M) = (1, "full")
                 - 'minimal': Samples one image from every class with one image of
                     all other classes. (N, M) = (1, 1). (Default)
                 - int: Samples one image from every class with provided number of
-                    images of every other class. If the provided number is greater than
-                    the achievable for the class, the maximum possible combinations
-                    are used.
+                    images of every other class.
                 - tuple or list: (N, M) Samples N images from every class with M images of
-                    every other class. If either is greater than the achievable, the
-                    maximum possible combinations are used.(N, M) can also be
-                    ('full', 'full') but this will calculate all possible combinations
-                    between all posibile negative samples. If the dataset is not small this
-                    will probably result in an extremely large array!.
+                    every other class.
 
             nsplits:
                 - 'best': Let the program decide based on available memory such that every
@@ -93,6 +85,17 @@ class Experiment:
 
         Raises:
             ValueError: An error occurred with the provided arguments.
+
+        Notes:
+            same_class_samples:
+                If the provided number is greater than the achievable for the class,
+                the maximum possible combinations are used.
+            different_class_samples:
+                If the provided number is greater than the achievable for the class,
+                the maximum possible combinations are used. (N, M) can also be
+                ('full', 'full') but this will calculate all possible combinations
+                between all posibile negative samples. If the dataset is not small
+                this will probably result in an extremely large array!.
         """
         if isinstance(metrics, str):
             metrics = (metrics,)
