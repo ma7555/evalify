@@ -3,7 +3,7 @@
 name = "evalify"
 version = "0.1.0"
 homepage = "https://github.com/ma7555/evalify"
-description = "evalify contains tools needed to evaluate your face verification models literally in seconds.."
+description = "Evaluate your face verification models literally in seconds."
 authors = ["Mahmoud Bahaa <mah.alaa@nu.edu.eg>"]
 readme = "README.md"
 license =  "BSD-3-Clause"
