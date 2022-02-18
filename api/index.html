@@ -773,10 +773,10 @@ Experiment        </code>
 <span class="sd">            ValueError: An error occurred with the provided arguments.</span>
 
 <span class="sd">        Notes:</span>
-<span class="sd">            regarding same_class_samples:</span>
+<span class="sd">            same_class_samples:</span>
 <span class="sd">                If the provided number is greater than the achievable for the class,</span>
 <span class="sd">                the maximum possible combinations are used.</span>
-<span class="sd">            regarding different_class_samples:</span>
+<span class="sd">            different_class_samples:</span>
 <span class="sd">                If the provided number is greater than the achievable for the class,</span>
 <span class="sd">                the maximum possible combinations are used. (N, M) can also be</span>
 <span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
@@ -1297,15 +1297,19 @@ Default: False</p></td>
   </tbody>
 </table>      <div class="admonition notes">
 <p class="admonition-title">Notes</p>
-<p>regarding same_class_samples:
-    If the provided number is greater than the achievable for the class,
-    the maximum possible combinations are used.
-regarding different_class_samples:
-    If the provided number is greater than the achievable for the class,
-    the maximum possible combinations are used. (N, M) can also be
-    ('full', 'full') but this will calculate all possible combinations
-    between all posibile negative samples. If the dataset is not small
-    this will probably result in an extremely large array!.</p>
+<div class="admonition same_class_samples">
+<p class="admonition-title">Same_class_samples</p>
+<p>If the provided number is greater than the achievable for the class,
+the maximum possible combinations are used.</p>
+</div>
+<div class="admonition different_class_samples">
+<p class="admonition-title">Different_class_samples</p>
+<p>If the provided number is greater than the achievable for the class,
+the maximum possible combinations are used. (N, M) can also be
+('full', 'full') but this will calculate all possible combinations
+between all posibile negative samples. If the dataset is not small
+this will probably result in an extremely large array!.</p>
+</div>
 </div>
 
         <details class="quote">
@@ -1363,10 +1367,10 @@ regarding different_class_samples:
 <span class="sd">        ValueError: An error occurred with the provided arguments.</span>
 
 <span class="sd">    Notes:</span>
-<span class="sd">        regarding same_class_samples:</span>
+<span class="sd">        same_class_samples:</span>
 <span class="sd">            If the provided number is greater than the achievable for the class,</span>
 <span class="sd">            the maximum possible combinations are used.</span>
-<span class="sd">        regarding different_class_samples:</span>
+<span class="sd">        different_class_samples:</span>
 <span class="sd">            If the provided number is greater than the achievable for the class,</span>
 <span class="sd">            the maximum possible combinations are used. (N, M) can also be</span>
 <span class="sd">            (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
