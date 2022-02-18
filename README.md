@@ -8,6 +8,11 @@
 
 <p align="center">
 
+<a href="https://github.com/ma7555/evalify/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/ma7555/evalify"
+        alt = "License">
+</a>
+
 <a href="https://pypi.python.org/pypi/evalify">
     <img src="https://img.shields.io/pypi/v/evalify.svg"
         alt = "Release Status">
@@ -25,10 +30,18 @@
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
 </a>
 
+<a href="https://codecov.io/gh/ma7555/evalify">
+  <img src="https://codecov.io/gh/ma7555/evalify/branch/main/graph/badge.svg" />
+</a>
+
+<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ma7555/evalify/total">
+
+<!-- <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/ma7555/evalify"> -->
+
 </p>
 
 
-evalify contains tools needed to evaluate your face verification models literally in seconds.
+Evaluate your face verification models literally in seconds.
 
 ## Installation
 #### Stable release
@@ -78,9 +91,6 @@ print(experiment.df.roc_auc)
 ## Contribution
 * Contributions are welcomed, and they are greatly appreciated! Every little bit helps, and credit will always be given.
 * Please check [CONTRIBUTING.md](https://github.com/ma7555/evalify/blob/main/CONTRIBUTING.md) for guidelines.
-
-## License
-* [BSD-3-Clause](https://github.com/ma7555/evalify/blob/main/LICENSE)
 
 ## Citation
 * If you use this software, please cite it using the metadata from [CITATION.cff](https://github.com/ma7555/evalify/blob/main/CITATION.cff)
