@@ -756,15 +756,10 @@ Experiment        </code>
 <span class="sd">                - &#39;minimal&#39;: Samples one image from every class with one image of</span>
 <span class="sd">                    all other classes. (N, M) = (1, 1). (Default)</span>
 <span class="sd">                - int: Samples one image from every class with provided number of</span>
-<span class="sd">                    images of every other class. If the provided number is greater than</span>
-<span class="sd">                    the achievable for the class, the maximum possible combinations</span>
-<span class="sd">                    are used.</span>
+<span class="sd">                    images of every other class.</span>
 <span class="sd">                - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                    every other class. If either is greater than the achievable, the</span>
-<span class="sd">                    maximum possible combinations are used.(N, M) can also be</span>
-<span class="sd">                    (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
-<span class="sd">                    between all posibile negative samples. If the dataset is not small this</span>
-<span class="sd">                    will probably result in an extremely large array!.</span>
+<span class="sd">                    maximum possible combinations are used.</span>
 
 <span class="sd">            nsplits:</span>
 <span class="sd">                - &#39;best&#39;: Let the program decide based on available memory such that every</span>
@@ -773,6 +768,16 @@ Experiment        </code>
 <span class="sd">            shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">            return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">                Default: False</span>
+
+<span class="sd">        Rules:</span>
+<span class="sd">            same_class_samples: If the provided number is greater than the achievable</span>
+<span class="sd">                for the class, the maximum possible combinations are used.</span>
+<span class="sd">            different_class_samples: If the provided number is greater than the</span>
+<span class="sd">                achievable for the class, the maximum possible combinations are used.</span>
+<span class="sd">                (N, M) can also be (&#39;full&#39;, &#39;full&#39;) but this will calculate all</span>
+<span class="sd">                possible combinations between all posibile negative samples. If the</span>
+<span class="sd">                dataset is not small this will probably result in an extremely large</span>
+<span class="sd">                array!.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            pandas.DataFrame: A DataFrame representing the experiment results.</span>
@@ -1234,15 +1239,10 @@ a list/tuple containing more than one of them.</p></td>
 <li>'minimal': Samples one image from every class with one image of
     all other classes. (N, M) = (1, 1). (Default)</li>
 <li>int: Samples one image from every class with provided number of
-    images of every other class. If the provided number is greater than
-    the achievable for the class, the maximum possible combinations
-    are used.</li>
+    images of every other class.</li>
 <li>tuple or list: (N, M) Samples N images from every class with M images of
     every other class. If either is greater than the achievable, the
-    maximum possible combinations are used.(N, M) can also be
-    ('full', 'full') but this will calculate all possible combinations
-    between all posibile negative samples. If the dataset is not small this
-    will probably result in an extremely large array!.</li>
+    maximum possible combinations are used.</li>
 </ul></td>
         <td><code>&#39;minimal&#39;</code></td>
       </tr>
@@ -1270,7 +1270,22 @@ Default: False</p></td>
         <td><code>False</code></td>
       </tr>
   </tbody>
-</table>
+</table>      <div class="admonition rules">
+<p class="admonition-title">Rules</p>
+<div class="admonition same_class_samples">
+<p class="admonition-title">If the provided number is greater than the achievable</p>
+<p>for the class, the maximum possible combinations are used.</p>
+</div>
+<div class="admonition different_class_samples">
+<p class="admonition-title">If the provided number is greater than the</p>
+<p>achievable for the class, the maximum possible combinations are used.
+(N, M) can also be ('full', 'full') but this will calculate all
+possible combinations between all posibile negative samples. If the
+dataset is not small this will probably result in an extremely large
+array!.</p>
+</div>
+</div>
+
 <p><strong>Returns:</strong></p>
 <table>
   <thead>
@@ -1339,15 +1354,10 @@ Default: False</p></td>
 <span class="sd">            - &#39;minimal&#39;: Samples one image from every class with one image of</span>
 <span class="sd">                all other classes. (N, M) = (1, 1). (Default)</span>
 <span class="sd">            - int: Samples one image from every class with provided number of</span>
-<span class="sd">                images of every other class. If the provided number is greater than</span>
-<span class="sd">                the achievable for the class, the maximum possible combinations</span>
-<span class="sd">                are used.</span>
+<span class="sd">                images of every other class.</span>
 <span class="sd">            - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                every other class. If either is greater than the achievable, the</span>
-<span class="sd">                maximum possible combinations are used.(N, M) can also be</span>
-<span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
-<span class="sd">                between all posibile negative samples. If the dataset is not small this</span>
-<span class="sd">                will probably result in an extremely large array!.</span>
+<span class="sd">                maximum possible combinations are used.</span>
 
 <span class="sd">        nsplits:</span>
 <span class="sd">            - &#39;best&#39;: Let the program decide based on available memory such that every</span>
@@ -1356,6 +1366,16 @@ Default: False</p></td>
 <span class="sd">        shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">            Default: False</span>
+
+<span class="sd">    Rules:</span>
+<span class="sd">        same_class_samples: If the provided number is greater than the achievable</span>
+<span class="sd">            for the class, the maximum possible combinations are used.</span>
+<span class="sd">        different_class_samples: If the provided number is greater than the</span>
+<span class="sd">            achievable for the class, the maximum possible combinations are used.</span>
+<span class="sd">            (N, M) can also be (&#39;full&#39;, &#39;full&#39;) but this will calculate all</span>
+<span class="sd">            possible combinations between all posibile negative samples. If the</span>
+<span class="sd">            dataset is not small this will probably result in an extremely large</span>
+<span class="sd">            array!.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pandas.DataFrame: A DataFrame representing the experiment results.</span>
