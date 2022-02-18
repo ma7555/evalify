@@ -342,6 +342,47 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stable-release" class="md-nav__link">
+    Stable release
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bleeding-edge" class="md-nav__link">
+    Bleeding edge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     Features
   </a>
@@ -356,8 +397,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#credits" class="md-nav__link">
-    Credits
+  <a href="#license" class="md-nav__link">
+    License
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    Citation
   </a>
   
 </li>
@@ -498,6 +546,47 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stable-release" class="md-nav__link">
+    Stable release
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bleeding-edge" class="md-nav__link">
+    Bleeding edge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    Documentation:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#features" class="md-nav__link">
     Features
   </a>
@@ -512,8 +601,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#credits" class="md-nav__link">
-    Credits
+  <a href="#license" class="md-nav__link">
+    License
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#citation" class="md-nav__link">
+    Citation
   </a>
   
 </li>
@@ -572,20 +668,76 @@
 </p>
 
 <p>evalify contains tools needed to evaluate your face verification models literally in seconds.</p>
+<h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
+<h5 id="stable-release">Stable release<a class="headerlink" href="#stable-release" title="Permanent link">&para;</a></h5>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pip install evalify
+</code></pre></div>
+</td></tr></table>
+<h5 id="bleeding-edge">Bleeding edge<a class="headerlink" href="#bleeding-edge" title="Permanent link">&para;</a></h5>
 <ul>
-<li>Free software: BSD-3-Clause</li>
-<li>Documentation: <a href="https://evalify.readthedocs.io">https://evalify.readthedocs.io</a></li>
+<li>From source
+    <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pip install git+https://github.com/ma7555/evalify.git
+</code></pre></div>
+</td></tr></table></li>
+<li>From TestPyPI
+    <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pip install --index-url https://test.pypi.org/simple/evalify
+</code></pre></div>
+</td></tr></table></li>
+</ul>
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h3>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">evalify</span> <span class="kn">import</span> <span class="n">Experiment</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+<span class="n">nphotos</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">emb_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">nclasses</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nphotos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb_size</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nclasses</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nphotos</span><span class="p">)</span>
+
+<span class="n">experiment</span> <span class="o">=</span> <span class="n">Experiment</span><span class="p">()</span>
+<span class="n">experiment</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">experiment</span><span class="o">.</span><span class="n">get_roc_auc</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">experiment</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">roc_auc</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<h3 id="documentation">Documentation:<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://ma7555.github.io/evalify/">https://ma7555.github.io/evalify/</a></li>
 </ul>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>TODO</li>
+<li>Blazing fast implementation for metrics calculation through optimized einstein sum.</li>
+<li>Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.</li>
+<li>Smart sampling options using direct indexing from pre-calculated arrays.</li>
+<li>Supports common evaluation metrics like cosine similarity, euclidean distance and l2 normalized euclidean distance.</li>
 </ul>
 <h3 id="contribution">Contribution<a class="headerlink" href="#contribution" title="Permanent link">&para;</a></h3>
 <ul>
-<li>TODO</li>
+<li>Contributions are welcomed, and they are greatly appreciated! Every little bit helps, and credit will always be given.</li>
+<li>Please check <a href="https://github.com/ma7555/evalify/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> for guidelines.</li>
 </ul>
-<h3 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">&para;</a></h3>
-<p>This package was created with <a href="https://github.com/audreyr/cookiecutter">Cookiecutter</a> and the <a href="https://github.com/zillionare/cookiecutter-pypackage">zillionare/cookiecutter-pypackage</a> project template.</p>
+<h3 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://github.com/ma7555/evalify/blob/main/LICENSE">BSD-3-Clause</a></li>
+</ul>
+<h3 id="citation">Citation<a class="headerlink" href="#citation" title="Permanent link">&para;</a></h3>
+<ul>
+<li>If you use this software, please cite it using the metadata from <a href="https://github.com/ma7555/evalify/blob/main/CITATION.cff">CITATION.cff</a></li>
+</ul>
 <!-- END INCLUDE -->
 
               
