@@ -30,19 +30,53 @@
 
 evalify contains tools needed to evaluate your face verification models literally in seconds.
 
+## Installation
+#### Stable release
+```bash
+pip install evalify
+```
+#### Bleeding edge
+```bash
+pip install git+https://github.com/ma7555/evalify.git
+```
 
-* Free software: BSD-3-Clause
-* Documentation: <https://ma7555.github.io/evalify/>
+## Usage
+
+```python
+import numpy as np
+from evalify import Experiment
+
+rng = np.random.default_rng()
+nphotos = 500
+emb_size = 32
+nclasses = 10
+X = rng.random((self.nphotos, self.emb_size))
+y = rng.integers(self.nclasses, size=self.nphotos)
+
+experiment = Experiment()
+experiment.run(X, y)
+experiment.get_roc_auc()
+print(experiment.df.roc_auc)
+```
+
+## Documentation: 
+* <https://ma7555.github.io/evalify/>
 
 
 ## Features
 
-* TODO
-
+* Blazing fast implementation for metrics calculation through optimized einstein sum.
+* Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.
+* Smart sampling options using direct indexing from pre-calculated arrays.
+* Supports common evaluation metrics like cosine similarity, euclidean distance and l2 normalized euclidean distance.
 
 ## Contribution
-* TODO
+* Contributions are welcomed, and they are greatly appreciated! Every little bit helps, and credit will always be given.
+* Please check [CONTRIBUTING.md](https://github.com/ma7555/evalify/blob/main/CONTRIBUTING.md) for guidelines.
 
-## Credits
+## License
+* [BSD-3-Clause](https://github.com/ma7555/evalify/blob/main/LICENSE)
 
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [zillionare/cookiecutter-pypackage](https://github.com/zillionare/cookiecutter-pypackage) project template.
+## Citation
+* If you use this software, please cite it using the metadata from [CITATION.cff](https://github.com/ma7555/evalify/blob/main/CITATION.cff)
+

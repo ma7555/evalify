@@ -9,7 +9,7 @@ every batch would consume the roughly the maximum available memory.
   Typical usage example:
 
   experiment = Experiment()
-  experiment.run()
+  experiment.run(X, y)
   print(experiment.df.head())
 """
 import itertools
@@ -294,7 +294,7 @@ class Experiment:
                 "`run_experiment`."
             )
 
-    def roc_auc(self):
+    def get_roc_auc(self):
         self.check_experiment_run()
         self.roc_auc = {}
         for metric in self.metrics:
