@@ -679,8 +679,8 @@ optimized einstein sum. Many operations are dispatched to canonical BLAS, cuBLAS
 or other specialized routines. Extremely large arrays are split into smaller batches,
 every batch would consume the roughly the maximum available memory.</p>
 <p>Typical usage example:</p>
-<p>experiment = Experiment()
-  experiment.run(X, y)</p>
+<p>experiment = Experiment()</p>
+<p>experiment.run(X, y)</p>
 
 
 
