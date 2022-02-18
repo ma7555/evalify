@@ -36,9 +36,14 @@ evalify contains tools needed to evaluate your face verification models literall
 pip install evalify
 ```
 #### Bleeding edge
-```bash
-pip install git+https://github.com/ma7555/evalify.git
-```
+* From source
+    ```bash
+    pip install git+https://github.com/ma7555/evalify.git
+    ```
+* From TestPyPI
+    ```bash
+    pip install --index-url https://test.pypi.org/simple/evalify
+    ```
 
 ## Usage
 
