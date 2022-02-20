@@ -45,7 +45,9 @@ class TestEvalify(unittest.TestCase):
 
     def test_euclidean_distance(self):
         """Test euclidean_distance"""
-        result = metrics.euclidean_distance(self.embs, self.ix, self.iy)
+        result = metrics.metrics_caller.get("euclidean_distance")(
+            self.embs, self.ix, self.iy
+        )
         result_2 = np.array(
             [
                 distance.euclidean(self.embs[ix], self.embs[iy])
@@ -57,7 +59,9 @@ class TestEvalify(unittest.TestCase):
 
     def test_euclidean_distance_l2(self):
         """Test euclidean_distance"""
-        result = metrics.euclidean_distance(self.embs, self.ix, self.iy, self.norms)
+        result = metrics.metrics_caller.get("euclidean_distance_l2")(
+            self.embs, self.ix, self.iy, self.norms
+        )
         result_2 = np.array(
             [
                 distance.euclidean(
@@ -69,6 +73,48 @@ class TestEvalify(unittest.TestCase):
         )
 
         self.assertEqual(result.shape, (len(self.ix),))
+        self.assertTrue(np.allclose(result, result_2))
+
+    def test_minkowski_distance_distance(self):
+        """Test euclidean_distance"""
+        result = metrics.metrics_caller.get("minkowski_distance")(
+            self.embs, self.ix, self.iy, p=3
+        )
+        result_2 = np.array(
+            [
+                distance.minkowski(self.embs[ix], self.embs[iy], p=3)
+                for (ix, iy) in zip(self.ix, self.iy)
+            ]
+        )
+        self.assertEqual(result.shape, (self.size,))
+        self.assertTrue(np.allclose(result, result_2))
+
+    def test_manhattan_distance_distance(self):
+        """Test euclidean_distance"""
+        result = metrics.metrics_caller.get("manhattan_distance")(
+            self.embs, self.ix, self.iy
+        )
+        result_2 = np.array(
+            [
+                distance.cityblock(self.embs[ix], self.embs[iy])
+                for (ix, iy) in zip(self.ix, self.iy)
+            ]
+        )
+        self.assertEqual(result.shape, (self.size,))
+        self.assertTrue(np.allclose(result, result_2))
+
+    def test_chebyshev_distance_distance(self):
+        """Test euclidean_distance"""
+        result = metrics.metrics_caller.get("chebyshev_distance")(
+            self.embs, self.ix, self.iy
+        )
+        result_2 = np.array(
+            [
+                distance.chebyshev(self.embs[ix], self.embs[iy])
+                for (ix, iy) in zip(self.ix, self.iy)
+            ]
+        )
+        self.assertEqual(result.shape, (self.size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_get_norm(self):

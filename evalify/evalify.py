@@ -14,16 +14,23 @@ every batch would consume the roughly the maximum available memory.
   experiment.run(X, y)
   ```
   """
-
 import itertools
+import sys
+from collections import OrderedDict
 from typing import Any, Iterable, Sequence, Union
 
 import numpy as np
 import pandas as pd
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 
-from evalify.metrics import METRICS_NEED_NORM, get_norms, metrics_caller
-from evalify.utils import calculate_best_split_size
+from evalify.metrics import (
+    DISTANCE_TO_SIMILARITY,
+    METRICS_NEED_NORM,
+    METRICS_NEED_ORDER,
+    get_norms,
+    metrics_caller,
+)
+from evalify.utils import _validate_vectors, calculate_best_split_size
 
 T_str_int = Union[str, int]
 
@@ -31,9 +38,10 @@ T_str_int = Union[str, int]
 class Experiment:
     def __init__(self) -> None:
         self.experiment_sucess = False
+        self.cached_predicted_as_similarity = {}
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return self.run(self, *args, **kwds)
+        return self.run(*args, **kwds)
 
     def run(
         self,
@@ -46,17 +54,22 @@ class Experiment:
         shuffle: bool = False,
         seed: int = None,
         return_embeddings: bool = False,
-        *args,
-        **kwds,
+        p: int = 3,
     ):
         """Runs an experiment for face verification
 
         Args:
             X: Embeddings array
             y: Targets for X as integers
-            metrics: metric or metrics used for comparing embeddings distance. Can be either a string
-                from "cosine_similarity", "euclidean_distance", "euclidean_distance_l2" or
-                a list/tuple containing more than one of them.
+            metrics:
+                - 'cosine_similarity'
+                - 'cosine_distance'
+                - 'euclidean_distance'
+                - 'euclidean_distance_l2'
+                - 'minkowski_distance'
+                - 'manhattan_distance'
+                - 'chebyshev_distance'
+                - list/tuple containing more than one of them.
             same_class_samples:
                 - 'full': Samples all possible images within each class to create all
                     all possible positive pairs.
@@ -72,7 +85,6 @@ class Experiment:
                     images of every other class.
                 - tuple or list: (N, M) Samples N images from every class with M images of
                     every other class.
-
             nsplits:
                 - 'best': Let the program decide based on available memory such that every
                     split will fit into the available memory. (Default)
@@ -80,6 +92,10 @@ class Experiment:
             shuffle: Whether to shuffle the returned experiment dataframe. Default: False.
             return_embeddings: Whether to return the embeddings instead of indexes.
                 Default: False
+            p:
+                The order of the norm of the difference :math:`{\\|u-v\\|}_p`.
+                :math:`0 < p < 1`, Only valid with minkowski_distance as a metric.
+                Default = 3
 
         Returns:
             pandas.DataFrame: A DataFrame representing the experiment results.
@@ -101,8 +117,10 @@ class Experiment:
         if isinstance(metrics, str):
             metrics = (metrics,)
 
-        self.arg_checks(metrics, same_class_samples, different_class_samples, nsplits)
-
+        self._validate_args(
+            metrics, same_class_samples, different_class_samples, nsplits, p
+        )
+        X, y = _validate_vectors(X, y)
         all_targets = np.unique(y)
         all_pairs = []
         metric_fns = list(map(metrics_caller.get, metrics))
@@ -161,18 +179,16 @@ class Experiment:
         Xs = np.array_split(self.df.img_a.to_numpy(), nsplits)
         ys = np.array_split(self.df.img_b.to_numpy(), nsplits)
 
+        kwargs = {}
         if any(metric in METRICS_NEED_NORM for metric in metrics):
-            norms = get_norms(X)
+            kwargs["norms"] = get_norms(X)
+        if any(metric in METRICS_NEED_ORDER for metric in metrics):
+            kwargs["p"] = p
 
         for metric, metric_fn in zip(metrics, metric_fns):
-            if metric in METRICS_NEED_NORM:
-                self.df[metric] = np.hstack(
-                    [metric_fn(X, ix, iy, norms) for (ix, iy) in zip(Xs, ys)]
-                )
-            else:
-                self.df[metric] = np.hstack(
-                    [metric_fn(X, ix, iy, None) for (ix, iy) in zip(Xs, ys)]
-                )
+            self.df[metric] = np.hstack(
+                [metric_fn(X, ix, iy, **kwargs) for (ix, iy) in zip(Xs, ys)]
+            )
 
         if return_embeddings:
             self.df["img_a"] = X[self.df.img_a.to_numpy()].tolist()
@@ -182,7 +198,9 @@ class Experiment:
         self.metrics = metrics
         return self.df
 
-    def arg_checks(self, metrics, same_class_samples, different_class_samples, nsplits):
+    def _validate_args(
+        self, metrics, same_class_samples, different_class_samples, nsplits, p
+    ):
         if same_class_samples != "full" and not isinstance(same_class_samples, int):
             raise ValueError(
                 "`same_class_samples` argument must be one of 'full' or an integer "
@@ -225,6 +243,9 @@ class Experiment:
                 f"Received: metric={metrics}"
             )
 
+        if p < 1:
+            raise ValueError(f"`p` must be at least 1. Received: p={p}")
+
     def find_optimal_cutoff(self):
         """Find the optimal cutoff point
         Returns:
@@ -249,19 +270,27 @@ class Experiment:
     def find_thr_at_fpr(self, fpr):
         raise NotImplementedError
 
-    def evaluate_at_threshold(self, threshold: float):
+    def get_binary_prediction(self, metric, threshold):
+        return (
+            self.df[metric].apply(lambda x: 1 if x < threshold else 0)
+            if metric in DISTANCE_TO_SIMILARITY
+            else self.df[metric].apply(lambda x: 1 if x > threshold else 0)
+        )
+
+    def evaluate_at_threshold(self, threshold: float, metric: str):
         """Evaluate performance at specific threshold
         Args:
             threshold: cut-off threshold.
+            metric: metric to use.
 
         Returns:
             dict: containing all evaluation metrics.
         """
         self.metrics_evaluation = {}
-        self.check_experiment_run()
+        self.check_experiment_run(metric)
         for metric in self.metrics:
-            pred = self.df[metric].apply(lambda x: 1 if x > threshold else 0)
-            cm = confusion_matrix(self.df["target"], pred)
+            predicted = self.get_binary_prediction(metric, threshold)
+            cm = confusion_matrix(self.df["target"], predicted)
             tn, fp, fn, tp = cm.ravel()
             TPR = tp / (tp + fn)  # recall / true positive rate
             TNR = tn / (tn + fp)  # true negative rate
@@ -287,21 +316,40 @@ class Experiment:
                 "LR-": LRn,
             }
 
-            self.metrics_evaluation[metric] = evaluation
+            # self.metrics_evaluation[metric] = evaluation
 
-        return self.metrics_evaluation
+        return evaluation
 
-    def check_experiment_run(self):
+    def check_experiment_run(self, metric=None):
+        caller = sys._getframe().f_back.f_code.co_name
         if not self.experiment_sucess:
             raise NotImplementedError(
-                "`evaluate_at_threshold` function can only be run after running "
-                "`run_experiment`."
+                f"{caller} function can only be run after running " "`run_experiment`."
+            )
+        if metric is not None and metric not in self.metrics:
+            raise ValueError(
+                f"`{caller}` function was can only be called with `metric` from "
+                f"{self.metrics} which were used while running the experiment"
             )
 
     def get_roc_auc(self):
         self.check_experiment_run()
         self.roc_auc = {}
         for metric in self.metrics:
-            fpr, tpr, thresholds = roc_curve(self.df["target"], self.df[metric])
+            predicted = self.predicted_as_similarity(metric)
+            fpr, tpr, thresholds = roc_curve(self.df["target"], predicted)
             self.roc_auc[metric] = auc(fpr, tpr)
+        self.roc_auc = OrderedDict(
+            sorted(self.roc_auc.items(), key=lambda x: x[1], reverse=True)
+        )
         return self.roc_auc
+
+    def predicted_as_similarity(self, metric):
+        predicted = self.df[metric]
+        if metric in DISTANCE_TO_SIMILARITY:
+            predicted = (
+                self.cached_predicted_as_similarity[metric]
+                if metric in self.cached_predicted_as_similarity
+                else DISTANCE_TO_SIMILARITY.get(metric)(predicted)
+            )
+        return predicted

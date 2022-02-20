@@ -5,6 +5,16 @@ import psutil
 GB_TO_BYTE = 1024**3
 
 
+def _validate_vectors(X, y, dtype=None):
+    X = np.atleast_2d(X).astype(np.float32)
+    y = np.atleast_1d(y).astype(np.int32)
+    if X.ndim != 2:
+        raise ValueError("Embeddings vector should be 2-D.")
+    if y.ndim != 1:
+        raise ValueError("Target vector should be 1-D.")
+    return X, y
+
+
 def _calc_available_memory():
     """Calculate available memory in system"""
     mem = psutil.virtual_memory()
