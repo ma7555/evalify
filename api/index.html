@@ -735,7 +735,7 @@ Experiment        </code>
 
 
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1128,7 +1128,7 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">    Args:</span>
@@ -1209,7 +1209,7 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">    Returns:</span>
@@ -1401,7 +1401,7 @@ this will probably result in an extremely large array!.</p>
 </div>
 
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1676,7 +1676,7 @@ split and calculations happens over large data chunks very quickly.</p>
       <p>Calculate best number of splits.</p>
 
         <details class="quote">
-          <summary>Source code in <code>evalify/utils.py</code></summary>
+          <summary>Source code in <code>evalify\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate best number of splits.&quot;&quot;&quot;</span>
     <span class="n">available_mem</span> <span class="o">=</span> <span class="n">_calc_available_memory</span><span class="p">()</span>
