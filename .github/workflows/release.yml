@@ -6,9 +6,9 @@ name: release & publish workflow
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branch: release
+    branches: [release]
     tags:
-      - "v*"
+      - "v*.*.*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,18 +29,22 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: generate change log
-        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issues: true
-          issuesWoLabels: true
-          pullRequests: true
-          prWoLabels: true
-          unreleased: true
-          addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
-          output: CHANGELOG.md
-
+      # - name: generate change log
+      #   uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     issues: true
+      #     issuesWoLabels: true
+      #     pullRequests: true
+      #     prWoLabels: true
+      #     unreleased: true
+      #     addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
+      #     output: CHANGELOG.md
+      - name: "Build Changelog"
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@{latest-release}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-versions }}
@@ -75,7 +79,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          body_path: ./CHANGELOG.md
+          body: ${{steps.build_changelog.outputs.changelog}}
+          # body_path: ./CHANGELOG.md
           files: dist/*.whl
           draft: false
           prerelease: false
