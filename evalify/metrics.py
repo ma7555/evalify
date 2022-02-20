@@ -24,6 +24,11 @@ def euclidean_distance(embs, ix, iy, **kwargs):
     return get_norms(X)
 
 
+def euclidean_distance(embs, ix, iy, **kwargs):
+    X = embs[ix] - embs[iy]
+    return get_norms(X)
+
+
 def euclidean_distance_l2(embs, ix, iy, norms, **kwargs):
     X = embs[ix] / norms[ix].reshape(-1, 1) - embs[iy] / norms[iy].reshape(-1, 1)
     return get_norms(X)

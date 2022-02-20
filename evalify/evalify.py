@@ -324,8 +324,7 @@ class Experiment:
         caller = sys._getframe().f_back.f_code.co_name
         if not self.experiment_sucess:
             raise NotImplementedError(
-                f"`{caller}` function can only be run after running "
-                "`run_experiment`."
+                f"{caller} function can only be run after running " "`run_experiment`."
             )
         if metric is not None and metric not in self.metrics:
             raise ValueError(
