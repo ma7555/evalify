@@ -13,6 +13,11 @@
         alt = "License">
 </a>
 
+<a href="https://www.python.org/downloads/">
+    <img src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10-blue.svg"
+        alt = "Python 3.7 | 3.8 | 3.9">
+</a>
+
 <a href="https://pypi.python.org/pypi/evalify">
     <img src="https://img.shields.io/pypi/v/evalify.svg"
         alt = "Release Status">
