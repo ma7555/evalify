@@ -1,9 +1,12 @@
 """ File LFW.npz contains sample embeddings and targets from LFW dataset"""
 
-import numpy as np
-from evalify import Experiment
+import os
+import pathlib
 import time
-import os, pathlib
+
+import numpy as np
+
+from evalify import Experiment
 
 lfw_npz = os.path.join(pathlib.Path(__file__).parent, "LFW.npz")
 X_y_array = np.load(lfw_npz)
