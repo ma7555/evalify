@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-versions }}
       - name: echo_changelog
-        run: echo ${{steps.build_changelog.outputs.changelog}}
+      - run: echo ${{steps.build_changelog.outputs.changelog}}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
