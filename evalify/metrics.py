@@ -3,8 +3,6 @@
 Optimized calculations using einstein sum. Embeddings array and norm arrays are indexed with every
 split and calculations happens over large data chunks very quickly.
 """
-from typing import Iterable
-
 import numpy as np
 
 

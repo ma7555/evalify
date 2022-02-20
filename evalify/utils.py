@@ -5,9 +5,9 @@ import psutil
 GB_TO_BYTE = 1024**3
 
 
-def _validate_vectors(X, y, dtype=None):
-    X = np.atleast_2d(X).astype(np.float32)
-    y = np.atleast_1d(y).astype(np.int32)
+def _validate_vectors(X, y):
+    X = np.asarray(X, dtype=np.float32)
+    y = np.asarray(y, dtype=np.int32)
     if X.ndim != 2:
         raise ValueError("Embeddings vector should be 2-D.")
     if y.ndim != 1:

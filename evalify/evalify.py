@@ -17,7 +17,7 @@ every batch would consume the roughly the maximum available memory.
 import itertools
 import sys
 from collections import OrderedDict
-from typing import Any, Iterable, Sequence, Union
+from typing import Any, Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -172,7 +172,7 @@ class Experiment:
             data=all_pairs, columns=["img_a", "img_b", "target_a", "target_b", "target"]
         )
         if shuffle:
-            self.df = self.df.frac(1)
+            self.df = self.df.sample(frac=1, random_state=seed)
         if nsplits == "best":
             nsplits = calculate_best_split_size(X, len(self.df))
 
@@ -300,8 +300,8 @@ class Experiment:
             FNR = 1 - TPR  # false negative rate
             FDR = 1 - PPV  # false discovery rate
             FOR = 1 - NPV  # false omission rate
-            LRp = TPR / FPR  # positive likelihood ratio (LR+)
-            LRn = FNR / TNR  # negative likelihood ratio (LR+)
+            # LRp = TPR / FPR  # positive likelihood ratio (LR+)
+            # LRn = FNR / TNR  # negative likelihood ratio (LR+)
 
             evaluation = {
                 "TPR": TPR,
@@ -312,8 +312,8 @@ class Experiment:
                 "FNR": FNR,
                 "FDR": FDR,
                 "FOR": FOR,
-                "LR+": LRp,
-                "LR-": LRn,
+                # "LR+": LRp,
+                # "LR-": LRn,
             }
 
             # self.metrics_evaluation[metric] = evaluation
@@ -324,7 +324,8 @@ class Experiment:
         caller = sys._getframe().f_back.f_code.co_name
         if not self.experiment_sucess:
             raise NotImplementedError(
-                f"{caller} function can only be run after running " "`run_experiment`."
+                f"`{caller}` function can only be run after running "
+                "`run_experiment`."
             )
         if metric is not None and metric not in self.metrics:
             raise ValueError(

@@ -1,20 +1,15 @@
 #!/usr/bin/env python
 
 """Tests for `evalify` package."""
-import os
-import pathlib
-import sys
-from scipy.spatial import distance
-
-sys.path.append(os.path.join(pathlib.Path(__file__).parent.parent, "evalify"))
 import unittest
 
 import numpy as np
+from scipy.spatial import distance
 
 from evalify import metrics
 
 
-class TestEvalify(unittest.TestCase):
+class TestMetrics(unittest.TestCase):
     """Tests for `evalify` package."""
 
     def setUp(self):
@@ -22,11 +17,11 @@ class TestEvalify(unittest.TestCase):
         rng = np.random.default_rng(555)
         self.nphotos = 500
         self.emb_size = 8
-        self.size = 100
+        self.slice_size = 100
         self.embs = rng.random((self.nphotos, self.emb_size), dtype=np.float32)
         self.norms = np.linalg.norm(self.embs, axis=1)
-        self.ix = rng.integers(self.nphotos, size=self.size)
-        self.iy = rng.integers(self.nphotos, size=self.size)
+        self.ix = rng.integers(self.nphotos, size=self.slice_size)
+        self.iy = rng.integers(self.nphotos, size=self.slice_size)
 
     def tearDown(self):
         """Tear down test fixtures, if any."""
@@ -40,7 +35,7 @@ class TestEvalify(unittest.TestCase):
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )
-        self.assertEqual(result.shape, (self.size,))
+        self.assertEqual(result.shape, (self.slice_size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_euclidean_distance(self):
@@ -54,7 +49,7 @@ class TestEvalify(unittest.TestCase):
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )
-        self.assertEqual(result.shape, (self.size,))
+        self.assertEqual(result.shape, (self.slice_size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_euclidean_distance_l2(self):
@@ -86,7 +81,7 @@ class TestEvalify(unittest.TestCase):
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )
-        self.assertEqual(result.shape, (self.size,))
+        self.assertEqual(result.shape, (self.slice_size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_manhattan_distance_distance(self):
@@ -100,7 +95,7 @@ class TestEvalify(unittest.TestCase):
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )
-        self.assertEqual(result.shape, (self.size,))
+        self.assertEqual(result.shape, (self.slice_size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_chebyshev_distance_distance(self):
@@ -114,7 +109,7 @@ class TestEvalify(unittest.TestCase):
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )
-        self.assertEqual(result.shape, (self.size,))
+        self.assertEqual(result.shape, (self.slice_size,))
         self.assertTrue(np.allclose(result, result_2))
 
     def test_get_norm(self):
