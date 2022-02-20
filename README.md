@@ -12,38 +12,28 @@
     <img src="https://img.shields.io/github/license/ma7555/evalify"
         alt = "License">
 </a>
-
 <a href="https://doi.org/10.5281/zenodo.6181723"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.6181723.svg" alt="DOI"></a>
-
 <a href="https://www.python.org/downloads/">
     <img src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10-blue.svg"
         alt = "Python 3.7 | 3.8 | 3.9 | 3">
 </a>
-
 <a href="https://pypi.python.org/pypi/evalify">
     <img src="https://img.shields.io/pypi/v/evalify.svg"
         alt = "Release Status">
 </a>
-
 <a href="https://github.com/ma7555/evalify/actions">
     <img src="https://github.com/ma7555/evalify/actions/workflows/dev.yml/badge.svg?branch=main" alt="CI Status">
 </a>
-
 <a href="https://ma7555.github.io/evalify/">
     <img src="https://img.shields.io/website/https/ma7555.github.io/evalify/index.html.svg?label=docs&down_message=unavailable&up_message=available" alt="Documentation Status">
 </a>
-
 <a href="https://github.com/psf/black">
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
 </a>
-
 <a href="https://codecov.io/gh/ma7555/evalify">
   <img src="https://codecov.io/gh/ma7555/evalify/branch/main/graph/badge.svg" />
 </a>
-
-<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ma7555/evalify/total">
-
-<!-- <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/ma7555/evalify"> -->
+<a href="https://github.com/ma7555/evalify/releases"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ma7555/evalify/total">
 
 </p>
 
