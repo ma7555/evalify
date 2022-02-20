@@ -9,7 +9,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
     
     
       
@@ -17,7 +17,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.50e68009.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.e8d9bf0c.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.e6a45f82.min.css">
@@ -656,6 +656,7 @@
 </a>
 
 
+
   <h1>modules</h1>
 
 <div class="doc doc-object doc-module">
@@ -734,13 +735,14 @@ Experiment        </code>
 
 
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_predicted_as_similarity</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -753,17 +755,22 @@ Experiment        </code>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            X: Embeddings array</span>
 <span class="sd">            y: Targets for X as integers</span>
-<span class="sd">            metrics: metric or metrics used for comparing embeddings distance. Can be either a string</span>
-<span class="sd">                from &quot;cosine_similarity&quot;, &quot;euclidean_distance&quot;, &quot;euclidean_distance_l2&quot; or</span>
-<span class="sd">                a list/tuple containing more than one of them.</span>
+<span class="sd">            metrics:</span>
+<span class="sd">                - &#39;cosine_similarity&#39;</span>
+<span class="sd">                - &#39;cosine_distance&#39;</span>
+<span class="sd">                - &#39;euclidean_distance&#39;</span>
+<span class="sd">                - &#39;euclidean_distance_l2&#39;</span>
+<span class="sd">                - &#39;minkowski_distance&#39;</span>
+<span class="sd">                - &#39;manhattan_distance&#39;</span>
+<span class="sd">                - &#39;chebyshev_distance&#39;</span>
+<span class="sd">                - list/tuple containing more than one of them.</span>
 <span class="sd">            same_class_samples:</span>
 <span class="sd">                - &#39;full&#39;: Samples all possible images within each class to create all</span>
 <span class="sd">                    all possible positive pairs.</span>
@@ -779,7 +786,6 @@ Experiment        </code>
 <span class="sd">                    images of every other class.</span>
 <span class="sd">                - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                    every other class.</span>
-
 <span class="sd">            nsplits:</span>
 <span class="sd">                - &#39;best&#39;: Let the program decide based on available memory such that every</span>
 <span class="sd">                    split will fit into the available memory. (Default)</span>
@@ -787,6 +793,10 @@ Experiment        </code>
 <span class="sd">            shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">            return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">                Default: False</span>
+<span class="sd">            p:</span>
+<span class="sd">                The order of the norm of the difference :math:`{\\|u-v\\|}_p`.</span>
+<span class="sd">                :math:`0 &lt; p &lt; 1`, Only valid with minkowski_distance as a metric.</span>
+<span class="sd">                Default = 3</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            pandas.DataFrame: A DataFrame representing the experiment results.</span>
@@ -808,8 +818,10 @@ Experiment        </code>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">arg_checks</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_args</span><span class="p">(</span>
+            <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+        <span class="p">)</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_validate_vectors</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">all_pairs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metric_fns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
@@ -861,25 +873,23 @@ Experiment        </code>
             <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">frac</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
 
         <span class="n">Xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
         <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
 
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
-            <span class="n">norms</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_ORDER</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 
         <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">norms</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
-                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_embeddings</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -889,7 +899,9 @@ Experiment        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
 
-    <span class="k">def</span> <span class="nf">arg_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_args</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="n">same_class_samples</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;`same_class_samples` argument must be one of &#39;full&#39; or an integer &quot;</span>
@@ -932,6 +944,9 @@ Experiment        </code>
                 <span class="sa">f</span><span class="s2">&quot;Received: metric=</span><span class="si">{</span><span class="n">metrics</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`p` must be at least 1. Received: p=</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">        Returns:</span>
@@ -956,19 +971,27 @@ Experiment        </code>
     <span class="k">def</span> <span class="nf">find_thr_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_binary_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">        Args:</span>
 <span class="sd">            threshold: cut-off threshold.</span>
+<span class="sd">            metric: metric to use.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: containing all evaluation metrics.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-            <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">pred</span><span class="p">)</span>
+            <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary_prediction</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+            <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">)</span>
             <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
             <span class="n">TPR</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>  <span class="c1"># recall / true positive rate</span>
             <span class="n">TNR</span> <span class="o">=</span> <span class="n">tn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>  <span class="c1"># true negative rate</span>
@@ -978,8 +1001,8 @@ Experiment        </code>
             <span class="n">FNR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">TPR</span>  <span class="c1"># false negative rate</span>
             <span class="n">FDR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">PPV</span>  <span class="c1"># false discovery rate</span>
             <span class="n">FOR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">NPV</span>  <span class="c1"># false omission rate</span>
-            <span class="n">LRp</span> <span class="o">=</span> <span class="n">TPR</span> <span class="o">/</span> <span class="n">FPR</span>  <span class="c1"># positive likelihood ratio (LR+)</span>
-            <span class="n">LRn</span> <span class="o">=</span> <span class="n">FNR</span> <span class="o">/</span> <span class="n">TNR</span>  <span class="c1"># negative likelihood ratio (LR+)</span>
+            <span class="c1"># LRp = TPR / FPR  # positive likelihood ratio (LR+)</span>
+            <span class="c1"># LRn = FNR / TNR  # negative likelihood ratio (LR+)</span>
 
             <span class="n">evaluation</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;TPR&quot;</span><span class="p">:</span> <span class="n">TPR</span><span class="p">,</span>
@@ -990,28 +1013,48 @@ Experiment        </code>
                 <span class="s2">&quot;FNR&quot;</span><span class="p">:</span> <span class="n">FNR</span><span class="p">,</span>
                 <span class="s2">&quot;FDR&quot;</span><span class="p">:</span> <span class="n">FDR</span><span class="p">,</span>
                 <span class="s2">&quot;FOR&quot;</span><span class="p">:</span> <span class="n">FOR</span><span class="p">,</span>
-                <span class="s2">&quot;LR+&quot;</span><span class="p">:</span> <span class="n">LRp</span><span class="p">,</span>
-                <span class="s2">&quot;LR-&quot;</span><span class="p">:</span> <span class="n">LRn</span><span class="p">,</span>
+                <span class="c1"># &quot;LR+&quot;: LRp,</span>
+                <span class="c1"># &quot;LR-&quot;: LRn,</span>
             <span class="p">}</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluation</span>
+            <span class="c1"># self.metrics_evaluation[metric] = evaluation</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span>
+        <span class="k">return</span> <span class="n">evaluation</span>
 
-    <span class="k">def</span> <span class="nf">check_experiment_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">check_experiment_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">caller</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;`evaluate_at_threshold` function can only be run after running &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">caller</span><span class="si">}</span><span class="s2">` function can only be run after running &quot;</span>
                 <span class="s2">&quot;`run_experiment`.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">caller</span><span class="si">}</span><span class="s2">` function was can only be called with `metric` from &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="si">}</span><span class="s2"> which were used while running the experiment&quot;</span>
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-            <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">])</span>
+            <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+            <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span>
+
+    <span class="k">def</span> <span class="nf">predicted_as_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span><span class="p">:</span>
+            <span class="n">predicted</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cached_predicted_as_similarity</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_predicted_as_similarity</span>
+                <span class="k">else</span> <span class="n">DISTANCE_TO_SIMILARITY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)(</span><span class="n">predicted</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">predicted</span>
 </code></pre></div>
         </details>
 
@@ -1030,13 +1073,12 @@ Experiment        </code>
 
 
 
-
   <div class="doc doc-object doc-method">
 
 
 
 <h4 id="evalify.evalify.Experiment.evaluate_at_threshold" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></code>
 
 
 <a href="#evalify.evalify.Experiment.evaluate_at_threshold" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1062,6 +1104,12 @@ Experiment        </code>
         <td><p>cut-off threshold.</p></td>
         <td><em>required</em></td>
       </tr>
+      <tr>
+        <td><code>metric</code></td>
+        <td><code>str</code></td>
+        <td><p>metric to use.</p></td>
+        <td><em>required</em></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -1080,20 +1128,21 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">    Args:</span>
 <span class="sd">        threshold: cut-off threshold.</span>
+<span class="sd">        metric: metric to use.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: containing all evaluation metrics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">pred</span><span class="p">)</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_binary_prediction</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">)</span>
         <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tp</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">TPR</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>  <span class="c1"># recall / true positive rate</span>
         <span class="n">TNR</span> <span class="o">=</span> <span class="n">tn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>  <span class="c1"># true negative rate</span>
@@ -1103,8 +1152,8 @@ Experiment        </code>
         <span class="n">FNR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">TPR</span>  <span class="c1"># false negative rate</span>
         <span class="n">FDR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">PPV</span>  <span class="c1"># false discovery rate</span>
         <span class="n">FOR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">NPV</span>  <span class="c1"># false omission rate</span>
-        <span class="n">LRp</span> <span class="o">=</span> <span class="n">TPR</span> <span class="o">/</span> <span class="n">FPR</span>  <span class="c1"># positive likelihood ratio (LR+)</span>
-        <span class="n">LRn</span> <span class="o">=</span> <span class="n">FNR</span> <span class="o">/</span> <span class="n">TNR</span>  <span class="c1"># negative likelihood ratio (LR+)</span>
+        <span class="c1"># LRp = TPR / FPR  # positive likelihood ratio (LR+)</span>
+        <span class="c1"># LRn = FNR / TNR  # negative likelihood ratio (LR+)</span>
 
         <span class="n">evaluation</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;TPR&quot;</span><span class="p">:</span> <span class="n">TPR</span><span class="p">,</span>
@@ -1115,13 +1164,13 @@ Experiment        </code>
             <span class="s2">&quot;FNR&quot;</span><span class="p">:</span> <span class="n">FNR</span><span class="p">,</span>
             <span class="s2">&quot;FDR&quot;</span><span class="p">:</span> <span class="n">FDR</span><span class="p">,</span>
             <span class="s2">&quot;FOR&quot;</span><span class="p">:</span> <span class="n">FOR</span><span class="p">,</span>
-            <span class="s2">&quot;LR+&quot;</span><span class="p">:</span> <span class="n">LRp</span><span class="p">,</span>
-            <span class="s2">&quot;LR-&quot;</span><span class="p">:</span> <span class="n">LRn</span><span class="p">,</span>
+            <span class="c1"># &quot;LR+&quot;: LRp,</span>
+            <span class="c1"># &quot;LR-&quot;: LRn,</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluation</span>
+        <span class="c1"># self.metrics_evaluation[metric] = evaluation</span>
 
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span>
+    <span class="k">return</span> <span class="n">evaluation</span>
 </code></pre></div>
         </details>
     </div>
@@ -1160,7 +1209,7 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">    Returns:</span>
@@ -1191,12 +1240,14 @@ Experiment        </code>
 
 
 
+
+
   <div class="doc doc-object doc-method">
 
 
 
 <h4 id="evalify.evalify.Experiment.run" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="s1">&#39;cosine_similarity&#39;</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="o">=</span><span class="s1">&#39;minimal&#39;</span><span class="p">,</span> <span class="n">nsplits</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_embeddings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="s1">&#39;cosine_similarity&#39;</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="o">=</span><span class="s1">&#39;minimal&#39;</span><span class="p">,</span> <span class="n">nsplits</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_embeddings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
 
 
 <a href="#evalify.evalify.Experiment.run" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1231,9 +1282,16 @@ Experiment        </code>
       <tr>
         <td><code>metrics</code></td>
         <td><code>Union[str, Sequence[str]]</code></td>
-        <td><p>metric or metrics used for comparing embeddings distance. Can be either a string
-from "cosine_similarity", "euclidean_distance", "euclidean_distance_l2" or
-a list/tuple containing more than one of them.</p></td>
+        <td><ul>
+<li>'cosine_similarity'</li>
+<li>'cosine_distance'</li>
+<li>'euclidean_distance'</li>
+<li>'euclidean_distance_l2'</li>
+<li>'minkowski_distance'</li>
+<li>'manhattan_distance'</li>
+<li>'chebyshev_distance'</li>
+<li>list/tuple containing more than one of them.</li>
+</ul></td>
         <td><code>&#39;cosine_similarity&#39;</code></td>
       </tr>
       <tr>
@@ -1286,6 +1344,14 @@ a list/tuple containing more than one of them.</p></td>
 Default: False</p></td>
         <td><code>False</code></td>
       </tr>
+      <tr>
+        <td><code>p</code></td>
+        <td><code>int</code></td>
+        <td><p>The order of the norm of the difference :math:<code>{\|u-v\|}_p</code>.
+:math:<code>0 &lt; p &lt; 1</code>, Only valid with minkowski_distance as a metric.
+Default = 3</p></td>
+        <td><code>3</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -1335,7 +1401,7 @@ this will probably result in an extremely large array!.</p>
 </div>
 
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1347,17 +1413,22 @@ this will probably result in an extremely large array!.</p>
     <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwds</span><span class="p">,</span>
+    <span class="n">p</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        X: Embeddings array</span>
 <span class="sd">        y: Targets for X as integers</span>
-<span class="sd">        metrics: metric or metrics used for comparing embeddings distance. Can be either a string</span>
-<span class="sd">            from &quot;cosine_similarity&quot;, &quot;euclidean_distance&quot;, &quot;euclidean_distance_l2&quot; or</span>
-<span class="sd">            a list/tuple containing more than one of them.</span>
+<span class="sd">        metrics:</span>
+<span class="sd">            - &#39;cosine_similarity&#39;</span>
+<span class="sd">            - &#39;cosine_distance&#39;</span>
+<span class="sd">            - &#39;euclidean_distance&#39;</span>
+<span class="sd">            - &#39;euclidean_distance_l2&#39;</span>
+<span class="sd">            - &#39;minkowski_distance&#39;</span>
+<span class="sd">            - &#39;manhattan_distance&#39;</span>
+<span class="sd">            - &#39;chebyshev_distance&#39;</span>
+<span class="sd">            - list/tuple containing more than one of them.</span>
 <span class="sd">        same_class_samples:</span>
 <span class="sd">            - &#39;full&#39;: Samples all possible images within each class to create all</span>
 <span class="sd">                all possible positive pairs.</span>
@@ -1373,7 +1444,6 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">                images of every other class.</span>
 <span class="sd">            - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                every other class.</span>
-
 <span class="sd">        nsplits:</span>
 <span class="sd">            - &#39;best&#39;: Let the program decide based on available memory such that every</span>
 <span class="sd">                split will fit into the available memory. (Default)</span>
@@ -1381,6 +1451,10 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">        shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">            Default: False</span>
+<span class="sd">        p:</span>
+<span class="sd">            The order of the norm of the difference :math:`{\\|u-v\\|}_p`.</span>
+<span class="sd">            :math:`0 &lt; p &lt; 1`, Only valid with minkowski_distance as a metric.</span>
+<span class="sd">            Default = 3</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pandas.DataFrame: A DataFrame representing the experiment results.</span>
@@ -1402,8 +1476,10 @@ this will probably result in an extremely large array!.</p>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">arg_checks</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
-
+    <span class="bp">self</span><span class="o">.</span><span class="n">_validate_args</span><span class="p">(</span>
+        <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+    <span class="p">)</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_validate_vectors</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">all_pairs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">metric_fns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
@@ -1455,25 +1531,23 @@ this will probably result in an extremely large array!.</p>
         <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">frac</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
         <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
 
     <span class="n">Xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
     <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
 
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
-        <span class="n">norms</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_ORDER</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 
     <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">norms</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
-            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">return_embeddings</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -1549,6 +1623,9 @@ split and calculations happens over large data chunks very quickly.</p>
 
 
 
+
+
+
   </div>
 
     </div>
@@ -1599,7 +1676,7 @@ split and calculations happens over large data chunks very quickly.</p>
       <p>Calculate best number of splits.</p>
 
         <details class="quote">
-          <summary>Source code in <code>evalify\utils.py</code></summary>
+          <summary>Source code in <code>evalify/utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate best number of splits.&quot;&quot;&quot;</span>
     <span class="n">available_mem</span> <span class="o">=</span> <span class="n">_calc_available_memory</span><span class="p">()</span>
@@ -1691,14 +1768,8 @@ split and calculations happens over large data chunks very quickly.</p>
   
     
     
-    <a href="http://www.jieyu.ai" target="_blank" rel="noopener" title="Tweet" class="md-social__link">
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
-    </a>
-  
-    
-    
-    <a href="http://www.jieyu.ai" target="_blank" rel="noopener" title="Facebook" class="md-social__link">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg>
     </a>
   
     
@@ -1723,10 +1794,10 @@ split and calculations happens over large data chunks very quickly.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.indexes", "navigation.tabs", "navigation.instant", "navigation.tabs.sticky"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.indexes", "navigation.tabs", "navigation.instant", "navigation.tabs.sticky"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      <script src="../assets/javascripts/bundle.8aa65030.min.js"></script>
       
     
   </body>
