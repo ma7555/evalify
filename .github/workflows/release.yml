@@ -8,7 +8,7 @@ on:
   push:
     branches: [release]
     tags:
-      - "v*.*.*"
+      - "v*.1.*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -27,28 +27,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checks-out
       - uses: actions/checkout@v2
-
-      # - name: generate change log
-      #   uses: heinrichreimer/github-changelog-generator-action@v2.1.1
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     issues: true
-      #     issuesWoLabels: true
-      #     pullRequests: true
-      #     prWoLabels: true
-      #     unreleased: true
-      #     addSections: '{"documentation":{"prefix":"**Documentation:**","labels":["documentation"]}}'
-      #     output: CHANGELOG.md
       - name: "Build Changelog"
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@{latest-release}
+        uses: mikepenz/release-changelog-builder-action@v2.9.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-versions }}
-
+      - name: echo_changelog
+        run: echo ${{steps.build_changelog.outputs.changelog}}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
