@@ -34,6 +34,7 @@
   <img src="https://codecov.io/gh/ma7555/evalify/branch/main/graph/badge.svg" />
 </a>
 <a href="https://github.com/ma7555/evalify/releases"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ma7555/evalify/total">
+</a>
 
 </p>
 
