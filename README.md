@@ -99,4 +99,3 @@ print(experiment.df.roc_auc)
 
 ## Citation
 * If you use this software, please cite it using the metadata from [CITATION.cff](https://github.com/ma7555/evalify/blob/main/CITATION.cff)
-
