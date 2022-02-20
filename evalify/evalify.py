@@ -93,8 +93,7 @@ class Experiment:
             return_embeddings: Whether to return the embeddings instead of indexes.
                 Default: False
             p:
-                The order of the norm of the difference :math:`{\\|u-v\\|}_p`.
-                :math:`0 < p < 1`, Only valid with minkowski_distance as a metric.
+                The order of the norm of the difference. Should be `0 < p < 1`, Only valid with minkowski_distance as a metric.
                 Default = 3
 
         Returns:

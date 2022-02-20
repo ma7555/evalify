@@ -53,7 +53,7 @@ pip install evalify
     ```
 * From TestPyPI
     ```bash
-    pip install --index-url https://test.pypi.org/simple/evalify
+    pip install --index-url https://test.pypi.org/simple/ evalify
     ```
 
 ## Usage
@@ -74,17 +74,27 @@ experiment.run(X, y)
 experiment.get_roc_auc()
 print(experiment.df.roc_auc)
 ```
-
 ## Documentation: 
 * <https://ma7555.github.io/evalify/>
 
 
 ## Features
 
-* Blazing fast implementation for metrics calculation through optimized einstein sum.
+* Blazing fast implementation for metrics calculation through optimized einstein sum and vectorized calculations.
 * Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.
-* Smart sampling options using direct indexing from pre-calculated arrays.
-* Supports common evaluation metrics like cosine similarity, euclidean distance and l2 normalized euclidean distance.
+* Smart sampling options using direct indexing from pre-calculated arrays with an option to have total control over sampling strategy and sampling numbers.
+* Supports most evaluation metrics:
+    - cosine_similarity
+    - cosine_distance
+    - euclidean_distance
+    - euclidean_distance_l2
+    - minkowski_distance
+    - manhattan_distance
+    - chebyshev_distance
+* Computation time for 4 metrics 4.2 million samples experiment is **24 seconds vs 51 minutes** if looping using `scipy.spatial.distance` implemntations.
+
+## TODO
+* Safer memory allocation. I did not have issues but if you ran out of memory please manually increase number of splits with `nsplits` argument.
 
 ## Contribution
 * Contributions are welcomed, and they are greatly appreciated! Every little bit helps, and credit will always be given.
