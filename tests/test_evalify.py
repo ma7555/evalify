@@ -12,6 +12,7 @@ import unittest
 import numpy as np
 
 from evalify import evalify
+from evalify.metrics import metrics_caller
 
 
 class TestEvalify(unittest.TestCase):
@@ -40,8 +41,20 @@ class TestEvalify(unittest.TestCase):
     def test_run_cosine_similarity(self):
         """Test run with cosine_similarity"""
         experiment = evalify.Experiment()
-        df = experiment.run(self.embs, self.targets, metrics="cosine_similarity")
+        df = experiment.run(self.embs, self.targets)
         self.assertLessEqual(df.cosine_similarity.max(), 1)
+
+    def test_run_all_metrics_separated(self):
+        experiment = evalify.Experiment()
+        for metric in metrics_caller.keys():
+            df = experiment.run(self.embs, self.targets, metrics=metric)
+            self.assertTrue(metric in df.columns)
+
+    def test_run_all_metrics_combined(self):
+        experiment = evalify.Experiment()
+        metrics = set(metrics_caller.keys())
+        df = experiment.run(self.embs, self.targets, metrics=metrics)
+        self.assertTrue(metrics.issubset(df.columns))
 
     def test_run_full_class_samples(self):
         """Test run with return_embeddings"""
@@ -89,9 +102,9 @@ class TestEvalify(unittest.TestCase):
             self.targets,
             metrics=metrics,
         )
-        evaluations = experiment.evaluate_at_threshold(0.5)
-        self.assertEqual(len(evaluations), len(metrics))
-        self.assertEqual(len(evaluations[metrics[0]]), 10)
+        evaluations = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
+        # self.assertEqual(len(evaluations), len(metrics))
+        self.assertEqual(len(evaluations), 10)
 
     def test_run_errors(self):
         """Test run errors"""

@@ -109,3 +109,4 @@ site/
 
 # logo
 logo/
+poetry.lock
