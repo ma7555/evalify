@@ -26,11 +26,16 @@ experiment.run(
     ),
     same_class_samples="full",
     different_class_samples=("full", "full"),
+    nsplits=400,
 )
+
+print(
+    f"Metrics calculations executed in {time.time()-start_time:.2f} seconds for processes"
+)
+
 print(
     f"Total available embeddings {len(y)} resulted in {len(experiment.df)} "
     "samples for the experiment."
 )
-print(f"Metrics calculations executed in {time.time()-start_time:.2f} seconds")
-print("ROC AUC:")
-print(experiment.get_roc_auc())
+# print("ROC AUC:")
+# print(experiment.get_roc_auc())

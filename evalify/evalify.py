@@ -31,6 +31,7 @@ from evalify.metrics import (
     metrics_caller,
 )
 from evalify.utils import _validate_vectors, calculate_best_split_size
+from joblib import Parallel, delayed
 
 T_str_int = Union[str, int]
 
@@ -55,6 +56,7 @@ class Experiment:
         seed: int = None,
         return_embeddings: bool = False,
         p: int = 3,
+        n_jobs: int = 2,
     ):
         """Runs an experiment for face verification
 
@@ -87,7 +89,7 @@ class Experiment:
                     every other class.
             nsplits:
                 - 'best': Let the program decide based on available memory such that every
-                    split will fit into the available memory. (Default)
+                    split will fit into the available memory (Default).
                 - int: Manually decide the number of splits.
             shuffle: Whether to shuffle the returned experiment dataframe. Default: False.
             return_embeddings: Whether to return the embeddings instead of indexes.
@@ -95,6 +97,8 @@ class Experiment:
             p:
                 The order of the norm of the difference. Should be `0 < p < 1`, Only valid with minkowski_distance as a metric.
                 Default = 3
+            n_jobs:
+                Number of workers to summon for multithreading. Defaults to -1 which uses all available cores.
 
         Returns:
             pandas.DataFrame: A DataFrame representing the experiment results.
@@ -184,10 +188,14 @@ class Experiment:
         if any(metric in METRICS_NEED_ORDER for metric in metrics):
             kwargs["p"] = p
 
-        for metric, metric_fn in zip(metrics, metric_fns):
-            self.df[metric] = np.hstack(
-                [metric_fn(X, ix, iy, **kwargs) for (ix, iy) in zip(Xs, ys)]
-            )
+        with Parallel(n_jobs=n_jobs, backend="threading") as parallel:
+            for metric, metric_fn in zip(metrics, metric_fns):
+                self.df[metric] = np.hstack(
+                    parallel(
+                        delayed(metric_fn)(X, ix, iy, **kwargs)
+                        for (ix, iy) in zip(Xs, ys)
+                    )
+                )
 
         if return_embeddings:
             self.df["img_a"] = X[self.df.img_a.to_numpy()].tolist()

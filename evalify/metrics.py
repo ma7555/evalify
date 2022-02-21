@@ -7,11 +7,11 @@ import numpy as np
 
 
 def get_norms(X):
-    return np.sqrt(np.einsum("ij,ij->i", X, X, optimize=True))
+    return np.sqrt(np.einsum("ij,ij->i", X, X, optimize="auto"))
 
 
 def cosine_similarity(embs, ix, iy, norms, return_distance=False, **kwargs):
-    similarity = np.einsum("ij,ij->i", embs[ix], embs[iy], optimize=True) / (
+    similarity = np.einsum("ij,ij->i", embs[ix], embs[iy], optimize="auto") / (
         norms[ix] * norms[iy]
     )
     if return_distance:
