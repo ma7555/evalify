@@ -123,7 +123,6 @@ class Experiment:
         metric_fns = list(map(metrics_caller.get, metrics))
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
-        self.already_added = set()
         for target in all_targets:
             all_pairs += self.get_pairs(
                 y,
@@ -177,7 +176,7 @@ class Experiment:
         elif same_class_samples == "full":
             same_ixs = same_ixs_full
         same_pairs = itertools.combinations(same_ixs, 2)
-        same_pairs_expanded = [(a, b, target, target, 1) for a, b in same_pairs]
+        same_pairs = [(a, b, target, target, 1) for a, b in same_pairs]
 
         different_ixs = np.argwhere(y != target).ravel()
         diff_df = pd.DataFrame(data={"ix": different_ixs, "target": y[different_ixs]})
@@ -200,13 +199,9 @@ class Experiment:
         different_pairs = itertools.product(
             self.rng.choice(same_ixs_full, N, replace=False), different_ixs
         )
-        different_pairs_expanded = []
-        for a, b in different_pairs:
-            if (a, b) not in self.already_added:
-                different_pairs_expanded.append((a, b, target, y[b], 0))
-                self.already_added.update(((a, b), (b, a)))
+        different_pairs = [(a, b, target, y[b], 0) for a, b in different_pairs if a < b]
 
-        return same_pairs_expanded + different_pairs_expanded
+        return same_pairs + different_pairs
 
     def _validate_args(
         self, metrics, same_class_samples, different_class_samples, nsplits, p
