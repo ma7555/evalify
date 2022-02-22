@@ -4,8 +4,6 @@
 import unittest
 
 import numpy as np
-from scipy.spatial import distance
-
 from evalify import utils
 
 
@@ -32,10 +30,10 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(X.shape, (self.nphotos, self.emb_size))
         self.assertEqual(y.shape, (self.nphotos,))
 
-    def test_keep_to_max_rows(self):
-        """Test cosine_similarity"""
-        rows = utils._keep_to_max_rows(self.embs, 4 * utils.GB_TO_BYTE)
-        self.assertEqual(rows, 1420470954)
+    def test_calculate_best_batch_size(self):
+        """Test calculate_best_batch_size"""
+        batch_size = utils.calculate_best_batch_size(self.embs, 4 * utils.GB_TO_BYTE)
+        self.assertEqual(batch_size, 1420470954)
 
     def test_run_errors(self):
         """Test run errors"""

@@ -39,7 +39,7 @@
 </p>
 
 
-Evaluate your face verification models literally in seconds.
+Evaluate your face or voice verification models literally in seconds.
 
 ## Installation
 #### Stable release

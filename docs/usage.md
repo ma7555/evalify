@@ -19,7 +19,7 @@ experiment.get_roc_auc()
 print(experiment.df.roc_auc)
 ```
 
-For a working experiment using real face embeddings, please refer to `LFW.py` under examples.
+For a working experiment using real face embeddings, please refer to `LFW.py` under `./examples`.
 
 ```python
 python ./examples/LFW.py

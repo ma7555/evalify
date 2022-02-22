@@ -21,21 +21,15 @@ def _calc_available_memory():
     return mem[1]
 
 
-def _keep_to_max_rows(X, available_mem=None):
-    """Calculate maximum rows to fetch per split without going out of memory.
+def calculate_best_batch_size(X, available_mem=None):
+    """Calculate maximum rows to fetch per batch without going out of memory.
 
     We need 3 big arrays to be held in memory (A, B, A*B)
     """
     available_mem = _calc_available_memory() if available_mem is None else available_mem
     if available_mem > 2 * GB_TO_BYTE:
-        max_total_rows = np.floor(available_mem - GB_TO_BYTE / (X[0].nbytes))
-        return int(max_total_rows / 3)
+        max_total_rows = np.floor(available_mem - GB_TO_BYTE / X[0].nbytes)
+        return max_total_rows // 3
     else:
-        max_total_rows = np.floor(available_mem / (X[0].nbytes))
-        return int(max_total_rows / 5)
-
-
-def calculate_best_split_size(X, experiment_size):
-    """Calculate best number of splits."""
-    max_rows = _keep_to_max_rows(X)
-    return int(experiment_size / max_rows) + 1
+        max_total_rows = np.floor(available_mem / X[0].nbytes)
+        return max_total_rows // 5
