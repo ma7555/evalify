@@ -18,11 +18,9 @@ import itertools
 import sys
 from collections import OrderedDict
 from typing import Any, Sequence, Union
-
 import numpy as np
 import pandas as pd
 from sklearn.metrics import auc, confusion_matrix, roc_curve
-
 from evalify.metrics import (
     DISTANCE_TO_SIMILARITY,
     METRICS_NEED_NORM,
@@ -48,8 +46,8 @@ class Experiment:
         X: np.ndarray,
         y: np.ndarray,
         metrics: Union[str, Sequence[str]] = "cosine_similarity",
-        same_class_samples: Union[str, int, Sequence[T_str_int]] = "full",
-        different_class_samples: T_str_int = "minimal",
+        same_class_samples: T_str_int = "full",
+        different_class_samples: Union[str, int, Sequence[T_str_int]] = "minimal",
         nsplits: T_str_int = "best",
         shuffle: bool = False,
         seed: int = None,
@@ -123,49 +121,15 @@ class Experiment:
         all_targets = np.unique(y)
         all_pairs = []
         metric_fns = list(map(metrics_caller.get, metrics))
-        rng = np.random.default_rng(seed)
-        already_added = set()
+        self.seed = seed
+        self.rng = np.random.default_rng(self.seed)
         for target in all_targets:
-            same_ixs_full = np.argwhere(y == target).ravel()
-            if isinstance(same_class_samples, int):
-                same_class_samples = min(len(same_ixs_full), same_class_samples)
-                same_ixs = rng.choice(same_ixs_full, same_class_samples)
-            elif same_class_samples == "full":
-                same_ixs = same_ixs_full
-            same_pairs = itertools.combinations(same_ixs, 2)
-            same_pairs_expanded = [(a, b, target, target, 1) for a, b in same_pairs]
-
-            different_ixs = np.argwhere(y != target).ravel()
-            diff_df = pd.DataFrame(
-                data={"ix": different_ixs, "target": y[different_ixs]}
+            all_pairs += self.get_pairs(
+                y,
+                same_class_samples,
+                different_class_samples,
+                target,
             )
-
-            diff_df = diff_df.sample(frac=1, random_state=seed)
-            if different_class_samples in ["full", "minimal"] or isinstance(
-                different_class_samples, int
-            ):
-                N = 1
-                if different_class_samples == "minimal":
-                    diff_df = diff_df.drop_duplicates(subset=["target"])
-            else:
-                N, M = different_class_samples
-                N = len(same_ixs_full) if N == "full" else min(N, len(same_ixs_full))
-                if M != "full":
-                    diff_df = (
-                        diff_df.groupby("target").apply(lambda x: x[:M]).droplevel(0)
-                    )
-
-            different_ixs = diff_df.ix.to_numpy()
-
-            different_pairs = itertools.product(
-                rng.choice(same_ixs_full, N, replace=False), different_ixs
-            )
-            different_pairs_expanded = []
-            for a, b in different_pairs:
-                if (a, b) not in already_added:
-                    different_pairs_expanded.append((a, b, target, y[b], 0))
-                    already_added.update(((a, b), (b, a)))
-            all_pairs += same_pairs_expanded + different_pairs_expanded
 
         self.df = pd.DataFrame(
             data=all_pairs, columns=["img_a", "img_b", "target_a", "target_b", "target"]
@@ -174,28 +138,70 @@ class Experiment:
             self.df = self.df.sample(frac=1, random_state=seed)
         if nsplits == "best":
             nsplits = calculate_best_split_size(X, len(self.df))
-
-        Xs = np.array_split(self.df.img_a.to_numpy(), nsplits)
-        ys = np.array_split(self.df.img_b.to_numpy(), nsplits)
-
         kwargs = {}
         if any(metric in METRICS_NEED_NORM for metric in metrics):
             kwargs["norms"] = get_norms(X)
         if any(metric in METRICS_NEED_ORDER for metric in metrics):
             kwargs["p"] = p
 
+        img_a = self.df.img_a.to_numpy()
+        img_b = self.df.img_b.to_numpy()
+
+        img_a_s = np.array_split(img_a, nsplits)
+        img_b_s = np.array_split(img_b, nsplits)
+
         for metric, metric_fn in zip(metrics, metric_fns):
             self.df[metric] = np.hstack(
-                [metric_fn(X, ix, iy, **kwargs) for (ix, iy) in zip(Xs, ys)]
+                [metric_fn(X, i, j, **kwargs) for i, j in zip(img_a_s, img_b_s)]
             )
-
         if return_embeddings:
-            self.df["img_a"] = X[self.df.img_a.to_numpy()].tolist()
-            self.df["img_b"] = X[self.df.img_b.to_numpy()].tolist()
+            self.df["img_a"] = X[img_a].tolist()
+            self.df["img_b"] = X[img_b].tolist()
 
         self.experiment_sucess = True
         self.metrics = metrics
         return self.df
+
+    def get_pairs(
+        self,
+        y,
+        same_class_samples,
+        different_class_samples,
+        target,
+    ):
+        same_ixs_full = np.argwhere(y == target).ravel()
+        if isinstance(same_class_samples, int):
+            same_class_samples = min(len(same_ixs_full), same_class_samples)
+            same_ixs = self.rng.choice(same_ixs_full, same_class_samples)
+        elif same_class_samples == "full":
+            same_ixs = same_ixs_full
+        same_pairs = itertools.combinations(same_ixs, 2)
+        same_pairs = [(a, b, target, target, 1) for a, b in same_pairs]
+
+        different_ixs = np.argwhere(y != target).ravel()
+        diff_df = pd.DataFrame(data={"ix": different_ixs, "target": y[different_ixs]})
+
+        diff_df = diff_df.sample(frac=1, random_state=self.seed)
+        if different_class_samples in ["full", "minimal"] or isinstance(
+            different_class_samples, int
+        ):
+            N = 1
+            if different_class_samples == "minimal":
+                diff_df = diff_df.drop_duplicates(subset=["target"])
+        else:
+            N, M = different_class_samples
+            N = len(same_ixs_full) if N == "full" else min(N, len(same_ixs_full))
+            if M != "full":
+                diff_df = diff_df.groupby("target").apply(lambda x: x[:M]).droplevel(0)
+
+        different_ixs = diff_df.ix.to_numpy()
+
+        different_pairs = itertools.product(
+            self.rng.choice(same_ixs_full, N, replace=False), different_ixs
+        )
+        different_pairs = [(a, b, target, y[b], 0) for a, b in different_pairs if a < b]
+
+        return same_pairs + different_pairs
 
     def _validate_args(
         self, metrics, same_class_samples, different_class_samples, nsplits, p
