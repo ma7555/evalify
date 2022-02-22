@@ -486,8 +486,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tips" class="md-nav__link">
-    Tips```
+  <a href="#_1" class="md-nav__link">
+    
   </a>
   
 </li>
@@ -637,8 +637,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tips" class="md-nav__link">
-    Tips```
+  <a href="#_1" class="md-nav__link">
+    
   </a>
   
 </li>
@@ -714,20 +714,20 @@ articles, and such.</p>
 <li>Fork the <code>evalify</code> repo on GitHub.</li>
 <li>Clone your fork locally</li>
 </ol>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    $ git clone git@github.com:your_name_here/evalify.git
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git clone git@github.com:your_name_here/evalify.git
 </code></pre></div>
 </td></tr></table>
 <ol>
 <li>Ensure <a href="https://python-poetry.org/docs/">poetry</a> is installed.</li>
 <li>Install dependencies and start your virtualenv:</li>
 </ol>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    $ poetry install -E test -E doc -E dev
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>poetry install -E <span class="nb">test</span> -E doc -E dev
 </code></pre></div>
 </td></tr></table>
 <ol>
 <li>Create a branch for local development:</li>
 </ol>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    $ git checkout -b name-of-your-bugfix-or-feature
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git checkout -b name-of-your-bugfix-or-feature
 </code></pre></div>
 </td></tr></table>
 <p>Now you can make your changes locally.</p>
@@ -735,7 +735,7 @@ articles, and such.</p>
 <li>When you're done making changes, check that your changes pass the
    tests, including testing other Python versions, with tox:</li>
 </ol>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    $ tox
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>tox
 </code></pre></div>
 </td></tr></table>
 <ol>
@@ -743,9 +743,9 @@ articles, and such.</p>
 </ol>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    $ git add .
-    $ git commit -m &quot;Your detailed description of your changes.&quot;
-    $ git push origin name-of-your-bugfix-or-feature
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>git add .
+git commit -m <span class="s2">&quot;Your detailed description of your changes.&quot;</span>
+git push origin name-of-your-bugfix-or-feature
 </code></pre></div>
 </td></tr></table>
 <ol>
@@ -762,20 +762,24 @@ articles, and such.</p>
    https://github.com/ma7555/evalify/actions
    and make sure that the tests pass for all supported Python versions.</li>
 </ol>
-<h3 id="tips">Tips```<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h3>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ python -m unittest tests.test_evalify
+<h3 id="_1"><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>python -m unittest
 </code></pre></div>
 </td></tr></table>
-<p>```To run a subset of tests.</p>
+or
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pytest
+</code></pre></div>
+</td></tr></table>
+To run a subset of tests.</p>
 <h3 id="deploying">Deploying<a class="headerlink" href="#deploying" title="Permanent link">&para;</a></h3>
 <p>A reminder for the maintainers on how to deploy.
 Make sure all your changes are committed (including an entry in HISTORY.md).
 Then run:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>$ poetry patch # possible: major / minor / patch
-$ git push
-$ git push --tags
+<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>poetry patch <span class="c1"># possible: major / minor / patch</span>
+git push
+git push --tags
 </code></pre></div>
 </td></tr></table>
 <p>Github Actions will then deploy to PyPI if tests pass.</p>

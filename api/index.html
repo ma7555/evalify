@@ -735,7 +735,7 @@ Experiment        </code>
 
 
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">False</span>
@@ -749,8 +749,8 @@ Experiment        </code>
         <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
-        <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
-        <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
+        <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
+        <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
         <span class="n">nsplits</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -824,49 +824,15 @@ Experiment        </code>
         <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">all_pairs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">metric_fns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
-        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-        <span class="n">already_added</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
-            <span class="n">same_ixs_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                <span class="n">same_class_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">),</span> <span class="n">same_class_samples</span><span class="p">)</span>
-                <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">same_class_samples</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
-                <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">same_ixs_full</span>
-            <span class="n">same_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">same_pairs_expanded</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">same_pairs</span><span class="p">]</span>
-
-            <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">!=</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="n">diff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ix&quot;</span><span class="p">:</span> <span class="n">different_ixs</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">different_ixs</span><span class="p">]}</span>
+            <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">(</span>
+                <span class="n">y</span><span class="p">,</span>
+                <span class="n">same_class_samples</span><span class="p">,</span>
+                <span class="n">different_class_samples</span><span class="p">,</span>
+                <span class="n">target</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">different_class_samples</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="s2">&quot;minimal&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">different_class_samples</span><span class="p">,</span> <span class="nb">int</span>
-            <span class="p">):</span>
-                <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">different_class_samples</span> <span class="o">==</span> <span class="s2">&quot;minimal&quot;</span><span class="p">:</span>
-                    <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">different_class_samples</span>
-                <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">)</span> <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">M</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
-                    <span class="n">diff_df</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">diff_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="n">M</span><span class="p">])</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="p">)</span>
-
-            <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-            <span class="n">different_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
-                <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">different_ixs</span>
-            <span class="p">)</span>
-            <span class="n">different_pairs_expanded</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">different_pairs</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_added</span><span class="p">:</span>
-                    <span class="n">different_pairs_expanded</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
-                    <span class="n">already_added</span><span class="o">.</span><span class="n">update</span><span class="p">(((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)))</span>
-            <span class="n">all_pairs</span> <span class="o">+=</span> <span class="n">same_pairs_expanded</span> <span class="o">+</span> <span class="n">different_pairs_expanded</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
@@ -875,28 +841,70 @@ Experiment        </code>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
-
-        <span class="n">Xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
-        <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
-
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_ORDER</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 
+        <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+        <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+                <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">img_a_s</span><span class="p">,</span> <span class="n">img_b_s</span><span class="p">)]</span>
             <span class="p">)</span>
-
         <span class="k">if</span> <span class="n">return_embeddings</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">img_a</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">img_b</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">get_pairs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+        <span class="n">same_class_samples</span><span class="p">,</span>
+        <span class="n">different_class_samples</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">same_ixs_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">same_class_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">),</span> <span class="n">same_class_samples</span><span class="p">)</span>
+            <span class="n">same_ixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">same_class_samples</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
+            <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">same_ixs_full</span>
+        <span class="n">same_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">same_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">same_pairs</span><span class="p">]</span>
+
+        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">!=</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">diff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ix&quot;</span><span class="p">:</span> <span class="n">different_ixs</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">different_ixs</span><span class="p">]})</span>
+
+        <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">different_class_samples</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="s2">&quot;minimal&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">different_class_samples</span><span class="p">,</span> <span class="nb">int</span>
+        <span class="p">):</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">different_class_samples</span> <span class="o">==</span> <span class="s2">&quot;minimal&quot;</span><span class="p">:</span>
+                <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">different_class_samples</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">)</span> <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">M</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
+                <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="n">M</span><span class="p">])</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+        <span class="n">different_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">different_ixs</span>
+        <span class="p">)</span>
+        <span class="n">different_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">different_pairs</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">same_pairs</span> <span class="o">+</span> <span class="n">different_pairs</span>
 
     <span class="k">def</span> <span class="nf">_validate_args</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
@@ -1127,7 +1135,7 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">    Args:</span>
@@ -1208,7 +1216,7 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">    Returns:</span>
@@ -1234,6 +1242,7 @@ Experiment        </code>
     </div>
 
   </div>
+
 
 
 
@@ -1295,7 +1304,7 @@ Experiment        </code>
       </tr>
       <tr>
         <td><code>same_class_samples</code></td>
-        <td><code>Union[str, int, Sequence[Union[str, int]]]</code></td>
+        <td><code>Union[str, int]</code></td>
         <td><ul>
 <li>'full': Samples all possible images within each class to create all
     all possible positive pairs.</li>
@@ -1306,7 +1315,7 @@ Experiment        </code>
       </tr>
       <tr>
         <td><code>different_class_samples</code></td>
-        <td><code>Union[str, int]</code></td>
+        <td><code>Union[str, int, Sequence[Union[str, int]]]</code></td>
         <td><ul>
 <li>'full': Samples one image from every class with all possible pairs
     of different classes. This can grow exponentially as the number
@@ -1399,14 +1408,14 @@ this will probably result in an extremely large array!.</p>
 </div>
 
         <details class="quote">
-          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
-    <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
-    <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
+    <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
+    <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
     <span class="n">nsplits</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
     <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1480,49 +1489,15 @@ this will probably result in an extremely large array!.</p>
     <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">all_pairs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">metric_fns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">metrics_caller</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="n">metrics</span><span class="p">))</span>
-    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
-    <span class="n">already_added</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
-        <span class="n">same_ixs_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">same_class_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">),</span> <span class="n">same_class_samples</span><span class="p">)</span>
-            <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">same_class_samples</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
-            <span class="n">same_ixs</span> <span class="o">=</span> <span class="n">same_ixs_full</span>
-        <span class="n">same_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">same_ixs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">same_pairs_expanded</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">same_pairs</span><span class="p">]</span>
-
-        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">!=</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="n">diff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ix&quot;</span><span class="p">:</span> <span class="n">different_ixs</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">[</span><span class="n">different_ixs</span><span class="p">]}</span>
+        <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">(</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">same_class_samples</span><span class="p">,</span>
+            <span class="n">different_class_samples</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">,</span>
         <span class="p">)</span>
-
-        <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">different_class_samples</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">,</span> <span class="s2">&quot;minimal&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
-            <span class="n">different_class_samples</span><span class="p">,</span> <span class="nb">int</span>
-        <span class="p">):</span>
-            <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">different_class_samples</span> <span class="o">==</span> <span class="s2">&quot;minimal&quot;</span><span class="p">:</span>
-                <span class="n">diff_df</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">different_class_samples</span>
-            <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">)</span> <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">M</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
-                <span class="n">diff_df</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">diff_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:</span><span class="n">M</span><span class="p">])</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="p">)</span>
-
-        <span class="n">different_ixs</span> <span class="o">=</span> <span class="n">diff_df</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
-        <span class="n">different_pairs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
-            <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">different_ixs</span>
-        <span class="p">)</span>
-        <span class="n">different_pairs_expanded</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">different_pairs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">already_added</span><span class="p">:</span>
-                <span class="n">different_pairs_expanded</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
-                <span class="n">already_added</span><span class="o">.</span><span class="n">update</span><span class="p">(((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)))</span>
-        <span class="n">all_pairs</span> <span class="o">+=</span> <span class="n">same_pairs_expanded</span> <span class="o">+</span> <span class="n">different_pairs_expanded</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
@@ -1531,24 +1506,25 @@ this will probably result in an extremely large array!.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
         <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
-
-    <span class="n">Xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
-    <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">nsplits</span><span class="p">)</span>
-
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_ORDER</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 
+    <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+    <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)]</span>
+            <span class="p">[</span><span class="n">metric_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">img_a_s</span><span class="p">,</span> <span class="n">img_b_s</span><span class="p">)]</span>
         <span class="p">)</span>
-
     <span class="k">if</span> <span class="n">return_embeddings</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">img_a</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;img_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">img_b</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
@@ -1673,11 +1649,10 @@ split and calculations happens over large data chunks very quickly.</p>
       <p>Calculate best number of splits.</p>
 
         <details class="quote">
-          <summary>Source code in <code>evalify\utils.py</code></summary>
+          <summary>Source code in <code>evalify/utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate best number of splits.&quot;&quot;&quot;</span>
-    <span class="n">available_mem</span> <span class="o">=</span> <span class="n">_calc_available_memory</span><span class="p">()</span>
-    <span class="n">max_rows</span> <span class="o">=</span> <span class="n">_keep_to_max_rows</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">available_mem</span><span class="p">)</span>
+    <span class="n">max_rows</span> <span class="o">=</span> <span class="n">_keep_to_max_rows</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">max_rows</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 </code></pre></div>
         </details>

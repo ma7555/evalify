@@ -412,6 +412,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    TODO
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#contribution" class="md-nav__link">
     Contribution
   </a>
@@ -609,6 +616,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    TODO
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#contribution" class="md-nav__link">
     Contribution
   </a>
@@ -700,7 +714,7 @@
 </code></pre></div>
 </td></tr></table></li>
 <li>From TestPyPI
-    <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pip install --index-url https://test.pypi.org/simple/evalify
+    <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>pip install --index-url https://test.pypi.org/simple/ evalify
 </code></pre></div>
 </td></tr></table></li>
 </ul>
@@ -740,10 +754,24 @@
 </ul>
 <h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Blazing fast implementation for metrics calculation through optimized einstein sum.</li>
+<li>Blazing fast implementation for metrics calculation through optimized einstein sum and vectorized calculations.</li>
 <li>Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.</li>
-<li>Smart sampling options using direct indexing from pre-calculated arrays.</li>
-<li>Supports common evaluation metrics like cosine similarity, euclidean distance and l2 normalized euclidean distance.</li>
+<li>Smart sampling options using direct indexing from pre-calculated arrays with an option to have total control over sampling strategy and sampling numbers.</li>
+<li>Supports most evaluation metrics:<ul>
+<li>cosine_similarity</li>
+<li>cosine_distance</li>
+<li>euclidean_distance</li>
+<li>euclidean_distance_l2</li>
+<li>minkowski_distance</li>
+<li>manhattan_distance</li>
+<li>chebyshev_distance</li>
+</ul>
+</li>
+<li>Computation time for 4 metrics 4.2 million samples experiment is <strong>24 seconds vs 51 minutes</strong> if looping using <code>scipy.spatial.distance</code> implemntations.</li>
+</ul>
+<h3 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Safer memory allocation. I did not have issues but if you ran out of memory please manually increase number of splits with <code>nsplits</code> argument.</li>
 </ul>
 <h3 id="contribution">Contribution<a class="headerlink" href="#contribution" title="Permanent link">&para;</a></h3>
 <ul>
