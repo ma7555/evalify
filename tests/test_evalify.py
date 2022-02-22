@@ -181,10 +181,10 @@ class TestEvalify(unittest.TestCase):
             )
 
         with self.assertRaisesRegex(
-            ValueError, '`nsplits` argument must be either "best" or of type integer'
+            ValueError, '`batch_size` argument must be either "best" or of type integer'
         ):
             experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, nsplits="all")
+            _ = experiment.run(self.embs, self.targets, batch_size="all")
 
         with self.assertRaisesRegex(ValueError, "`metric` argument must be one of "):
             experiment = Experiment()

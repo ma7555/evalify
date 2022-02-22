@@ -28,7 +28,7 @@ from evalify.metrics import (
     get_norms,
     metrics_caller,
 )
-from evalify.utils import _validate_vectors, calculate_best_split_size
+from evalify.utils import _validate_vectors, calculate_best_batch_size
 
 T_str_int = Union[str, int]
 
@@ -48,7 +48,7 @@ class Experiment:
         metrics: Union[str, Sequence[str]] = "cosine_similarity",
         same_class_samples: T_str_int = "full",
         different_class_samples: Union[str, int, Sequence[T_str_int]] = "minimal",
-        nsplits: T_str_int = "best",
+        batch_size: T_str_int = "best",
         shuffle: bool = False,
         seed: int = None,
         return_embeddings: bool = False,
@@ -83,10 +83,10 @@ class Experiment:
                     images of every other class.
                 - tuple or list: (N, M) Samples N images from every class with M images of
                     every other class.
-            nsplits:
+            batch_size:
                 - 'best': Let the program decide based on available memory such that every
-                    split will fit into the available memory. (Default)
-                - int: Manually decide the number of splits.
+                    batch will fit into the available memory. (Default)
+                - int: Manually decide the batch_size.
             shuffle: Whether to shuffle the returned experiment dataframe. Default: False.
             return_embeddings: Whether to return the embeddings instead of indexes.
                 Default: False
@@ -115,7 +115,7 @@ class Experiment:
             metrics = (metrics,)
 
         self._validate_args(
-            metrics, same_class_samples, different_class_samples, nsplits, p
+            metrics, same_class_samples, different_class_samples, batch_size, p
         )
         X, y = _validate_vectors(X, y)
         all_targets = np.unique(y)
@@ -136,8 +136,8 @@ class Experiment:
         )
         if shuffle:
             self.df = self.df.sample(frac=1, random_state=seed)
-        if nsplits == "best":
-            nsplits = calculate_best_split_size(X, len(self.df))
+        if batch_size == "best":
+            batch_size = calculate_best_batch_size(X)
         kwargs = {}
         if any(metric in METRICS_NEED_NORM for metric in metrics):
             kwargs["norms"] = get_norms(X)
@@ -147,8 +147,9 @@ class Experiment:
         img_a = self.df.img_a.to_numpy()
         img_b = self.df.img_b.to_numpy()
 
-        img_a_s = np.array_split(img_a, nsplits)
-        img_b_s = np.array_split(img_b, nsplits)
+        experiment_size = len(self.df)
+        img_a_s = np.array_split(img_a, np.ceil(experiment_size / batch_size))
+        img_b_s = np.array_split(img_b, np.ceil(experiment_size / batch_size))
 
         for metric, metric_fn in zip(metrics, metric_fns):
             self.df[metric] = np.hstack(
@@ -204,7 +205,7 @@ class Experiment:
         return same_pairs + different_pairs
 
     def _validate_args(
-        self, metrics, same_class_samples, different_class_samples, nsplits, p
+        self, metrics, same_class_samples, different_class_samples, batch_size, p
     ):
         if same_class_samples != "full" and not isinstance(same_class_samples, int):
             raise ValueError(
@@ -236,10 +237,10 @@ class Experiment:
                         f"Received: different_class_samples={different_class_samples}."
                     )
 
-        if nsplits != "best" and not isinstance(nsplits, int):
+        if batch_size != "best" and not isinstance(batch_size, int):
             raise ValueError(
-                '`nsplits` argument must be either "best" or of type integer '
-                f"Received: nsplits={nsplits} with type {type(nsplits)}."
+                '`batch_size` argument must be either "best" or of type integer '
+                f"Received: batch_size={batch_size} with type {type(batch_size)}."
             )
 
         if any(metric not in metrics_caller for metric in metrics):

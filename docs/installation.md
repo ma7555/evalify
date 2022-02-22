@@ -5,8 +5,8 @@
 To install evalify, run this command in your
 terminal:
 
-``` console
-$ pip install evalify
+```bash
+pip install evalify
 ```
 
 This is the preferred method to install evalify, as it will always install the most recent stable release.
@@ -21,20 +21,20 @@ the [Github repo][].
 
 You can either clone the public repository:
 
-``` console
-$ git clone git://github.com/ma7555/evalify
+```bash
+git clone git://github.com/ma7555/evalify
 ```
 
 Or download the [tarball][]:
 
-``` console
-$ curl -OJL https://github.com/ma7555/evalify/tarball/master
+```bash
+curl -OJL https://github.com/ma7555/evalify/tarball/master
 ```
 
 Once you have a copy of the source, you can install it with:
 
-``` console
-$ pip install .
+```bash
+pip install .
 ```
 
   [pip]: https://pip.pypa.io

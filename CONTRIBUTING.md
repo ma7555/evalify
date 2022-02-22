@@ -117,7 +117,6 @@ Make sure all your changes are committed (including an entry in HISTORY.md).
 Then run:
 
 ```bash
-poetry patch # possible: major / minor / patch
 git push
 git push --tags
 ```
