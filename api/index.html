@@ -438,6 +438,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.find_threshold_at_fpr" class="md-nav__link">
+    find_threshold_at_fpr()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#evalify.evalify.Experiment.run" class="md-nav__link">
     run()
   </a>
@@ -470,8 +477,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#evalify.utils.calculate_best_split_size" class="md-nav__link">
-    calculate_best_split_size()
+  <a href="#evalify.utils.calculate_best_batch_size" class="md-nav__link">
+    calculate_best_batch_size()
   </a>
   
 </li>
@@ -596,6 +603,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.find_threshold_at_fpr" class="md-nav__link">
+    find_threshold_at_fpr()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#evalify.evalify.Experiment.run" class="md-nav__link">
     run()
   </a>
@@ -628,8 +642,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#evalify.utils.calculate_best_split_size" class="md-nav__link">
-    calculate_best_split_size()
+  <a href="#evalify.utils.calculate_best_batch_size" class="md-nav__link">
+    calculate_best_batch_size()
   </a>
   
 </li>
@@ -751,7 +765,7 @@ Experiment        </code>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
         <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
         <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
-        <span class="n">nsplits</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -786,10 +800,10 @@ Experiment        </code>
 <span class="sd">                    images of every other class.</span>
 <span class="sd">                - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                    every other class.</span>
-<span class="sd">            nsplits:</span>
+<span class="sd">            batch_size:</span>
 <span class="sd">                - &#39;best&#39;: Let the program decide based on available memory such that every</span>
-<span class="sd">                    split will fit into the available memory. (Default)</span>
-<span class="sd">                - int: Manually decide the number of splits.</span>
+<span class="sd">                    batch will fit into the available memory. (Default)</span>
+<span class="sd">                - int: Manually decide the batch_size.</span>
 <span class="sd">            shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">            return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">                Default: False</span>
@@ -818,7 +832,7 @@ Experiment        </code>
             <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_args</span><span class="p">(</span>
-            <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+            <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">p</span>
         <span class="p">)</span>
         <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_validate_vectors</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -839,8 +853,8 @@ Experiment        </code>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
-            <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -850,8 +864,9 @@ Experiment        </code>
         <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
         <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-        <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
-        <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+        <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
+        <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
@@ -907,7 +922,7 @@ Experiment        </code>
         <span class="k">return</span> <span class="n">same_pairs</span> <span class="o">+</span> <span class="n">different_pairs</span>
 
     <span class="k">def</span> <span class="nf">_validate_args</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">p</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">same_class_samples</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -939,10 +954,10 @@ Experiment        </code>
                         <span class="sa">f</span><span class="s2">&quot;Received: different_class_samples=</span><span class="si">{</span><span class="n">different_class_samples</span><span class="si">}</span><span class="s2">.&quot;</span>
                     <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">nsplits</span> <span class="o">!=</span> <span class="s2">&quot;best&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nsplits</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="s2">&quot;best&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;`nsplits` argument must be either &quot;best&quot; or of type integer &#39;</span>
-                <span class="sa">f</span><span class="s2">&quot;Received: nsplits=</span><span class="si">{</span><span class="n">nsplits</span><span class="si">}</span><span class="s2"> with type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">nsplits</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s1">&#39;`batch_size` argument must be either &quot;best&quot; or of type integer &#39;</span>
+                <span class="sa">f</span><span class="s2">&quot;Received: batch_size=</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> with type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metrics_caller</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
@@ -975,8 +990,49 @@ Experiment        </code>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimal_cutoff</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">roc_t</span><span class="p">[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimal_cutoff</span>
 
-    <span class="k">def</span> <span class="nf">find_thr_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="k">def</span> <span class="nf">find_threshold_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fpr: False positive rate to find best threshold for.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary with keys as metrics and values as thresholds.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If `fpr` is not between 0 and 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">fpr</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;`fpr` must be between 0 and 1. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Received wanted_fpr=</span><span class="si">{</span><span class="n">fpr</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="n">threshold_at_fpr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+            <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+            <span class="n">FPR</span><span class="p">,</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">drop_intermediate</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">df_fpr_tpr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;FPR&quot;</span><span class="p">:</span> <span class="n">FPR</span><span class="p">,</span> <span class="s2">&quot;TPR&quot;</span><span class="p">:</span> <span class="n">TPR</span><span class="p">,</span> <span class="s2">&quot;Threshold&quot;</span><span class="p">:</span> <span class="n">thresholds</span><span class="p">})</span>
+            <span class="n">ix_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="p">[</span><span class="s2">&quot;FPR&quot;</span><span class="p">],</span> <span class="n">fpr</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+            <span class="n">ix_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="p">[</span><span class="s2">&quot;FPR&quot;</span><span class="p">],</span> <span class="n">fpr</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
+                    <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">best</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">REVERSE_DISTANCE_TO_SIMILARITY</span><span class="p">:</span>
+                <span class="n">best</span><span class="p">[</span><span class="s2">&quot;Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">REVERSE_DISTANCE_TO_SIMILARITY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)(</span>
+                    <span class="n">best</span><span class="p">[</span><span class="s2">&quot;Threshold&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="n">threshold_at_fpr</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+        <span class="k">return</span> <span class="n">threshold_at_fpr</span>
 
     <span class="k">def</span> <span class="nf">get_binary_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -1008,6 +1064,7 @@ Experiment        </code>
             <span class="n">FNR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">TPR</span>  <span class="c1"># false negative rate</span>
             <span class="n">FDR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">PPV</span>  <span class="c1"># false discovery rate</span>
             <span class="n">FOR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">NPV</span>  <span class="c1"># false omission rate</span>
+            <span class="n">F1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">PPV</span> <span class="o">*</span> <span class="n">TPR</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">PPV</span> <span class="o">+</span> <span class="n">TPR</span><span class="p">)</span>
             <span class="c1"># LRp = TPR / FPR  # positive likelihood ratio (LR+)</span>
             <span class="c1"># LRn = FNR / TNR  # negative likelihood ratio (LR+)</span>
 
@@ -1020,6 +1077,7 @@ Experiment        </code>
                 <span class="s2">&quot;FNR&quot;</span><span class="p">:</span> <span class="n">FNR</span><span class="p">,</span>
                 <span class="s2">&quot;FDR&quot;</span><span class="p">:</span> <span class="n">FDR</span><span class="p">,</span>
                 <span class="s2">&quot;FOR&quot;</span><span class="p">:</span> <span class="n">FOR</span><span class="p">,</span>
+                <span class="s2">&quot;F1&quot;</span><span class="p">:</span> <span class="n">F1</span><span class="p">,</span>
                 <span class="c1"># &quot;LR+&quot;: LRp,</span>
                 <span class="c1"># &quot;LR-&quot;: LRn,</span>
             <span class="p">}</span>
@@ -1046,7 +1104,9 @@ Experiment        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
             <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
-            <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">)</span>
+            <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">drop_intermediate</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
             <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1159,6 +1219,7 @@ Experiment        </code>
         <span class="n">FNR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">TPR</span>  <span class="c1"># false negative rate</span>
         <span class="n">FDR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">PPV</span>  <span class="c1"># false discovery rate</span>
         <span class="n">FOR</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">NPV</span>  <span class="c1"># false omission rate</span>
+        <span class="n">F1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">PPV</span> <span class="o">*</span> <span class="n">TPR</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">PPV</span> <span class="o">+</span> <span class="n">TPR</span><span class="p">)</span>
         <span class="c1"># LRp = TPR / FPR  # positive likelihood ratio (LR+)</span>
         <span class="c1"># LRn = FNR / TNR  # negative likelihood ratio (LR+)</span>
 
@@ -1171,6 +1232,7 @@ Experiment        </code>
             <span class="s2">&quot;FNR&quot;</span><span class="p">:</span> <span class="n">FNR</span><span class="p">,</span>
             <span class="s2">&quot;FDR&quot;</span><span class="p">:</span> <span class="n">FDR</span><span class="p">,</span>
             <span class="s2">&quot;FOR&quot;</span><span class="p">:</span> <span class="n">FOR</span><span class="p">,</span>
+            <span class="s2">&quot;F1&quot;</span><span class="p">:</span> <span class="n">F1</span><span class="p">,</span>
             <span class="c1"># &quot;LR+&quot;: LRp,</span>
             <span class="c1"># &quot;LR-&quot;: LRn,</span>
         <span class="p">}</span>
@@ -1245,6 +1307,121 @@ Experiment        </code>
 
 
 
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="evalify.evalify.Experiment.find_threshold_at_fpr" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">find_threshold_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">)</span></code>
+
+
+<a href="#evalify.evalify.Experiment.find_threshold_at_fpr" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Runs an experiment for face verification</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>fpr</code></td>
+        <td><code>float</code></td>
+        <td><p>False positive rate to find best threshold for.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>dict</code></td>
+      <td><p>A dictionary with keys as metrics and values as thresholds.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If <code>fpr</code> is not between 0 and 1.</p></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_threshold_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fpr: False positive rate to find best threshold for.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary with keys as metrics and values as thresholds.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If `fpr` is not between 0 and 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">fpr</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;`fpr` must be between 0 and 1. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Received wanted_fpr=</span><span class="si">{</span><span class="n">fpr</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="n">threshold_at_fpr</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+        <span class="n">FPR</span><span class="p">,</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">drop_intermediate</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">df_fpr_tpr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;FPR&quot;</span><span class="p">:</span> <span class="n">FPR</span><span class="p">,</span> <span class="s2">&quot;TPR&quot;</span><span class="p">:</span> <span class="n">TPR</span><span class="p">,</span> <span class="s2">&quot;Threshold&quot;</span><span class="p">:</span> <span class="n">thresholds</span><span class="p">})</span>
+        <span class="n">ix_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="p">[</span><span class="s2">&quot;FPR&quot;</span><span class="p">],</span> <span class="n">fpr</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+        <span class="n">ix_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="p">[</span><span class="s2">&quot;FPR&quot;</span><span class="p">],</span> <span class="n">fpr</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
+                <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="n">best</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">REVERSE_DISTANCE_TO_SIMILARITY</span><span class="p">:</span>
+            <span class="n">best</span><span class="p">[</span><span class="s2">&quot;Threshold&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">REVERSE_DISTANCE_TO_SIMILARITY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)(</span>
+                <span class="n">best</span><span class="p">[</span><span class="s2">&quot;Threshold&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">threshold_at_fpr</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+    <span class="k">return</span> <span class="n">threshold_at_fpr</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
 
 
@@ -1255,7 +1432,7 @@ Experiment        </code>
 
 
 <h4 id="evalify.evalify.Experiment.run" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="s1">&#39;cosine_similarity&#39;</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="o">=</span><span class="s1">&#39;minimal&#39;</span><span class="p">,</span> <span class="n">nsplits</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_embeddings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="s1">&#39;cosine_similarity&#39;</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="o">=</span><span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="o">=</span><span class="s1">&#39;minimal&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_embeddings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
 
 
 <a href="#evalify.evalify.Experiment.run" class="headerlink" title="Permanent link">&para;</a></h4>
@@ -1330,12 +1507,12 @@ Experiment        </code>
         <td><code>&#39;minimal&#39;</code></td>
       </tr>
       <tr>
-        <td><code>nsplits</code></td>
+        <td><code>batch_size</code></td>
         <td><code>Union[str, int]</code></td>
         <td><ul>
 <li>'best': Let the program decide based on available memory such that every
-    split will fit into the available memory. (Default)</li>
-<li>int: Manually decide the number of splits.</li>
+    batch will fit into the available memory. (Default)</li>
+<li>int: Manually decide the batch_size.</li>
 </ul></td>
         <td><code>&#39;best&#39;</code></td>
       </tr>
@@ -1416,7 +1593,7 @@ this will probably result in an extremely large array!.</p>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
     <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
     <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
-    <span class="n">nsplits</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
     <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1451,10 +1628,10 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">                images of every other class.</span>
 <span class="sd">            - tuple or list: (N, M) Samples N images from every class with M images of</span>
 <span class="sd">                every other class.</span>
-<span class="sd">        nsplits:</span>
+<span class="sd">        batch_size:</span>
 <span class="sd">            - &#39;best&#39;: Let the program decide based on available memory such that every</span>
-<span class="sd">                split will fit into the available memory. (Default)</span>
-<span class="sd">            - int: Manually decide the number of splits.</span>
+<span class="sd">                batch will fit into the available memory. (Default)</span>
+<span class="sd">            - int: Manually decide the batch_size.</span>
 <span class="sd">        shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">            Default: False</span>
@@ -1483,7 +1660,7 @@ this will probably result in an extremely large array!.</p>
         <span class="n">metrics</span> <span class="o">=</span> <span class="p">(</span><span class="n">metrics</span><span class="p">,)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_validate_args</span><span class="p">(</span>
-        <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">,</span> <span class="n">p</span>
+        <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">p</span>
     <span class="p">)</span>
     <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_validate_vectors</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="n">all_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -1504,8 +1681,8 @@ this will probably result in an extremely large array!.</p>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">nsplits</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
-        <span class="n">nsplits</span> <span class="o">=</span> <span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -1515,8 +1692,9 @@ this will probably result in an extremely large array!.</p>
     <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
     <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-    <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
-    <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">nsplits</span><span class="p">)</span>
+    <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
+    <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span>
@@ -1599,6 +1777,7 @@ split and calculations happens over large data chunks very quickly.</p>
 
 
 
+
   </div>
 
     </div>
@@ -1638,22 +1817,31 @@ split and calculations happens over large data chunks very quickly.</p>
 
 
 
-<h3 id="evalify.utils.calculate_best_split_size" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">)</span></code>
+<h3 id="evalify.utils.calculate_best_batch_size" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">available_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 
-<a href="#evalify.utils.calculate_best_split_size" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#evalify.utils.calculate_best_batch_size" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents ">
 
-      <p>Calculate best number of splits.</p>
+      <p>Calculate maximum rows to fetch per batch without going out of memory.</p>
+<p>We need 3 big arrays to be held in memory (A, B, A*B)</p>
 
         <details class="quote">
           <summary>Source code in <code>evalify/utils.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_split_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">experiment_size</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate best number of splits.&quot;&quot;&quot;</span>
-    <span class="n">max_rows</span> <span class="o">=</span> <span class="n">_keep_to_max_rows</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">max_rows</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">available_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate maximum rows to fetch per batch without going out of memory.</span>
+
+<span class="sd">    We need 3 big arrays to be held in memory (A, B, A*B)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">available_mem</span> <span class="o">=</span> <span class="n">_calc_available_memory</span><span class="p">()</span> <span class="k">if</span> <span class="n">available_mem</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">available_mem</span>
+    <span class="k">if</span> <span class="n">available_mem</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">GB_TO_BYTE</span><span class="p">:</span>
+        <span class="n">max_total_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">available_mem</span> <span class="o">-</span> <span class="n">GB_TO_BYTE</span> <span class="o">/</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nbytes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">max_total_rows</span> <span class="o">//</span> <span class="mi">3</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_total_rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">available_mem</span> <span class="o">/</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">nbytes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">max_total_rows</span> <span class="o">//</span> <span class="mi">5</span>
 </code></pre></div>
         </details>
     </div>
