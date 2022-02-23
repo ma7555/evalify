@@ -59,3 +59,12 @@ DISTANCE_TO_SIMILARITY = {
     "manhattan_distance": lambda x: 1 / (1 + x),
     "chebyshev_distance": lambda x: 1 / (1 + x),
 }
+
+REVERSE_DISTANCE_TO_SIMILARITY = {
+    "cosine_distance": lambda x: 1 - x,
+    "euclidean_distance": lambda x: (1 / x) - 1,
+    "euclidean_distance_l2": lambda x: 1 - x,
+    "minkowski_distance": lambda x: (1 / x) - 1,
+    "manhattan_distance": lambda x: (1 / x) - 1,
+    "chebyshev_distance": lambda x: (1 / x) - 1,
+}

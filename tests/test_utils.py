@@ -23,7 +23,7 @@ class TestUtils(unittest.TestCase):
         """Tear down test fixtures, if any."""
 
     def test_validate_vectors(self):
-        """Test cosine_similarity"""
+        """Test _validate_vectors"""
         embs = self.embs.tolist()
         targets = self.targets.tolist()
         X, y = utils._validate_vectors(embs, targets)

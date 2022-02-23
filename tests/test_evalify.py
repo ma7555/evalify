@@ -83,7 +83,7 @@ class TestEvalify(unittest.TestCase):
         )
 
     def test_run_shuffle(self):
-        """Test run with return_embeddings"""
+        """Test run with shuffle"""
         experiment = Experiment()
         df1 = experiment.run(self.embs, self.targets, shuffle=True, seed=555)
         df2 = experiment.run(self.embs, self.targets, shuffle=True, seed=555)
@@ -108,10 +108,10 @@ class TestEvalify(unittest.TestCase):
         )
         evaluations = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
         # self.assertEqual(len(evaluations), len(metrics))
-        self.assertEqual(len(evaluations), 8)
+        self.assertEqual(len(evaluations), 9)
 
     def test_run_find_optimal_cutoff(self):
-        """Test run with evaluate_at_threshold"""
+        """Test run with find_optimal_cutoff"""
         experiment = Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
         experiment.run(
@@ -125,7 +125,7 @@ class TestEvalify(unittest.TestCase):
         self.assertTrue(all(evaluation in metrics for evaluation in evaluations))
 
     def test_run_get_roc_auc(self):
-        """Test run with evaluate_at_threshold"""
+        """Test run with get_roc_auc"""
         experiment = Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
         experiment.run(
@@ -139,7 +139,7 @@ class TestEvalify(unittest.TestCase):
         self.assertTrue(all(auc in metrics for auc in roc_auc))
 
     def test_run_predicted_as_similarity(self):
-        """Test run with evaluate_at_threshold"""
+        """Test run with predicted_as_similarity"""
         experiment = Experiment()
         df = experiment.run(
             self.embs, self.targets, metrics=["cosine_similarity", "cosine_distance"]
@@ -148,8 +148,22 @@ class TestEvalify(unittest.TestCase):
         result_2 = experiment.predicted_as_similarity("cosine_distance")
         self.assertTrue(np.allclose(result, result_2))
 
+    def test_run_find_threshold_at_fpr(self):
+        """Test run with find_threshold_at_fpr"""
+        experiment = Experiment()
+        metric = "cosine_similarity"
+        df = experiment.run(
+            self.embs,
+            self.targets,
+            metrics=metric,
+            different_class_samples=("full", "full"),
+        )
+        fpr_d = experiment.find_threshold_at_fpr(0.1)
+        self.assertEqual(len(fpr_d[metric]), 3)
+        self.assertAlmostEqual(fpr_d[metric]["Threshold"], 0.8939142227)
+
     def test__call__(self):
-        """Test run with evaluate_at_threshold"""
+        """Test run with __call__"""
         experiment = Experiment()
         result = experiment.run(self.embs, self.targets, seed=555)
         result_2 = experiment(self.embs, self.targets, seed=555)
@@ -200,7 +214,7 @@ class TestEvalify(unittest.TestCase):
             "`run_experiment`.",
         ):
             experiment = Experiment()
-            _ = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
+            _ = experiment.evaluate_at_threshold(0.5, "euclidean_distance")
 
         with self.assertRaisesRegex(
             ValueError,
@@ -209,3 +223,10 @@ class TestEvalify(unittest.TestCase):
             experiment = Experiment()
             experiment.run(self.embs, self.targets, metrics="euclidean_distance")
             _ = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
+
+        with self.assertRaisesRegex(
+            ValueError, "`fpr` must be between 0 and 1. Received wanted_fpr="
+        ):
+            experiment = Experiment()
+            experiment.run(self.embs, self.targets, metrics="euclidean_distance")
+            _ = experiment.find_threshold_at_fpr(-1.1)
