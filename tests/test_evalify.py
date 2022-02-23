@@ -7,7 +7,7 @@ import numpy as np
 from scipy.special import comb
 
 from evalify import Experiment
-from evalify.metrics import euclidean_distance, metrics_caller
+from evalify.metrics import metrics_caller
 
 
 class TestEvalify(unittest.TestCase):
