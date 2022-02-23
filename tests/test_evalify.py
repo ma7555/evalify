@@ -158,9 +158,13 @@ class TestEvalify(unittest.TestCase):
             metrics=metric,
             different_class_samples=("full", "full"),
         )
-        fpr_d = experiment.find_threshold_at_fpr(0.1)
-        self.assertEqual(len(fpr_d[metric]), 3)
-        self.assertAlmostEqual(fpr_d[metric]["Threshold"], 0.8939142227)
+        fpr_d01 = experiment.find_threshold_at_fpr(0.1)
+        fpr_d1 = experiment.find_threshold_at_fpr(1)
+        fpr_d0 = experiment.find_threshold_at_fpr(0)
+        self.assertEqual(len(fpr_d01[metric]), 3)
+        self.assertAlmostEqual(fpr_d01[metric]["Threshold"], 0.8939142227)
+        self.assertAlmostEqual(fpr_d0[metric]["Threshold"], 0.995335578)
+        self.assertAlmostEqual(fpr_d1[metric]["Threshold"], 0.206053897)
 
     def test__call__(self):
         """Test run with __call__"""
