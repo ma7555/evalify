@@ -17,7 +17,6 @@ every batch would consume the roughly the maximum available memory.
 import itertools
 import sys
 from collections import OrderedDict
-from types import NoneType
 from typing import Any, Sequence, Union, List, Tuple
 
 import numpy as np
@@ -179,8 +178,7 @@ class Experiment:
         different_class_samples,
         target,
     ) -> List[Tuple]:
-        """Generates experiment pairs.
-        """
+        """Generates experiment pairs."""
         same_ixs_full = np.argwhere(y == target).ravel()
         if isinstance(same_class_samples, int):
             same_class_samples = min(len(same_ixs_full), same_class_samples)
@@ -217,7 +215,7 @@ class Experiment:
 
     def _validate_args(
         self, metrics, same_class_samples, different_class_samples, batch_size, p
-    ) -> NoneType:
+    ) -> None:
         """Validates passed arguments to Experiment.run() method."""
         if same_class_samples != "full" and not isinstance(same_class_samples, int):
             raise ValueError(
