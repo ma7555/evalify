@@ -15,18 +15,19 @@ every batch would consume the roughly the maximum available memory.
   ```
   """
 import itertools
-from multiprocessing.sharedctypes import Value
 import sys
 from collections import OrderedDict
 from typing import Any, Sequence, Union
+
 import numpy as np
 import pandas as pd
 from sklearn.metrics import auc, confusion_matrix, roc_curve
+
 from evalify.metrics import (
     DISTANCE_TO_SIMILARITY,
-    REVERSE_DISTANCE_TO_SIMILARITY,
     METRICS_NEED_NORM,
     METRICS_NEED_ORDER,
+    REVERSE_DISTANCE_TO_SIMILARITY,
     get_norms,
     metrics_caller,
 )
