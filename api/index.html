@@ -765,12 +765,12 @@ Experiment        </code>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
         <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
         <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
-        <span class="n">batch_size</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">p</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
 
 <span class="sd">        Args:</span>
@@ -778,6 +778,7 @@ Experiment        </code>
 <span class="sd">            y: Targets for X as integers</span>
 <span class="sd">            metrics:</span>
 <span class="sd">                - &#39;cosine_similarity&#39;</span>
+<span class="sd">                - &#39;pearson_similarity&#39;</span>
 <span class="sd">                - &#39;cosine_distance&#39;</span>
 <span class="sd">                - &#39;euclidean_distance&#39;</span>
 <span class="sd">                - &#39;euclidean_distance_l2&#39;</span>
@@ -804,6 +805,8 @@ Experiment        </code>
 <span class="sd">                - &#39;best&#39;: Let the program decide based on available memory such that every</span>
 <span class="sd">                    batch will fit into the available memory. (Default)</span>
 <span class="sd">                - int: Manually decide the batch_size.</span>
+<span class="sd">                - None: No batching. All experiment and intermediate results must fit into</span>
+<span class="sd">                    memory or a MemoryError will be raised.</span>
 <span class="sd">            shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">            return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">                Default: False</span>
@@ -818,10 +821,10 @@ Experiment        </code>
 <span class="sd">            ValueError: An error occurred with the provided arguments.</span>
 
 <span class="sd">        Notes:</span>
-<span class="sd">            same_class_samples:</span>
+<span class="sd">            `same_class_samples`:</span>
 <span class="sd">                If the provided number is greater than the achievable for the class,</span>
 <span class="sd">                the maximum possible combinations are used.</span>
-<span class="sd">            different_class_samples:</span>
+<span class="sd">            `different_class_samples`:</span>
 <span class="sd">                If the provided number is greater than the achievable for the class,</span>
 <span class="sd">                the maximum possible combinations are used. (N, M) can also be</span>
 <span class="sd">                (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
@@ -841,7 +844,7 @@ Experiment        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
-            <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">(</span>
+            <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pairs</span><span class="p">(</span>
                 <span class="n">y</span><span class="p">,</span>
                 <span class="n">same_class_samples</span><span class="p">,</span>
                 <span class="n">different_class_samples</span><span class="p">,</span>
@@ -851,10 +854,13 @@ Experiment        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
         <span class="p">)</span>
+        <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
             <span class="n">batch_size</span> <span class="o">=</span> <span class="n">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">experiment_size</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -864,7 +870,6 @@ Experiment        </code>
         <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
         <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-        <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
         <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
         <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
 
@@ -880,7 +885,7 @@ Experiment        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span>
 
-    <span class="k">def</span> <span class="nf">get_pairs</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_get_pairs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">y</span><span class="p">,</span>
         <span class="n">same_class_samples</span><span class="p">,</span>
@@ -954,7 +959,11 @@ Experiment        </code>
                         <span class="sa">f</span><span class="s2">&quot;Received: different_class_samples=</span><span class="si">{</span><span class="n">different_class_samples</span><span class="si">}</span><span class="s2">.&quot;</span>
                     <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="s2">&quot;best&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">batch_size</span> <span class="o">!=</span> <span class="s2">&quot;best&quot;</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;`batch_size` argument must be either &quot;best&quot; or of type integer &#39;</span>
                 <span class="sa">f</span><span class="s2">&quot;Received: batch_size=</span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> with type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
@@ -1019,7 +1028,7 @@ Experiment        </code>
                 <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
                 <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span> 
                 <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
                     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
@@ -1098,6 +1107,7 @@ Experiment        </code>
                 <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">caller</span><span class="si">}</span><span class="s2">` function was can only be called with `metric` from &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="si">}</span><span class="s2"> which were used while running the experiment&quot;</span>
             <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
@@ -1401,7 +1411,7 @@ Experiment        </code>
             <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
             <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span> 
             <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
@@ -1420,7 +1430,6 @@ Experiment        </code>
     </div>
 
   </div>
-
 
 
 
@@ -1469,6 +1478,7 @@ Experiment        </code>
         <td><code>Union[str, Sequence[str]]</code></td>
         <td><ul>
 <li>'cosine_similarity'</li>
+<li>'pearson_similarity'</li>
 <li>'cosine_distance'</li>
 <li>'euclidean_distance'</li>
 <li>'euclidean_distance_l2'</li>
@@ -1513,6 +1523,8 @@ Experiment        </code>
 <li>'best': Let the program decide based on available memory such that every
     batch will fit into the available memory. (Default)</li>
 <li>int: Manually decide the batch_size.</li>
+<li>None: No batching. All experiment and intermediate results must fit into
+    memory or a MemoryError will be raised.</li>
 </ul></td>
         <td><code>&#39;best&#39;</code></td>
       </tr>
@@ -1569,19 +1581,15 @@ Default = 3</p></td>
   </tbody>
 </table>      <div class="admonition notes">
 <p class="admonition-title">Notes</p>
-<div class="admonition same_class_samples">
-<p class="admonition-title">Same_class_samples</p>
-<p>If the provided number is greater than the achievable for the class,
-the maximum possible combinations are used.</p>
-</div>
-<div class="admonition different_class_samples">
-<p class="admonition-title">Different_class_samples</p>
-<p>If the provided number is greater than the achievable for the class,
-the maximum possible combinations are used. (N, M) can also be
-('full', 'full') but this will calculate all possible combinations
-between all posibile negative samples. If the dataset is not small
-this will probably result in an extremely large array!.</p>
-</div>
+<p><code>same_class_samples</code>:
+    If the provided number is greater than the achievable for the class,
+    the maximum possible combinations are used.
+<code>different_class_samples</code>:
+    If the provided number is greater than the achievable for the class,
+    the maximum possible combinations are used. (N, M) can also be
+    ('full', 'full') but this will calculate all possible combinations
+    between all posibile negative samples. If the dataset is not small
+    this will probably result in an extremely large array!.</p>
 </div>
 
         <details class="quote">
@@ -1593,12 +1601,12 @@ this will probably result in an extremely large array!.</p>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;cosine_similarity&quot;</span><span class="p">,</span>
     <span class="n">same_class_samples</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;full&quot;</span><span class="p">,</span>
     <span class="n">different_class_samples</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;minimal&quot;</span><span class="p">,</span>
-    <span class="n">batch_size</span><span class="p">:</span> <span class="n">T_str_int</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">T_str_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
     <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_embeddings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">p</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
 
 <span class="sd">    Args:</span>
@@ -1606,6 +1614,7 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">        y: Targets for X as integers</span>
 <span class="sd">        metrics:</span>
 <span class="sd">            - &#39;cosine_similarity&#39;</span>
+<span class="sd">            - &#39;pearson_similarity&#39;</span>
 <span class="sd">            - &#39;cosine_distance&#39;</span>
 <span class="sd">            - &#39;euclidean_distance&#39;</span>
 <span class="sd">            - &#39;euclidean_distance_l2&#39;</span>
@@ -1632,6 +1641,8 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">            - &#39;best&#39;: Let the program decide based on available memory such that every</span>
 <span class="sd">                batch will fit into the available memory. (Default)</span>
 <span class="sd">            - int: Manually decide the batch_size.</span>
+<span class="sd">            - None: No batching. All experiment and intermediate results must fit into</span>
+<span class="sd">                memory or a MemoryError will be raised.</span>
 <span class="sd">        shuffle: Whether to shuffle the returned experiment dataframe. Default: False.</span>
 <span class="sd">        return_embeddings: Whether to return the embeddings instead of indexes.</span>
 <span class="sd">            Default: False</span>
@@ -1646,10 +1657,10 @@ this will probably result in an extremely large array!.</p>
 <span class="sd">        ValueError: An error occurred with the provided arguments.</span>
 
 <span class="sd">    Notes:</span>
-<span class="sd">        same_class_samples:</span>
+<span class="sd">        `same_class_samples`:</span>
 <span class="sd">            If the provided number is greater than the achievable for the class,</span>
 <span class="sd">            the maximum possible combinations are used.</span>
-<span class="sd">        different_class_samples:</span>
+<span class="sd">        `different_class_samples`:</span>
 <span class="sd">            If the provided number is greater than the achievable for the class,</span>
 <span class="sd">            the maximum possible combinations are used. (N, M) can also be</span>
 <span class="sd">            (&#39;full&#39;, &#39;full&#39;) but this will calculate all possible combinations</span>
@@ -1669,7 +1680,7 @@ this will probably result in an extremely large array!.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">all_targets</span><span class="p">:</span>
-        <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">(</span>
+        <span class="n">all_pairs</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_pairs</span><span class="p">(</span>
             <span class="n">y</span><span class="p">,</span>
             <span class="n">same_class_samples</span><span class="p">,</span>
             <span class="n">different_class_samples</span><span class="p">,</span>
@@ -1679,10 +1690,13 @@ this will probably result in an extremely large array!.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="n">data</span><span class="o">=</span><span class="n">all_pairs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;img_a&quot;</span><span class="p">,</span> <span class="s2">&quot;img_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target_a&quot;</span><span class="p">,</span> <span class="s2">&quot;target_b&quot;</span><span class="p">,</span> <span class="s2">&quot;target&quot;</span><span class="p">]</span>
     <span class="p">)</span>
+    <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">experiment_size</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">metric</span> <span class="ow">in</span> <span class="n">METRICS_NEED_NORM</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">):</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;norms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_norms</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -1692,7 +1706,6 @@ this will probably result in an extremely large array!.</p>
     <span class="n">img_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_a</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
     <span class="n">img_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">img_b</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
 
-    <span class="n">experiment_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
     <span class="n">img_a_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
     <span class="n">img_b_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">img_b</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">experiment_size</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
 
@@ -1757,6 +1770,7 @@ split and calculations happens over large data chunks very quickly.</p>
 
 
   <div class="doc doc-children">
+
 
 
 
