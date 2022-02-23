@@ -17,7 +17,7 @@ every batch would consume the roughly the maximum available memory.
 import itertools
 import sys
 from collections import OrderedDict
-from typing import Any, Sequence, Union, List, Tuple
+from typing import Any, List, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
