@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "evalify"
-version = "0.1.2"
+version = "0.1.3"
 homepage = "https://github.com/ma7555/evalify"
 description = "Evaluate your face  or voice verification models literally in seconds."
 authors = ["Mahmoud Bahaa <mah.alaa@nu.edu.eg>"]
