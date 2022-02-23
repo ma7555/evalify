@@ -445,6 +445,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.get_binary_prediction" class="md-nav__link">
+    get_binary_prediction()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.get_roc_auc" class="md-nav__link">
+    get_roc_auc()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.predicted_as_similarity" class="md-nav__link">
+    predicted_as_similarity()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#evalify.evalify.Experiment.run" class="md-nav__link">
     run()
   </a>
@@ -610,6 +631,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.get_binary_prediction" class="md-nav__link">
+    get_binary_prediction()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.get_roc_auc" class="md-nav__link">
+    get_roc_auc()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evalify.evalify.Experiment.predicted_as_similarity" class="md-nav__link">
+    predicted_as_similarity()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#evalify.evalify.Experiment.run" class="md-nav__link">
     run()
   </a>
@@ -749,7 +791,7 @@ Experiment        </code>
 
 
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">experiment_sucess</span> <span class="o">=</span> <span class="kc">False</span>
@@ -891,7 +933,8 @@ Experiment        </code>
         <span class="n">same_class_samples</span><span class="p">,</span>
         <span class="n">different_class_samples</span><span class="p">,</span>
         <span class="n">target</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Generates experiment pairs.&quot;&quot;&quot;</span>
         <span class="n">same_ixs_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="n">same_class_samples</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">same_ixs_full</span><span class="p">),</span> <span class="n">same_class_samples</span><span class="p">)</span>
@@ -928,7 +971,8 @@ Experiment        </code>
 
     <span class="k">def</span> <span class="nf">_validate_args</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">same_class_samples</span><span class="p">,</span> <span class="n">different_class_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">p</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Validates passed arguments to Experiment.run() method.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">same_class_samples</span> <span class="o">!=</span> <span class="s2">&quot;full&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">same_class_samples</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;`same_class_samples` argument must be one of &#39;full&#39; or an integer &quot;</span>
@@ -981,7 +1025,7 @@ Experiment        </code>
     <span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            float: optimal cutoff value</span>
+<span class="sd">            float: Optimal cutoff value</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
@@ -1000,7 +1044,7 @@ Experiment        </code>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimal_cutoff</span>
 
     <span class="k">def</span> <span class="nf">find_threshold_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
+        <span class="sd">&quot;&quot;&quot;Finds optimal threshold at a given FPR.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            fpr: False positive rate to find best threshold for.</span>
@@ -1028,7 +1072,7 @@ Experiment        </code>
                 <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
                 <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span> 
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
                     <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
@@ -1044,6 +1088,13 @@ Experiment        </code>
         <span class="k">return</span> <span class="n">threshold_at_fpr</span>
 
     <span class="k">def</span> <span class="nf">get_binary_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find binary prediction from distance or similarity.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            metric: Metric name for the desired prediction.</span>
+<span class="sd">            threshold: Cut off threshold.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.Series: Binary predictions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span>
@@ -1053,11 +1104,11 @@ Experiment        </code>
     <span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">        Args:</span>
-<span class="sd">            threshold: cut-off threshold.</span>
-<span class="sd">            metric: metric to use.</span>
+<span class="sd">            threshold: Cut-off threshold.</span>
+<span class="sd">            metric: Metric to use.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            dict: containing all evaluation metrics.</span>
+<span class="sd">            dict: A dict ontaining all evaluation metrics.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
@@ -1109,7 +1160,11 @@ Experiment        </code>
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find ROC AUC for all the metrics used.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            collections.OrderedDict: An OrderedDict with AUC for all metrics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
@@ -1123,7 +1178,15 @@ Experiment        </code>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span>
 
-    <span class="k">def</span> <span class="nf">predicted_as_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">predicted_as_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert distance metrics to a similarity measure.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            metric: distance metric to convert to similarity. If a similarity metric is</span>
+<span class="sd">                passed, It gets returned unchanged.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.Series: Converted distance to similarity.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span><span class="p">:</span>
             <span class="n">predicted</span> <span class="o">=</span> <span class="p">(</span>
@@ -1178,13 +1241,13 @@ Experiment        </code>
       <tr>
         <td><code>threshold</code></td>
         <td><code>float</code></td>
-        <td><p>cut-off threshold.</p></td>
+        <td><p>Cut-off threshold.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>metric</code></td>
         <td><code>str</code></td>
-        <td><p>metric to use.</p></td>
+        <td><p>Metric to use.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -1200,20 +1263,20 @@ Experiment        </code>
   <tbody>
     <tr>
       <td><code>dict</code></td>
-      <td><p>containing all evaluation metrics.</p></td>
+      <td><p>A dict ontaining all evaluation metrics.</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">evaluate_at_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Evaluate performance at specific threshold</span>
 <span class="sd">    Args:</span>
-<span class="sd">        threshold: cut-off threshold.</span>
-<span class="sd">        metric: metric to use.</span>
+<span class="sd">        threshold: Cut-off threshold.</span>
+<span class="sd">        metric: Metric to use.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: containing all evaluation metrics.</span>
+<span class="sd">        dict: A dict ontaining all evaluation metrics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">metrics_evaluation</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
@@ -1283,16 +1346,16 @@ Experiment        </code>
   <tbody>
     <tr>
       <td><code>float</code></td>
-      <td><p>optimal cutoff value</p></td>
+      <td><p>Optimal cutoff value</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_optimal_cutoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find the optimal cutoff point</span>
 <span class="sd">    Returns:</span>
-<span class="sd">        float: optimal cutoff value</span>
+<span class="sd">        float: Optimal cutoff value</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
@@ -1329,7 +1392,7 @@ Experiment        </code>
 
     <div class="doc doc-contents ">
 
-      <p>Runs an experiment for face verification</p>
+      <p>Finds optimal threshold at a given FPR.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1381,9 +1444,9 @@ Experiment        </code>
   </tbody>
 </table>
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">find_threshold_at_fpr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpr</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Runs an experiment for face verification</span>
+    <span class="sd">&quot;&quot;&quot;Finds optimal threshold at a given FPR.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fpr: False positive rate to find best threshold for.</span>
@@ -1411,7 +1474,7 @@ Experiment        </code>
             <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_right</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">fpr</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ix_left</span> <span class="o">==</span> <span class="n">ix_right</span><span class="p">:</span>
             <span class="n">best</span> <span class="o">=</span> <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span> 
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">best</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df_fpr_tpr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix_left</span><span class="p">]</span><span class="o">.</span><span class="n">FPR</span> <span class="o">-</span> <span class="n">fpr</span><span class="p">)</span>
@@ -1433,6 +1496,212 @@ Experiment        </code>
 
 
 
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="evalify.evalify.Experiment.get_binary_prediction" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_binary_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span></code>
+
+
+<a href="#evalify.evalify.Experiment.get_binary_prediction" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Find binary prediction from distance or similarity.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>metric</code></td>
+        <td></td>
+        <td><p>Metric name for the desired prediction.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>threshold</code></td>
+        <td></td>
+        <td><p>Cut off threshold.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>pd.Series</code></td>
+      <td><p>Binary predictions.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_binary_prediction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find binary prediction from distance or similarity.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        metric: Metric name for the desired prediction.</span>
+<span class="sd">        threshold: Cut off threshold.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.Series: Binary predictions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span>
+        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="evalify.evalify.Experiment.get_roc_auc" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#evalify.evalify.Experiment.get_roc_auc" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Find ROC AUC for all the metrics used.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>collections.OrderedDict</code></td>
+      <td><p>An OrderedDict with AUC for all metrics.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_roc_auc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Find ROC AUC for all the metrics used.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        collections.OrderedDict: An OrderedDict with AUC for all metrics.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">check_experiment_run</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+        <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">],</span> <span class="n">predicted</span><span class="p">,</span> <span class="n">drop_intermediate</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+        <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roc_auc</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="evalify.evalify.Experiment.predicted_as_similarity" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">predicted_as_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></code>
+
+
+<a href="#evalify.evalify.Experiment.predicted_as_similarity" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert distance metrics to a similarity measure.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>metric</code></td>
+        <td><code>str</code></td>
+        <td><p>distance metric to convert to similarity. If a similarity metric is
+passed, It gets returned unchanged.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>pd.Series</code></td>
+      <td><p>Converted distance to similarity.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">predicted_as_similarity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert distance metrics to a similarity measure.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        metric: distance metric to convert to similarity. If a similarity metric is</span>
+<span class="sd">            passed, It gets returned unchanged.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.Series: Converted distance to similarity.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">DISTANCE_TO_SIMILARITY</span><span class="p">:</span>
+        <span class="n">predicted</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cached_predicted_as_similarity</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_predicted_as_similarity</span>
+            <span class="k">else</span> <span class="n">DISTANCE_TO_SIMILARITY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metric</span><span class="p">)(</span><span class="n">predicted</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">predicted</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -1593,7 +1862,7 @@ Default = 3</p></td>
 </div>
 
         <details class="quote">
-          <summary>Source code in <code>evalify/evalify.py</code></summary>
+          <summary>Source code in <code>evalify\evalify.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -1843,7 +2112,7 @@ split and calculations happens over large data chunks very quickly.</p>
 <p>We need 3 big arrays to be held in memory (A, B, A*B)</p>
 
         <details class="quote">
-          <summary>Source code in <code>evalify/utils.py</code></summary>
+          <summary>Source code in <code>evalify\utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_best_batch_size</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">available_mem</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate maximum rows to fetch per batch without going out of memory.</span>
 
