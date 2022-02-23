@@ -303,14 +303,8 @@ class Experiment:
 
             if fpr == 0:
                 best = df_fpr_tpr.iloc[ix_right]
-            elif fpr == 1:
+            elif fpr == 1 or ix_left == ix_right:
                 best = df_fpr_tpr.iloc[ix_left]
-            elif ix_left == ix_right:
-                best = df_fpr_tpr.iloc[ix_left]
-            elif fpr == df_fpr_tpr.iloc[ix_left].FPR:
-                best = df_fpr_tpr.iloc[ix_left]
-            elif fpr == df_fpr_tpr.iloc[ix_right].FPR:
-                best = df_fpr_tpr.iloc[ix_right]
             else:
                 best = (
                     df_fpr_tpr.iloc[ix_left]
