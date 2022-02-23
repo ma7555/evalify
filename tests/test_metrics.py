@@ -5,6 +5,7 @@ import unittest
 
 import numpy as np
 from scipy.spatial import distance
+from scipy.stats.stats import pearsonr
 
 from evalify import metrics
 
@@ -32,6 +33,18 @@ class TestMetrics(unittest.TestCase):
         result_2 = 1 - np.array(
             [
                 distance.cosine(self.embs[ix], self.embs[iy])
+                for (ix, iy) in zip(self.ix, self.iy)
+            ]
+        )
+        self.assertEqual(result.shape, (self.slice_size,))
+        self.assertTrue(np.allclose(result, result_2))
+
+    def test_pearson_similarity(self):
+        """Test pearson_similarity"""
+        result = metrics.pearson_similarity(self.embs, self.ix, self.iy)
+        result_2 = np.array(
+            [
+                pearsonr(self.embs[ix], self.embs[iy])[0]
                 for (ix, iy) in zip(self.ix, self.iy)
             ]
         )

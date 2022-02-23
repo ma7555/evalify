@@ -73,6 +73,7 @@ experiment = Experiment()
 experiment.run(X, y)
 experiment.get_roc_auc()
 print(experiment.df.roc_auc)
+print(experiment.find_threshold_at_fpr(0.01))
 ```
 ## Documentation: 
 * <https://ma7555.github.io/evalify/>
@@ -94,7 +95,7 @@ print(experiment.df.roc_auc)
 * Computation time for 4 metrics 4.2 million samples experiment is **24 seconds vs 51 minutes** if looping using `scipy.spatial.distance` implemntations.
 
 ## TODO
-* Safer memory allocation. I did not have issues but if you ran out of memory please manually increase number of splits with `nsplits` argument.
+* Safer memory allocation. I did not have issues but if you ran out of memory please manually set the `batch_size` argument.
 
 ## Contribution
 * Contributions are welcomed, and they are greatly appreciated! Every little bit helps, and credit will always be given.

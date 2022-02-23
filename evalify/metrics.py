@@ -10,10 +10,12 @@ def get_norms(X):
     return np.linalg.norm(X, axis=1)
 
 
+def _inner1d(A, B):
+    return np.einsum("ij,ij->i", A, B, optimize="optimal")
+
+
 def cosine_similarity(embs, ix, iy, norms, return_distance=False, **kwargs):
-    similarity = np.einsum("ij,ij->i", embs[ix], embs[iy], optimize="optimal") / (
-        norms[ix] * norms[iy]
-    )
+    similarity = _inner1d(embs[ix], embs[iy]) / (norms[ix] * norms[iy])
     if return_distance:
         return 1 - similarity
     return similarity
@@ -33,8 +35,20 @@ def minkowski_distance(embs, ix, iy, p, **kwargs):
     return np.linalg.norm(embs[ix] - embs[iy], ord=p, axis=1)
 
 
+def pearson_similarity(embs, ix, iy, **kwargs):
+    A = embs[ix]
+    B = embs[iy]
+    A_mA = A - np.expand_dims(A.mean(axis=1), -1)
+    B_mB = B - np.expand_dims(B.mean(axis=1), -1)
+    ssA = np.expand_dims((A_mA**2).sum(axis=1), -1)
+    ssB = np.expand_dims((B_mB**2).sum(axis=1), -1)
+
+    return _inner1d(A_mA, B_mB) / np.sqrt(_inner1d(ssA, ssB))
+
+
 metrics_caller = {
     "cosine_similarity": cosine_similarity,
+    "pearson_similarity": pearson_similarity,
     "cosine_distance": lambda embs, ix, iy, norms, **kwargs: cosine_similarity(
         embs, ix, iy, norms, return_distance=True
     ),

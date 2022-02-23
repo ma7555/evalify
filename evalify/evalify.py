@@ -51,12 +51,12 @@ class Experiment:
         metrics: Union[str, Sequence[str]] = "cosine_similarity",
         same_class_samples: T_str_int = "full",
         different_class_samples: Union[str, int, Sequence[T_str_int]] = "minimal",
-        batch_size: T_str_int = "best",
+        batch_size: Union[T_str_int, None] = "best",
         shuffle: bool = False,
         seed: int = None,
         return_embeddings: bool = False,
         p: int = 3,
-    ):
+    ) -> pd.DataFrame:
         """Runs an experiment for face verification
 
         Args:
@@ -90,6 +90,8 @@ class Experiment:
                 - 'best': Let the program decide based on available memory such that every
                     batch will fit into the available memory. (Default)
                 - int: Manually decide the batch_size.
+                - None: No batching. All experiment and intermediate results must fit into
+                    memory or a MemoryError will be raised.
             shuffle: Whether to shuffle the returned experiment dataframe. Default: False.
             return_embeddings: Whether to return the embeddings instead of indexes.
                 Default: False
@@ -104,10 +106,10 @@ class Experiment:
             ValueError: An error occurred with the provided arguments.
 
         Notes:
-            same_class_samples:
+            `same_class_samples`:
                 If the provided number is greater than the achievable for the class,
                 the maximum possible combinations are used.
-            different_class_samples:
+            `different_class_samples`:
                 If the provided number is greater than the achievable for the class,
                 the maximum possible combinations are used. (N, M) can also be
                 ('full', 'full') but this will calculate all possible combinations
@@ -127,7 +129,7 @@ class Experiment:
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
         for target in all_targets:
-            all_pairs += self.get_pairs(
+            all_pairs += self._get_pairs(
                 y,
                 same_class_samples,
                 different_class_samples,
@@ -137,10 +139,13 @@ class Experiment:
         self.df = pd.DataFrame(
             data=all_pairs, columns=["img_a", "img_b", "target_a", "target_b", "target"]
         )
+        experiment_size = len(self.df)
         if shuffle:
             self.df = self.df.sample(frac=1, random_state=seed)
         if batch_size == "best":
             batch_size = calculate_best_batch_size(X)
+        elif batch_size is None:
+            batch_size = experiment_size
         kwargs = {}
         if any(metric in METRICS_NEED_NORM for metric in metrics):
             kwargs["norms"] = get_norms(X)
@@ -150,7 +155,6 @@ class Experiment:
         img_a = self.df.img_a.to_numpy()
         img_b = self.df.img_b.to_numpy()
 
-        experiment_size = len(self.df)
         img_a_s = np.array_split(img_a, np.ceil(experiment_size / batch_size))
         img_b_s = np.array_split(img_b, np.ceil(experiment_size / batch_size))
 
@@ -166,7 +170,7 @@ class Experiment:
         self.metrics = metrics
         return self.df
 
-    def get_pairs(
+    def _get_pairs(
         self,
         y,
         same_class_samples,
@@ -240,7 +244,11 @@ class Experiment:
                         f"Received: different_class_samples={different_class_samples}."
                     )
 
-        if batch_size != "best" and not isinstance(batch_size, int):
+        if (
+            batch_size != "best"
+            and not isinstance(batch_size, int)
+            and batch_size is not None
+        ):
             raise ValueError(
                 '`batch_size` argument must be either "best" or of type integer '
                 f"Received: batch_size={batch_size} with type {type(batch_size)}."

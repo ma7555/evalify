@@ -19,9 +19,8 @@ experiment.run(
     X,
     y,
     metrics=(
-        "cosine_distance",
         "cosine_similarity",
-        "manhattan_distance",
+        "pearson_similarity",
         "euclidean_distance_l2",
     ),
     same_class_samples="full",
@@ -35,4 +34,4 @@ print(f"Metrics calculations executed in {time.time()-start_time:.2f} seconds")
 print("ROC AUC:")
 print(experiment.get_roc_auc())
 print("Threshold @ FPR:")
-print(experiment.find_threshold_at_fpr(0.1))
+print(experiment.find_threshold_at_fpr(0.01))
