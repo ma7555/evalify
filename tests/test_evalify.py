@@ -36,7 +36,7 @@ class TestEvalify(unittest.TestCase):
     def test_run_cosine_similarity(self):
         """Test run with cosine_similarity"""
         experiment = Experiment()
-        df = experiment.run(self.embs, self.targets)
+        df = experiment.run(self.embs, self.targets, metrics="cosine_similarity")
         self.assertLessEqual(df.cosine_similarity.max(), 1)
 
     def test_run_all_metrics_separated(self):
@@ -90,6 +90,19 @@ class TestEvalify(unittest.TestCase):
         self.assertEqual(len(df1), len(df2))
         self.assertEqual(sum(df1.index), sum(df2.index))
         self.assertTrue(all(ix in df2.index for ix in df1.index))
+
+    def test_run_no_batch_size(self):
+        """Test run with no batch_size"""
+        experiment = Experiment()
+        df1 = experiment.run(
+            self.embs,
+            self.targets,
+            same_class_samples=2,
+            different_class_samples=(1, 1),
+            batch_size=None,
+            seed=555,
+        )
+        self.assertTrue(experiment.check_experiment_run())
 
     def test_run_return_embeddings(self):
         """Test run with return_embeddings"""

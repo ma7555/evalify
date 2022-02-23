@@ -314,7 +314,7 @@ class Experiment:
                 best = df_fpr_tpr.iloc[ix_right]
             elif fpr == 1 or ix_left == ix_right:
                 best = df_fpr_tpr.iloc[ix_left]
-            else:
+            else: 
                 best = (
                     df_fpr_tpr.iloc[ix_left]
                     if abs(df_fpr_tpr.iloc[ix_left].FPR - fpr)
@@ -393,6 +393,7 @@ class Experiment:
                 f"`{caller}` function was can only be called with `metric` from "
                 f"{self.metrics} which were used while running the experiment"
             )
+        return True
 
     def get_roc_auc(self):
         self.check_experiment_run()
