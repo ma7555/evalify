@@ -17,7 +17,8 @@ every batch would consume the roughly the maximum available memory.
 import itertools
 import sys
 from collections import OrderedDict
-from typing import Any, Sequence, Union
+from types import NoneType
+from typing import Any, Sequence, Union, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -177,7 +178,9 @@ class Experiment:
         same_class_samples,
         different_class_samples,
         target,
-    ):
+    ) -> List[Tuple]:
+        """Generates experiment pairs.
+        """
         same_ixs_full = np.argwhere(y == target).ravel()
         if isinstance(same_class_samples, int):
             same_class_samples = min(len(same_ixs_full), same_class_samples)
@@ -214,7 +217,8 @@ class Experiment:
 
     def _validate_args(
         self, metrics, same_class_samples, different_class_samples, batch_size, p
-    ):
+    ) -> NoneType:
+        """Validates passed arguments to Experiment.run() method."""
         if same_class_samples != "full" and not isinstance(same_class_samples, int):
             raise ValueError(
                 "`same_class_samples` argument must be one of 'full' or an integer "
@@ -267,7 +271,7 @@ class Experiment:
     def find_optimal_cutoff(self):
         """Find the optimal cutoff point
         Returns:
-            float: optimal cutoff value
+            float: Optimal cutoff value
 
         """
         self.check_experiment_run()
@@ -286,7 +290,7 @@ class Experiment:
         return self.optimal_cutoff
 
     def find_threshold_at_fpr(self, fpr: float):
-        """Runs an experiment for face verification
+        """Finds optimal threshold at a given FPR.
 
         Args:
             fpr: False positive rate to find best threshold for.
@@ -314,7 +318,7 @@ class Experiment:
                 best = df_fpr_tpr.iloc[ix_right]
             elif fpr == 1 or ix_left == ix_right:
                 best = df_fpr_tpr.iloc[ix_left]
-            else: 
+            else:
                 best = (
                     df_fpr_tpr.iloc[ix_left]
                     if abs(df_fpr_tpr.iloc[ix_left].FPR - fpr)
@@ -330,6 +334,13 @@ class Experiment:
         return threshold_at_fpr
 
     def get_binary_prediction(self, metric, threshold):
+        """Find binary prediction from distance or similarity.
+        Args:
+            metric: Metric name for the desired prediction.
+            threshold: Cut off threshold.
+        Returns:
+            pd.Series: Binary predictions.
+        """
         return (
             self.df[metric].apply(lambda x: 1 if x < threshold else 0)
             if metric in DISTANCE_TO_SIMILARITY
@@ -339,11 +350,11 @@ class Experiment:
     def evaluate_at_threshold(self, threshold: float, metric: str):
         """Evaluate performance at specific threshold
         Args:
-            threshold: cut-off threshold.
-            metric: metric to use.
+            threshold: Cut-off threshold.
+            metric: Metric to use.
 
         Returns:
-            dict: containing all evaluation metrics.
+            dict: A dict ontaining all evaluation metrics.
         """
         self.metrics_evaluation = {}
         self.check_experiment_run(metric)
@@ -395,7 +406,11 @@ class Experiment:
             )
         return True
 
-    def get_roc_auc(self):
+    def get_roc_auc(self) -> OrderedDict:
+        """Find ROC AUC for all the metrics used.
+        Returns:
+            collections.OrderedDict: An OrderedDict with AUC for all metrics.
+        """
         self.check_experiment_run()
         self.roc_auc = {}
         for metric in self.metrics:
@@ -409,7 +424,15 @@ class Experiment:
         )
         return self.roc_auc
 
-    def predicted_as_similarity(self, metric):
+    def predicted_as_similarity(self, metric: str) -> pd.Series:
+        """Convert distance metrics to a similarity measure.
+        Args:
+            metric: distance metric to convert to similarity. If a similarity metric is
+                passed, It gets returned unchanged.
+        Returns:
+            pd.Series: Converted distance to similarity.
+
+        """
         predicted = self.df[metric]
         if metric in DISTANCE_TO_SIMILARITY:
             predicted = (
