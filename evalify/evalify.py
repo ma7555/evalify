@@ -15,6 +15,7 @@ every batch would consume the roughly the maximum available memory.
   ```
   """
 import itertools
+from multiprocessing.sharedctypes import Value
 import sys
 from collections import OrderedDict
 from typing import Any, Sequence, Union
@@ -23,6 +24,7 @@ import pandas as pd
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from evalify.metrics import (
     DISTANCE_TO_SIMILARITY,
+    REVERSE_DISTANCE_TO_SIMILARITY,
     METRICS_NEED_NORM,
     METRICS_NEED_ORDER,
     get_norms,
@@ -273,8 +275,55 @@ class Experiment:
             self.optimal_cutoff[metric] = roc_t["threshold"].item()
         return self.optimal_cutoff
 
-    def find_thr_at_fpr(self, fpr):
-        raise NotImplementedError
+    def find_threshold_at_fpr(self, fpr: float):
+        """Runs an experiment for face verification
+
+        Args:
+            fpr: False positive rate to find best threshold for.
+        Returns:
+            dict: A dictionary with keys as metrics and values as thresholds.
+        Raises:
+            ValueError: If `fpr` is not between 0 and 1.
+        """
+        self.check_experiment_run()
+        if not 0 <= fpr <= 1:
+            raise ValueError(
+                "`fpr` must be between 0 and 1. " f"Received wanted_fpr={fpr}"
+            )
+        threshold_at_fpr = {}
+        for metric in self.metrics:
+            predicted = self.predicted_as_similarity(metric)
+            FPR, TPR, thresholds = roc_curve(
+                self.df["target"], predicted, drop_intermediate=False
+            )
+            df_fpr_tpr = pd.DataFrame({"FPR": FPR, "TPR": TPR, "Threshold": thresholds})
+            ix_left = np.searchsorted(df_fpr_tpr["FPR"], fpr, side="left")
+            ix_right = np.searchsorted(df_fpr_tpr["FPR"], fpr, side="right")
+
+            if fpr == 0:
+                best = df_fpr_tpr.iloc[ix_right]
+            elif fpr == 1:
+                best = df_fpr_tpr.iloc[ix_left]
+            elif ix_left == ix_right:
+                best = df_fpr_tpr.iloc[ix_left]
+            elif fpr == df_fpr_tpr.iloc[ix_left].FPR:
+                best = df_fpr_tpr.iloc[ix_left]
+            elif fpr == df_fpr_tpr.iloc[ix_right].FPR:
+                best = df_fpr_tpr.iloc[ix_right]
+            else:
+                best = (
+                    df_fpr_tpr.iloc[ix_left]
+                    if abs(df_fpr_tpr.iloc[ix_left].FPR - fpr)
+                    < abs(df_fpr_tpr.iloc[ix_right].FPR - fpr)
+                    else df_fpr_tpr.iloc[ix_right]
+                )
+            best = best.to_dict()
+            if metric in REVERSE_DISTANCE_TO_SIMILARITY:
+                best["Threshold"] = REVERSE_DISTANCE_TO_SIMILARITY.get(metric)(
+                    best["Threshold"]
+                )
+            threshold_at_fpr[metric] = best
+        return threshold_at_fpr
 
     def get_binary_prediction(self, metric, threshold):
         return (
@@ -306,6 +355,7 @@ class Experiment:
             FNR = 1 - TPR  # false negative rate
             FDR = 1 - PPV  # false discovery rate
             FOR = 1 - NPV  # false omission rate
+            F1 = 2 * (PPV * TPR) / (PPV + TPR)
             # LRp = TPR / FPR  # positive likelihood ratio (LR+)
             # LRn = FNR / TNR  # negative likelihood ratio (LR+)
 
@@ -318,6 +368,7 @@ class Experiment:
                 "FNR": FNR,
                 "FDR": FDR,
                 "FOR": FOR,
+                "F1": F1,
                 # "LR+": LRp,
                 # "LR-": LRn,
             }
@@ -344,7 +395,9 @@ class Experiment:
         self.roc_auc = {}
         for metric in self.metrics:
             predicted = self.predicted_as_similarity(metric)
-            fpr, tpr, thresholds = roc_curve(self.df["target"], predicted)
+            fpr, tpr, thresholds = roc_curve(
+                self.df["target"], predicted, drop_intermediate=False
+            )
             self.roc_auc[metric] = auc(fpr, tpr)
         self.roc_auc = OrderedDict(
             sorted(self.roc_auc.items(), key=lambda x: x[1], reverse=True)
