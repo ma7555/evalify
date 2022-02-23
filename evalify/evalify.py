@@ -64,6 +64,7 @@ class Experiment:
             y: Targets for X as integers
             metrics:
                 - 'cosine_similarity'
+                - 'pearson_similarity'
                 - 'cosine_distance'
                 - 'euclidean_distance'
                 - 'euclidean_distance_l2'
