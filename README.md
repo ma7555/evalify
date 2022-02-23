@@ -83,15 +83,16 @@ print(experiment.find_threshold_at_fpr(0.01))
 
 * Blazing fast implementation for metrics calculation through optimized einstein sum and vectorized calculations.
 * Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.
-* Smart sampling options using direct indexing from pre-calculated arrays with an option to have total control over sampling strategy and sampling numbers.
+* Smart sampling options using direct indexing from pre-calculated arrays with an option to have fine control over sampling strategy and sampling numbers.
 * Supports most evaluation metrics:
-    - cosine_similarity
-    - cosine_distance
-    - euclidean_distance
-    - euclidean_distance_l2
-    - minkowski_distance
-    - manhattan_distance
-    - chebyshev_distance
+    - `cosine_similarity`
+    - `pearson_similarity`
+    - `cosine_distance`
+    - `euclidean_distance`
+    - `euclidean_distance_l2`
+    - `minkowski_distance`
+    - `manhattan_distance`
+    - `chebyshev_distance`
 * Computation time for 4 metrics 4.2 million samples experiment is **24 seconds vs 51 minutes** if looping using `scipy.spatial.distance` implemntations.
 
 ## TODO
