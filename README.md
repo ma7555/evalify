@@ -38,23 +38,19 @@
 
 </p>
 
-
-Evaluate your face or voice verification models literally in seconds.
+**Evaluate Biometric Authentication Models Literally in Seconds.**
 
 ## Installation
-#### Stable release
+#### Stable release:
 ```bash
 pip install evalify
 ```
-#### Bleeding edge
-* From source
-    ```bash
-    pip install git+https://github.com/ma7555/evalify.git
-    ```
-* From TestPyPI
-    ```bash
-    pip install --index-url https://test.pypi.org/simple/ evalify
-    ```
+#### Bleeding edge:
+```bash
+pip install git+https://github.com/ma7555/evalify.git
+```
+## Used for
+Evaluating all biometric authentication models, where the model output is a high-level embeddings known as feature vectors for visual or behaviour biometrics or d-vectors for auditory biometrics.
 
 ## Usage
 
@@ -75,6 +71,10 @@ experiment.get_roc_auc()
 print(experiment.df.roc_auc)
 print(experiment.find_threshold_at_fpr(0.01))
 ```
+## How it works
+* When you run an experiment, evalify tries all the possible combinations between individuals for authentication based on the `X` and `y` parameters and returns the results including FPR, TPR, FNR, TNR and ROC AUC. `X` is an array of embeddings and `y` is an array of corresponding targets.
+* Evalify can find the optimal threshold based on your agreed FPR and desired similarity or distance metric.
+
 ## Documentation: 
 * <https://ma7555.github.io/evalify/>
 
@@ -83,7 +83,7 @@ print(experiment.find_threshold_at_fpr(0.01))
 
 * Blazing fast implementation for metrics calculation through optimized einstein sum and vectorized calculations.
 * Many operations are dispatched to canonical BLAS, cuBLAS, or other specialized routines.
-* Smart sampling options using direct indexing from pre-calculated arrays with an option to have fine control over sampling strategy and sampling numbers.
+* Smart sampling options using direct indexing from pre-calculated arrays with total control over sampling strategy and sampling numbers.
 * Supports most evaluation metrics:
     - `cosine_similarity`
     - `pearson_similarity`
