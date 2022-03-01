@@ -33,7 +33,7 @@
 <a href="https://codecov.io/gh/ma7555/evalify">
   <img src="https://codecov.io/gh/ma7555/evalify/branch/main/graph/badge.svg" />
 </a>
-<a href="https://github.com/ma7555/evalify/releases"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/ma7555/evalify/total">
+<a href="https://pypi.org/project/evalify/"><img alt="PyPI Downloads/Month" src="https://img.shields.io/pypi/dm/evalify">
 </a>
 
 </p>
