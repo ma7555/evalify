@@ -68,7 +68,7 @@ y = rng.integers(self.nclasses, size=self.nphotos)
 experiment = Experiment()
 experiment.run(X, y)
 experiment.get_roc_auc()
-print(experiment.df.roc_auc)
+print(experiment.roc_auc)
 print(experiment.find_threshold_at_fpr(0.01))
 ```
 ## How it works
