@@ -15,6 +15,7 @@ y = X_y_array["y"]
 
 experiment = Experiment()
 start_time = time.time()
+print('Starting Experiment')
 experiment.run(
     X,
     y,
@@ -35,3 +36,4 @@ print("ROC AUC:")
 print(experiment.get_roc_auc())
 print("Threshold @ FPR:")
 print(experiment.find_threshold_at_fpr(0.01))
+print(experiment.calculate_eer())

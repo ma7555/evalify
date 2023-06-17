@@ -53,7 +53,7 @@ class Experiment:
         different_class_samples: Union[str, int, Sequence[T_str_int]] = "minimal",
         batch_size: Union[T_str_int, None] = "best",
         shuffle: bool = False,
-        seed: int = None,
+        seed: Union[int, None] = None,
         return_embeddings: bool = False,
         p: int = 3,
     ) -> pd.DataFrame:
@@ -264,7 +264,7 @@ class Experiment:
             )
 
         if p < 1:
-            raise ValueError(f"`p` must be at least 1. Received: p={p}")
+            raise ValueError(f"`p` must be an int and at least 1. Received: p={p}")
 
     def find_optimal_cutoff(self):
         """Find the optimal cutoff point
@@ -438,4 +438,42 @@ class Experiment:
                 if metric in self.cached_predicted_as_similarity
                 else DISTANCE_TO_SIMILARITY.get(metric)(predicted)
             )
+            self.cached_predicted_as_similarity[metric] = predicted
         return predicted
+    
+    def calculate_eer(self) -> OrderedDict:
+        """
+        Calculates the Equal Error Rate (EER) for each metric.
+
+        Returns an ordered dictionary containing the EER value and threshold for each metric.
+        The metrics are sorted in ascending order based on the EER values.
+
+        Returns:
+            OrderedDict: A dictionary containing the EER value and threshold for each metric.
+                The metrics are sorted in ascending order based on the EER values.
+                Example: {'metric1': {'EER': 0.123, 'Threshold': 0.456},
+                        ...}
+        """
+        self.check_experiment_run()
+        self.eer = {}
+        for metric in self.metrics:
+            predicted = self.predicted_as_similarity(metric)
+            actual = self.df["target"]
+
+            # Calculate False Positive Rate (FPR) and True Positive Rate (TPR)
+            fpr, tpr, thresholds = roc_curve(actual, predicted, pos_label=1, drop_intermediate=False)
+            fnr = 1 - tpr
+            eer_threshold = thresholds[np.nanargmin(np.absolute(fnr - fpr))]
+            # theoretically eer from fpr and eer from fnr should be identical but they can be slightly differ in reality
+            eer_1 = fpr[np.nanargmin(np.absolute((fnr - fpr)))]
+            eer_2 = fnr[np.nanargmin(np.absolute((fnr - fpr)))]
+            if metric in REVERSE_DISTANCE_TO_SIMILARITY:
+                eer_threshold = REVERSE_DISTANCE_TO_SIMILARITY.get(metric)(eer_threshold)
+
+            # return the mean of eer from fpr and from fnr
+            self.eer[metric] = {'EER': (eer_1 + eer_2) / 2, 'Threshold': eer_threshold}
+        self.eer = OrderedDict(
+            sorted(self.eer.items(), key=lambda x: x[1]['EER'], reverse=False)
+        )
+
+        return self.eer
