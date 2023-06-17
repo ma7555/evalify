@@ -15,3 +15,8 @@
 ## 0.1.3 (2022-02-24)
 
 * Add pearson similarity as a metric
+
+## 0.1.4 (2022-02-24)
+
+* Add EER calculation function.
+* Drop support for python 3.7

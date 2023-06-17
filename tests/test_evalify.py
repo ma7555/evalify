@@ -179,6 +179,21 @@ class TestEvalify(unittest.TestCase):
         self.assertAlmostEqual(fpr_d0[metric]["Threshold"], 0.9953355, 3)
         self.assertAlmostEqual(fpr_d1[metric]["Threshold"], 0.2060538, 3)
 
+
+    def test_run_calculate_eer(self):
+        """Test run with calculate_eer"""
+        experiment = Experiment()
+        metric = "cosine_similarity"
+        df = experiment.run(
+            self.embs,
+            self.targets,
+            metrics=metric,
+            different_class_samples=("full", "full"),
+        ) 
+        eer  = experiment.calculate_eer()
+        self.assertTrue('EER' in eer[metric])
+
+
     def test__call__(self):
         """Test run with __call__"""
         experiment = Experiment()
@@ -221,7 +236,7 @@ class TestEvalify(unittest.TestCase):
             experiment = Experiment()
             _ = experiment.run(self.embs, self.targets, metrics="dot_prod")
 
-        with self.assertRaisesRegex(ValueError, "`p` must be at least 1. Received: p="):
+        with self.assertRaisesRegex(ValueError, "`p` must be an int and at least 1. Received: p="):
             experiment = Experiment()
             _ = experiment.run(self.embs, self.targets, p=0.1)
 
