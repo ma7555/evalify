@@ -1,4 +1,5 @@
 """Evalify utils module contains various utilites serving other modules."""
+
 import numpy as np
 import psutil
 

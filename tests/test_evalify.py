@@ -22,9 +22,6 @@ class TestEvalify(unittest.TestCase):
         self.embs = rng.random((self.nphotos, self.emb_size), dtype=np.float32)
         self.targets = rng.integers(self.nclasses, size=self.nphotos)
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-
     def test_run_euclidean_distance(self):
         """Test run with euclidean_distance"""
         experiment = Experiment(metrics="euclidean_distance")
@@ -65,9 +62,7 @@ class TestEvalify(unittest.TestCase):
         self.assertEqual(len(df), comb(self.nphotos, 2))
 
     def test_run_custom_class_samples(self):
-        """Test run with custom same_class_samples and
-        different_class_samples
-        """
+        """Test run with custom same_class_samples and different_class_samples"""
         N, M = (2, 5)
         experiment = Experiment(same_class_samples=2, different_class_samples=(N, M))
         same_class_samples = 3
@@ -84,22 +79,21 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_shuffle(self):
         """Test run with shuffle"""
-        experiment = Experiment()
-        df1 = experiment.run(self.embs, self.targets, shuffle=True, seed=555)
-        df2 = experiment.run(self.embs, self.targets, shuffle=True, seed=555)
+        experiment = Experiment(seed=555)
+        df1 = experiment.run(self.embs, self.targets, shuffle=True)
+        df2 = experiment.run(self.embs, self.targets, shuffle=True)
         self.assertEqual(len(df1), len(df2))
         self.assertEqual(sum(df1.index), sum(df2.index))
         self.assertTrue(all(ix in df2.index for ix in df1.index))
 
     def test_run_no_batch_size(self):
         """Test run with no batch_size"""
-        experiment = Experiment(same_class_samples=2, different_class_samples=(1, 1))
-        experiment.run(
-            self.embs,
-            self.targets,
-            batch_size=None,
+        experiment = Experiment(
+            same_class_samples=2,
+            different_class_samples=(1, 1),
             seed=555,
         )
+        experiment.run(self.embs, self.targets, batch_size=None)
         self.assertTrue(experiment.check_experiment_run())
 
     def test_run_return_embeddings(self):
@@ -171,9 +165,9 @@ class TestEvalify(unittest.TestCase):
         fpr_d1 = experiment.threshold_at_fpr(1)
         fpr_d0 = experiment.threshold_at_fpr(0)
         self.assertEqual(len(fpr_d01[metric]), 3)
-        self.assertAlmostEqual(fpr_d01[metric]["Threshold"], 0.8939142, 3)
-        self.assertAlmostEqual(fpr_d0[metric]["Threshold"], 0.9953355, 3)
-        self.assertAlmostEqual(fpr_d1[metric]["Threshold"], 0.2060538, 3)
+        self.assertAlmostEqual(fpr_d01[metric]["threshold"], 0.8939142, 3)
+        self.assertAlmostEqual(fpr_d0[metric]["threshold"], 0.9953355, 3)
+        self.assertAlmostEqual(fpr_d1[metric]["threshold"], 0.2060538, 3)
 
     def test_run_calculate_eer(self):
         """Test run with calculate_eer"""
@@ -191,9 +185,9 @@ class TestEvalify(unittest.TestCase):
 
     def test__call__(self):
         """Test run with __call__"""
-        experiment = Experiment()
-        result = experiment.run(self.embs, self.targets, seed=555)
-        result_2 = experiment(self.embs, self.targets, seed=555)
+        experiment = Experiment(seed=555)
+        result = experiment.run(self.embs, self.targets)
+        result_2 = experiment(self.embs, self.targets)
         self.assertTrue(np.array_equal(result.to_numpy(), result_2.to_numpy()))
 
     def test_run_errors(self):

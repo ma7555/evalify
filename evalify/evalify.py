@@ -40,11 +40,10 @@ class Experiment:
     """Defines an experiment for evalifying.
 
     Args:
-        metrics: The list of metrics to use. Can be one of the following:
-        `cosine_similarity`, `pearson_similarity`, `cosine_distance`,
-        `euclidean_distance`, `euclidean_distance_l2`, `minkowski_distance`,
-        `manhattan_distance`, `chebyshev_distance` or a list/tuple containing more than
-        one of them.
+        metrics: The list of metrics to use. Can be one or more of the following:
+            `cosine_similarity`, `pearson_similarity`, `cosine_distance`,
+            `euclidean_distance`, `euclidean_distance_l2`, `minkowski_distance`,
+            `manhattan_distance` and `chebyshev_distance`
         same_class_samples:
             - 'full': Samples all possible images within each class to create all
                 all possible positive pairs.
@@ -304,12 +303,19 @@ class Experiment:
         self.experiment_success = True
         return self.df
 
-    def find_optimal_cutoff(self):
-        """Find the optimal cutoff point
-        Returns:
-            float: Optimal cutoff value.
+    def find_optimal_cutoff(self) -> dict:
+        """Finds the optimal cutoff threshold for each metric based on the ROC curve.
 
+        This function calculates the optimal threshold for each metric by finding the
+        point on the Receiver Operating Characteristic (ROC) curve where the difference
+        between the True Positive Rate (TPR) and the False Positive Rate (FPR) is
+        minimized.
+
+        Returns:
+            dict: A dictionary with metrics as keys and their corresponding optimal
+            threshold as values.
         """
+
         self.check_experiment_run()
         self.optimal_cutoff = {}
         for metric in self.metrics:
@@ -326,18 +332,23 @@ class Experiment:
         return self.optimal_cutoff
 
     def threshold_at_fpr(self, fpr: float) -> dict:
-        """Finds optimal threshold at a given FPR.
+        """Find the threshold at a specified False Positive Rate (FPR) for each metric.
+
+        The function calculates the threshold at the specified FPR for each metric
+        by using the Receiver Operating Characteristic (ROC) curve. If the desired
+        FPR is 0 or 1, or no exact match is found, the closest thresholds are used.
 
         Args:
-            fpr: False positive rate to find best threshold for.
+            fpr (float): Desired False Positive Rate. Must be between 0 and 1.
 
         Returns:
-            dict: A dictionary with keys as metrics and values as thresholds.
+            dict: A dictionary where keys are the metrics and values are dictionaries
+            containing FPR, TPR, and threshold at the specified FPR.
 
         Raises:
-            ValueError: If `fpr` is not between 0 and 1.
-
+            ValueError: If the provided `fpr` is not between 0 and 1.
         """
+
         self.check_experiment_run()
         if not 0 <= fpr <= 1:
             msg = "`fpr` must be between 0 and 1. " f"Received wanted_fpr={fpr}"
@@ -376,7 +387,7 @@ class Experiment:
         return threshold_at_fpr
 
     def get_binary_prediction(self, metric: str, threshold: float) -> pd.Series:
-        """Find binary prediction from distance or similarity.
+        """Binary classification prediction based on the given metric and threshold.
 
         Args:
             metric: Metric name for the desired prediction.
@@ -456,7 +467,7 @@ class Experiment:
         """Find ROC AUC for all the metrics used.
 
         Returns:
-            collections.OrderedDict: An OrderedDict with AUC for all metrics.
+            OrderedDict: An OrderedDict with AUC for all metrics.
 
         """
         self.check_experiment_run()
@@ -539,7 +550,7 @@ class Experiment:
 
         Args:
             far_values (List[float]): A list of False Accept Rates (FAR) to get TAR
-            values for.
+                values for.
 
         Returns:
             OrderedDict: A dictionary with keys as metrics and values as dictionaries

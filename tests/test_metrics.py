@@ -24,9 +24,6 @@ class TestMetrics(unittest.TestCase):
         self.ix = rng.integers(self.nphotos, size=self.slice_size)
         self.iy = rng.integers(self.nphotos, size=self.slice_size)
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-
     def test_cosine_similarity(self):
         """Test cosine_similarity"""
         result = metrics.cosine_similarity(self.embs, self.ix, self.iy, self.norms)
