@@ -57,7 +57,7 @@ jobs:
         with:
           fail_ci_if_error: false
           files: coverage.xml
-          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Build wheels and source tarball
         run: |
           poetry version $(poetry version --short)-dev.$GITHUB_RUN_NUMBER
