@@ -8,20 +8,6 @@ split and calculations happens over large data chunks very quickly.
 import numpy as np
 
 
-def get_norms(X):
-    """Calculate the L2 norm of a vector.
-
-    Args:
-        X (numpy.ndarray): 2D array of shape (n_samples, n_features)
-
-    Returns:
-        numpy.ndarray: 1D array of shape (n_samples,) where each element is the L2 norm
-        of the corresponding row in X
-
-    """
-    return np.linalg.norm(X, axis=1)
-
-
 def _inner1d(A, B):
     """Calculate the inner product between two arrays of vectors.
 
@@ -76,7 +62,7 @@ def euclidean_distance(embs, ix, iy, **kwargs):
 
     """
     X = embs[ix] - embs[iy]
-    return get_norms(X)
+    return np.linalg.norm(X, axis=1)
 
 
 def euclidean_distance_l2(embs, ix, iy, norms, **kwargs):
@@ -97,7 +83,7 @@ def euclidean_distance_l2(embs, ix, iy, norms, **kwargs):
 
     """
     X = embs[ix] / norms[ix].reshape(-1, 1) - embs[iy] / norms[iy].reshape(-1, 1)
-    return get_norms(X)
+    return np.linalg.norm(X, axis=1)
 
 
 def minkowski_distance(embs, ix, iy, p, **kwargs):

@@ -382,7 +382,7 @@ class Experiment:
             threshold_at_fpr[metric] = best
         return threshold_at_fpr
 
-    def get_binary_prediction(self, metric, threshold) -> pd.Series:
+    def get_binary_prediction(self, metric: str, threshold: float) -> pd.Series:
         """Find binary prediction from distance or similarity.
 
         Args:
