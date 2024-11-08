@@ -4,6 +4,7 @@
 import unittest
 
 import numpy as np
+
 from evalify import utils
 
 
@@ -39,9 +40,9 @@ class TestUtils(unittest.TestCase):
         """Test run errors"""
         with self.assertRaisesRegex(ValueError, "Embeddings vector should be 2-D."):
             _ = utils._validate_vectors(
-                X=self.rng.random(5), y=self.rng.integers(10, size=5)
+                X=self.rng.random(5), y=self.rng.integers(10, size=5),
             )
         with self.assertRaisesRegex(ValueError, "Target vector should be 1-D."):
             _ = utils._validate_vectors(
-                X=self.rng.random((5, 5)), y=self.rng.integers(10, size=(5, 2))
+                X=self.rng.random((5, 5)), y=self.rng.integers(10, size=(5, 2)),
             )

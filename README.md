@@ -14,7 +14,7 @@
 </a>
 <a href="https://doi.org/10.5281/zenodo.6181723"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.6181723.svg" alt="DOI"></a>
 <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10-blue.svg"
+    <img src="https://img.shields.io/badge/python-3.9 | 3.10 | 3.11 | 3.12-blue.svg"
         alt = "Python 3.7 | 3.8 | 3.9 | 3">
 </a>
 <a href="https://pypi.python.org/pypi/evalify">

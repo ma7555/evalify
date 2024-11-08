@@ -27,38 +27,40 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_euclidean_distance(self):
         """Test run with euclidean_distance"""
-        experiment = Experiment()
-        df = experiment.run(self.embs, self.targets, metrics="euclidean_distance")
-        df_l2 = experiment.run(self.embs, self.targets, metrics="euclidean_distance_l2")
+        experiment = Experiment(metrics="euclidean_distance")
+        df = experiment.run(self.embs, self.targets)
+        experiment = Experiment(metrics="euclidean_distance_l2")
+        df_l2 = experiment.run(self.embs, self.targets)
         self.assertGreater(df.euclidean_distance.max(), 0)
         self.assertGreater(df_l2.euclidean_distance_l2.max(), 0)
 
     def test_run_cosine_similarity(self):
         """Test run with cosine_similarity"""
-        experiment = Experiment()
-        df = experiment.run(self.embs, self.targets, metrics="cosine_similarity")
+        experiment = Experiment(metrics="cosine_similarity")
+        df = experiment.run(self.embs, self.targets)
         self.assertLessEqual(df.cosine_similarity.max(), 1)
 
     def test_run_all_metrics_separated(self):
-        experiment = Experiment()
         for metric in metrics_caller.keys():
-            df = experiment.run(self.embs, self.targets, metrics=metric)
+            experiment = Experiment(metrics=metric)
+            df = experiment.run(self.embs, self.targets)
             self.assertTrue(metric in df.columns)
 
     def test_run_all_metrics_combined(self):
-        experiment = Experiment()
         metrics = set(metrics_caller.keys())
-        df = experiment.run(self.embs, self.targets, metrics=metrics)
+        experiment = Experiment(metrics=metrics)
+        df = experiment.run(self.embs, self.targets)
         self.assertTrue(metrics.issubset(df.columns))
 
     def test_run_full_class_samples(self):
         """Test run with return_embeddings"""
-        experiment = Experiment()
+        experiment = Experiment(
+            same_class_samples="full",
+            different_class_samples=("full", "full"),
+        )
         df = experiment.run(
             self.embs,
             self.targets,
-            same_class_samples="full",
-            different_class_samples=("full", "full"),
         )
         self.assertEqual(len(df), comb(self.nphotos, 2))
 
@@ -66,14 +68,12 @@ class TestEvalify(unittest.TestCase):
         """Test run with custom same_class_samples and
         different_class_samples
         """
-        experiment = Experiment()
         N, M = (2, 5)
+        experiment = Experiment(same_class_samples=2, different_class_samples=(N, M))
         same_class_samples = 3
         df = experiment.run(
             self.embs,
             self.targets,
-            same_class_samples=2,
-            different_class_samples=(N, M),
         )
 
         self.assertLessEqual(
@@ -93,12 +93,10 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_no_batch_size(self):
         """Test run with no batch_size"""
-        experiment = Experiment()
-        df1 = experiment.run(
+        experiment = Experiment(same_class_samples=2, different_class_samples=(1, 1))
+        experiment.run(
             self.embs,
             self.targets,
-            same_class_samples=2,
-            different_class_samples=(1, 1),
             batch_size=None,
             seed=555,
         )
@@ -112,12 +110,11 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_evaluate_at_threshold(self):
         """Test run with evaluate_at_threshold"""
-        experiment = Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
+        experiment = Experiment(metrics=metrics)
         experiment.run(
             self.embs,
             self.targets,
-            metrics=metrics,
         )
         evaluations = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
         # self.assertEqual(len(evaluations), len(metrics))
@@ -125,37 +122,35 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_find_optimal_cutoff(self):
         """Test run with find_optimal_cutoff"""
-        experiment = Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
+        experiment = Experiment(metrics=metrics)
         experiment.run(
             self.embs,
             self.targets,
-            metrics=metrics,
         )
         evaluations = experiment.find_optimal_cutoff()
-        # self.assertEqual(len(evaluations), len(metrics))
         self.assertEqual(len(evaluations), len(metrics))
         self.assertTrue(all(evaluation in metrics for evaluation in evaluations))
 
     def test_run_get_roc_auc(self):
         """Test run with get_roc_auc"""
-        experiment = Experiment()
         metrics = ["cosine_similarity", "euclidean_distance_l2"]
+        experiment = Experiment(metrics=metrics)
         experiment.run(
             self.embs,
             self.targets,
-            metrics=metrics,
         )
-        roc_auc = experiment.get_roc_auc()
+        roc_auc = experiment.roc_auc()
         # self.assertEqual(len(evaluations), len(metrics))
         self.assertEqual(len(roc_auc), len(metrics))
         self.assertTrue(all(auc in metrics for auc in roc_auc))
 
     def test_run_predicted_as_similarity(self):
         """Test run with predicted_as_similarity"""
-        experiment = Experiment()
-        df = experiment.run(
-            self.embs, self.targets, metrics=["cosine_similarity", "cosine_distance"]
+        experiment = Experiment(metrics=["cosine_similarity", "cosine_distance"])
+        experiment.run(
+            self.embs,
+            self.targets,
         )
         result = experiment.predicted_as_similarity("cosine_similarity")
         result_2 = experiment.predicted_as_similarity("cosine_distance")
@@ -163,36 +158,36 @@ class TestEvalify(unittest.TestCase):
 
     def test_run_find_threshold_at_fpr(self):
         """Test run with find_threshold_at_fpr"""
-        experiment = Experiment()
         metric = "cosine_similarity"
-        df = experiment.run(
-            self.embs,
-            self.targets,
+        experiment = Experiment(
             metrics=metric,
             different_class_samples=("full", "full"),
         )
-        fpr_d01 = experiment.find_threshold_at_fpr(0.1)
-        fpr_d1 = experiment.find_threshold_at_fpr(1)
-        fpr_d0 = experiment.find_threshold_at_fpr(0)
+        experiment.run(
+            self.embs,
+            self.targets,
+        )
+        fpr_d01 = experiment.threshold_at_fpr(0.1)
+        fpr_d1 = experiment.threshold_at_fpr(1)
+        fpr_d0 = experiment.threshold_at_fpr(0)
         self.assertEqual(len(fpr_d01[metric]), 3)
         self.assertAlmostEqual(fpr_d01[metric]["Threshold"], 0.8939142, 3)
         self.assertAlmostEqual(fpr_d0[metric]["Threshold"], 0.9953355, 3)
         self.assertAlmostEqual(fpr_d1[metric]["Threshold"], 0.2060538, 3)
 
-
     def test_run_calculate_eer(self):
         """Test run with calculate_eer"""
-        experiment = Experiment()
         metric = "cosine_similarity"
-        df = experiment.run(
-            self.embs,
-            self.targets,
+        experiment = Experiment(
             metrics=metric,
             different_class_samples=("full", "full"),
-        ) 
-        eer  = experiment.calculate_eer()
-        self.assertTrue('EER' in eer[metric])
-
+        )
+        experiment.run(
+            self.embs,
+            self.targets,
+        )
+        eer = experiment.eer()
+        self.assertTrue("EER" in eer[metric])
 
     def test__call__(self):
         """Test run with __call__"""
@@ -207,38 +202,43 @@ class TestEvalify(unittest.TestCase):
             ValueError,
             "`same_class_samples` argument must be one of 'full' or an integer ",
         ):
-            experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, same_class_samples=54.4)
+            experiment = Experiment(same_class_samples=54.4)
+            experiment.run(self.embs, self.targets)
 
         with self.assertRaisesRegex(
             ValueError,
-            "`different_class_samples` argument must be one of 'full', 'minimal', ",
+            "`different_class_samples` argument must be one of 'full', 'minimal'",
         ):
-            experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, different_class_samples="all")
+            experiment = Experiment(different_class_samples="all")
+            experiment.run(self.embs, self.targets)
 
         with self.assertRaisesRegex(
             ValueError,
             "When passing `different_class_samples` as a tuple or list. ",
         ):
-            experiment = Experiment()
-            _ = experiment.run(
-                self.embs, self.targets, different_class_samples=(1, 2, 3)
+            experiment = Experiment(different_class_samples=(1, 2, 3))
+            experiment.run(
+                self.embs,
+                self.targets,
             )
 
         with self.assertRaisesRegex(
-            ValueError, '`batch_size` argument must be either "best" or of type integer'
+            ValueError,
+            '`batch_size` argument must be either "best" or of type integer',
         ):
             experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, batch_size="all")
+            experiment.run(self.embs, self.targets, batch_size="all")
 
         with self.assertRaisesRegex(ValueError, "`metric` argument must be one of "):
-            experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, metrics="dot_prod")
+            experiment = Experiment(metrics="dot_prod")
+            experiment.run(self.embs, self.targets)
 
-        with self.assertRaisesRegex(ValueError, "`p` must be an int and at least 1. Received: p="):
+        with self.assertRaisesRegex(
+            ValueError,
+            "`p` must be an int and at least 1. Received: p=",
+        ):
             experiment = Experiment()
-            _ = experiment.run(self.embs, self.targets, p=0.1)
+            experiment.run(self.embs, self.targets, p=0.1)
 
         with self.assertRaisesRegex(
             NotImplementedError,
@@ -246,19 +246,20 @@ class TestEvalify(unittest.TestCase):
             "`run_experiment`.",
         ):
             experiment = Experiment()
-            _ = experiment.evaluate_at_threshold(0.5, "euclidean_distance")
+            experiment.evaluate_at_threshold(0.5, "euclidean_distance")
 
         with self.assertRaisesRegex(
             ValueError,
-            "`evaluate_at_threshold` function was can only be called with `metric` from ",
+            "`evaluate_at_threshold` function can only be called with `metric` from ",
         ):
-            experiment = Experiment()
-            experiment.run(self.embs, self.targets, metrics="euclidean_distance")
-            _ = experiment.evaluate_at_threshold(0.5, "cosine_similarity")
+            experiment = Experiment(metrics="euclidean_distance")
+            experiment.run(self.embs, self.targets)
+            experiment.evaluate_at_threshold(0.5, "cosine_similarity")
 
         with self.assertRaisesRegex(
-            ValueError, "`fpr` must be between 0 and 1. Received wanted_fpr="
+            ValueError,
+            "`fpr` must be between 0 and 1. Received wanted_fpr=",
         ):
-            experiment = Experiment()
-            experiment.run(self.embs, self.targets, metrics="euclidean_distance")
-            _ = experiment.find_threshold_at_fpr(-1.1)
+            experiment = Experiment(metrics="euclidean_distance")
+            experiment.run(self.embs, self.targets)
+            experiment.threshold_at_fpr(-1.1)

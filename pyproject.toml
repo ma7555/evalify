@@ -1,102 +1,96 @@
-[tool]
 [tool.poetry]
 name = "evalify"
-version = "0.1.4"
+version = "1.0.0"
 homepage = "https://github.com/ma7555/evalify"
-description = "Evaluate your face  or voice verification models literally in seconds."
-authors = ["Mahmoud Bahaa <mah.alaa@nu.edu.eg>"]
+description = "Evaluate your face or voice verification models literally in seconds."
+authors = ["Mahmoud Bahaa <evalify@ma7555.anonaddy.com>"]
+keywords = ["biometric verification", "biometric authentication", "evaluation"]
 readme = "README.md"
-license =  "BSD-3-Clause"
-classifiers=[
-    'Development Status :: 2 - Pre-Alpha',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
-    'Natural Language :: English',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
-    'Programming Language :: Python :: 3.11',
-
+license = "BSD-3-Clause"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
+
 packages = [
     { include = "evalify" },
-    { include = "tests", format = "sdist" },
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-pandas = "^1.3.5"
-numpy = "^1.16.0"
-psutil = "^5.0.0"
-scikit-learn = "^1.1.0"
+python = ">=3.9,<4.0"
+pandas = "^2.0.0"
+numpy = "^2.0.0"
+psutil = "^5.9.0"
+scikit-learn = "^1.2.0"
 
-black  = { version = "22.1.0", optional = true}
-isort  = { version = "5.10.1", optional = true}
-flake8  = { version = "4.0.1", optional = true}
-flake8-docstrings = { version = "^1.6.0", optional = true }
-pytest  = { version = "^7.0.1", optional = true}
-pytest-cov  = { version = "^3.0.0", optional = true}
-tox  = { version = "^3.24.5", optional = true}
-virtualenv  = { version = "^20.13.1", optional = true}
-pip  = { version = "^22.0.3", optional = true}
-mkdocs  = { version = "^1.2.3", optional = true}
-mkdocs-include-markdown-plugin  = { version = "^3.2.3", optional = true}
-mkdocs-material  = { version = "^8.1.11", optional = true}
-mkdocstrings  = { version = "^0.18.0", optional = true}
-mkdocs-material-extensions  = { version = "^1.0.3", optional = true}
-twine  = { version = "^3.8.0", optional = true}
-mkdocs-autorefs = {version = "^0.3.1", optional = true}
-toml = {version = "^0.10.2", optional = true}
-livereload = {version = "^2.6.3", optional = true}
-pyreadline = {version = "^2.1", optional = true}
+# Optional Dependencies
+ruff = { version = ">=0.7.2", optional = true }
+pytest = { version = "^7.2.0", optional = true }
+pytest-cov = { version = "^4.0.0", optional = true }
+tox = { version = "^4.7.0", optional = true }
+virtualenv = { version = ">=20.24.0", optional = true }
+pip = { version = ">=23.2.0", optional = true }
+mkdocs = { version = ">=1.4.0", optional = true }
+mkdocs-material = { version = "^9.2.0", optional = true }
+mkdocstrings = { version = ">=0.26.0", optional = true }
+mkdocstrings-python = { version = ">=1.12.2", optional = true }
+mkdocs-include-markdown-plugin = { version = ">=6.0.0", optional = true }
+twine = { version = "^5.0.0", optional = true }
+toml = { version = ">0.8.0", optional = true }
+pyreadline3 = { version = "^3.4.1", optional = true }
+poetry = { version = "^1.8.0", optional = true }
 
 [tool.poetry.extras]
 test = [
     "pytest",
-    "black",
-    "isort",
-    "flake8",
-    "flake8-docstrings",
+    "ruff",
     "pytest-cov",
-    "pyreadline"
-    ]
+    "pyreadline3",
+]
 
-dev = ["tox", "virtualenv", "pip", "twine", "toml"]
+dev = [
+    "tox",
+    "virtualenv",
+    "pip",
+    "twine",
+    "toml",
+    "poetry",
+]
 
 doc = [
     "mkdocs",
-    "mkdocs-include-markdown-plugin",
     "mkdocs-material",
     "mkdocstrings",
-    "mkdocs-material-extension",
-    "mkdocs-autorefs",
-    "livereload"
-    ]
-
-
+    "mkdocstrings-python",
+    "mkdocs-include-markdown-plugin",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.8.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+indent-width = 4
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle error
+    "F",  # Pyflakes
+    "I",  # isort
+]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["evalify"]
