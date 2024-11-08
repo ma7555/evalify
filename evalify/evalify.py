@@ -35,7 +35,6 @@ from evalify.metrics import DISTANCE_TO_SIMILARITY
 from evalify.metrics import METRICS_NEED_NORM
 from evalify.metrics import METRICS_NEED_ORDER
 from evalify.metrics import REVERSE_DISTANCE_TO_SIMILARITY
-from evalify.metrics import get_norms
 from evalify.metrics import metrics_caller
 from evalify.utils import _validate_vectors
 from evalify.utils import calculate_best_batch_size
@@ -244,7 +243,7 @@ class Experiment:
             batch_size = experiment_size
         kwargs = {}
         if any(metric in METRICS_NEED_NORM for metric in self.metrics):
-            kwargs["norms"] = get_norms(X)
+            kwargs["norms"] = np.linalg.norm(X, axis=1)
         if any(metric in METRICS_NEED_ORDER for metric in self.metrics):
             kwargs["p"] = p
 

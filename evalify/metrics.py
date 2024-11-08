@@ -46,25 +46,6 @@ def cosine_similarity(embs, ix, iy, norms, return_distance=False, **kwargs):
     return 1 - similarity if return_distance else similarity
 
 
-def euclidean_distance(embs, ix, iy, **kwargs):
-    """Calculate the Euclidean distance between two arrays of vectors.
-
-    Args:
-        embs (numpy.ndarray): 2D array of shape (n_samples, n_features)
-        ix (numpy.ndarray): 1D array of shape (n_samples,) containing the indices of
-        the first array
-        iy (numpy.ndarray): 1D array of shape (n_samples,) containing the indices of
-        the second array
-
-    Returns:
-        numpy.ndarray: 1D array of shape (n_samples,) where each element is the
-        Euclidean distance of the corresponding rows in embs.
-
-    """
-    X = embs[ix] - embs[iy]
-    return np.linalg.norm(X, axis=1)
-
-
 def euclidean_distance_l2(embs, ix, iy, norms, **kwargs):
     """Calculate the L2-normalized Euclidean distance between two arrays of vectors.
 
@@ -140,7 +121,12 @@ metrics_caller = {
         norms,
         return_distance=True,
     ),
-    "euclidean_distance": euclidean_distance,
+    "euclidean_distance": lambda embs, ix, iy, **kwargs: minkowski_distance(
+        embs,
+        ix,
+        iy,
+        p=2,
+    ),
     "euclidean_distance_l2": euclidean_distance_l2,
     "minkowski_distance": minkowski_distance,
     "manhattan_distance": lambda embs, ix, iy, **kwargs: minkowski_distance(
