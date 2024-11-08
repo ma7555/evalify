@@ -8,7 +8,6 @@ every batch would consume the roughly the maximum available memory.
 
   Typical usage example:
 
-
   ```
   experiment = Experiment()
   experiment.run(X, y)
@@ -18,26 +17,20 @@ every batch would consume the roughly the maximum available memory.
 import itertools
 import sys
 from collections import OrderedDict
-from typing import Any
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+from typing import Any, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import auc
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_curve
+from sklearn.metrics import auc, confusion_matrix, roc_curve
 
-from evalify.metrics import DISTANCE_TO_SIMILARITY
-from evalify.metrics import METRICS_NEED_NORM
-from evalify.metrics import METRICS_NEED_ORDER
-from evalify.metrics import REVERSE_DISTANCE_TO_SIMILARITY
-from evalify.metrics import metrics_caller
-from evalify.utils import _validate_vectors
-from evalify.utils import calculate_best_batch_size
+from evalify.metrics import (
+    DISTANCE_TO_SIMILARITY,
+    METRICS_NEED_NORM,
+    METRICS_NEED_ORDER,
+    REVERSE_DISTANCE_TO_SIMILARITY,
+    metrics_caller,
+)
+from evalify.utils import _validate_vectors, calculate_best_batch_size
 
 StrOrInt = Union[str, int]
 StrIntSequence = Union[str, int, Sequence[Union[str, int]]]
@@ -47,16 +40,11 @@ class Experiment:
     """Defines an experiment for evalifying.
 
     Args:
-        metrics:
-            - 'cosine_similarity'
-            - 'pearson_similarity'
-            - 'cosine_distance'
-            - 'euclidean_distance'
-            - 'euclidean_distance_l2'
-            - 'minkowski_distance'
-            - 'manhattan_distance'
-            - 'chebyshev_distance'
-            - list/tuple containing more than one of them.
+        metrics: The list of metrics to use. Can be one of the following:
+        `cosine_similarity`, `pearson_similarity`, `cosine_distance`,
+        `euclidean_distance`, `euclidean_distance_l2`, `minkowski_distance`,
+        `manhattan_distance`, `chebyshev_distance` or a list/tuple containing more than
+        one of them.
         same_class_samples:
             - 'full': Samples all possible images within each class to create all
                 all possible positive pairs.
@@ -72,6 +60,8 @@ class Experiment:
                 images of every other class.
             - tuple or list: (N, M) Samples N images from every class with M images of
                 every other class.
+        seed: Optional random seed for reproducibility.
+
 
     Notes:
         - `same_class_samples`:
@@ -91,12 +81,14 @@ class Experiment:
         metrics: Union[str, Sequence[str]] = "cosine_similarity",
         same_class_samples: StrOrInt = "full",
         different_class_samples: StrIntSequence = "minimal",
+        seed: Optional[int] = None,
     ) -> None:
         self.experiment_success = False
         self.cached_predicted_as_similarity = {}
         self.metrics = (metrics,) if isinstance(metrics, str) else metrics
         self.same_class_samples = same_class_samples
         self.different_class_samples = different_class_samples
+        self.seed = seed
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self.run(*args, **kwds)
@@ -175,95 +167,6 @@ class Experiment:
             msg = f"`p` must be an int and at least 1. Received: p={p}"
             raise ValueError(msg)
 
-    def run(
-        self,
-        X: np.ndarray,
-        y: np.ndarray,
-        batch_size: Optional[StrOrInt] = "best",
-        shuffle: bool = False,
-        seed: Optional[int] = None,
-        return_embeddings: bool = False,
-        p: int = 3,
-    ) -> pd.DataFrame:
-        """Runs an experiment for face verification
-        Args:
-            X: Embeddings array
-            y: Targets for X as integers
-            batch_size:
-                - 'best': Let the program decide based on available memory such that
-                    every batch will fit into the available memory. (Default)
-                - int: Manually decide the batch_size.
-                - None: No batching. All experiment and intermediate results must fit
-                    entirely into memory or a MemoryError will be raised.
-            shuffle: Shuffle the returned experiment dataframe. Default: False.
-            return_embeddings: Whether to return the embeddings instead of indexes.
-                Default: False
-            p:
-                The order of the norm of the difference. Should be `p >= 1`, Only valid
-                with minkowski_distance as a metric. Default = 3.
-
-        Returns:
-            pandas.DataFrame: A DataFrame representing the experiment results.
-
-        Raises:
-            ValueError: An error occurred with the provided arguments.
-
-        """
-        self._validate_args(
-            self.metrics,
-            self.same_class_samples,
-            self.different_class_samples,
-            batch_size,
-            p,
-        )
-        X, y = _validate_vectors(X, y)
-        all_targets = np.unique(y)
-        all_pairs = []
-        metric_fns = list(map(metrics_caller.get, self.metrics))
-        self.seed = seed
-        self.rng = np.random.default_rng(self.seed)
-        for target in all_targets:
-            all_pairs += self._get_pairs(
-                y,
-                self.same_class_samples,
-                self.different_class_samples,
-                target,
-            )
-
-        self.df = pd.DataFrame(
-            data=all_pairs,
-            columns=["emb_a", "emb_b", "target_a", "target_b", "target"],
-        )
-        experiment_size = len(self.df)
-        if shuffle:
-            self.df = self.df.sample(frac=1, random_state=seed)
-        if batch_size == "best":
-            batch_size = calculate_best_batch_size(X)
-        elif batch_size is None:
-            batch_size = experiment_size
-        kwargs = {}
-        if any(metric in METRICS_NEED_NORM for metric in self.metrics):
-            kwargs["norms"] = np.linalg.norm(X, axis=1)
-        if any(metric in METRICS_NEED_ORDER for metric in self.metrics):
-            kwargs["p"] = p
-
-        emb_a = self.df.emb_a.to_numpy()
-        emb_b = self.df.emb_b.to_numpy()
-
-        emb_a_s = np.array_split(emb_a, np.ceil(experiment_size / batch_size))
-        emb_b_s = np.array_split(emb_b, np.ceil(experiment_size / batch_size))
-
-        for metric, metric_fn in zip(self.metrics, metric_fns):
-            self.df[metric] = np.hstack(
-                [metric_fn(X, i, j, **kwargs) for i, j in zip(emb_a_s, emb_b_s)],
-            )
-        if return_embeddings:
-            self.df["emb_a"] = X[emb_a].tolist()
-            self.df["emb_b"] = X[emb_b].tolist()
-
-        self.experiment_success = True
-        return self.df
-
     def _get_pairs(
         self,
         y,
@@ -314,6 +217,93 @@ class Experiment:
 
         return same_pairs + different_pairs
 
+    def run(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        batch_size: Optional[StrOrInt] = "best",
+        shuffle: bool = False,
+        return_embeddings: bool = False,
+        p: int = 3,
+    ) -> pd.DataFrame:
+        """Runs an experiment for face verification
+        Args:
+            X: Embeddings array
+            y: Targets for X as integers
+            batch_size:
+                - 'best': Let the program decide based on available memory such that
+                    every batch will fit into the available memory. (Default)
+                - int: Manually decide the batch_size.
+                - None: No batching. All experiment and intermediate results must fit
+                    entirely into memory or a MemoryError will be raised.
+            shuffle: Shuffle the returned experiment dataframe. Default: False.
+            return_embeddings: Whether to return the embeddings instead of indexes.
+                Default: False
+            p:
+                The order of the norm of the difference. Should be `p >= 1`, Only valid
+                with minkowski_distance as a metric. Default = 3.
+
+        Returns:
+            pandas.DataFrame: A DataFrame representing the experiment results.
+
+        Raises:
+            ValueError: An error occurred with the provided arguments.
+
+        """
+        self._validate_args(
+            self.metrics,
+            self.same_class_samples,
+            self.different_class_samples,
+            batch_size,
+            p,
+        )
+        X, y = _validate_vectors(X, y)
+        all_targets = np.unique(y)
+        all_pairs = []
+        metric_fns = list(map(metrics_caller.get, self.metrics))
+        self.rng = np.random.default_rng(self.seed)
+        for target in all_targets:
+            all_pairs += self._get_pairs(
+                y,
+                self.same_class_samples,
+                self.different_class_samples,
+                target,
+            )
+
+        self.df = pd.DataFrame(
+            data=all_pairs,
+            columns=["emb_a", "emb_b", "target_a", "target_b", "target"],
+        )
+        experiment_size = len(self.df)
+        if shuffle:
+            self.df = self.df.sample(frac=1, random_state=self.seed)
+        if batch_size == "best":
+            batch_size = calculate_best_batch_size(X)
+        elif batch_size is None:
+            batch_size = experiment_size
+        kwargs = {}
+        if any(metric in METRICS_NEED_NORM for metric in self.metrics):
+            kwargs["norms"] = np.linalg.norm(X, axis=1)
+        if any(metric in METRICS_NEED_ORDER for metric in self.metrics):
+            kwargs["p"] = p
+
+        emb_a = self.df.emb_a.to_numpy()
+        emb_b = self.df.emb_b.to_numpy()
+
+        emb_a_s = np.array_split(emb_a, np.ceil(experiment_size / batch_size))
+        emb_b_s = np.array_split(emb_b, np.ceil(experiment_size / batch_size))
+
+        for metric, metric_fn in zip(self.metrics, metric_fns):
+            self.df[metric] = np.hstack(
+                [metric_fn(X, i, j, **kwargs) for i, j in zip(emb_a_s, emb_b_s)],
+            )
+        if return_embeddings:
+            self.df["emb_a"] = X[emb_a].tolist()
+            self.df["emb_b"] = X[emb_b].tolist()
+
+        self.experiment_success = True
+        return self.df
+
     def find_optimal_cutoff(self):
         """Find the optimal cutoff point
         Returns:
@@ -362,7 +352,7 @@ class Experiment:
                 predicted,
                 drop_intermediate=False,
             )
-            df_fpr_tpr = pd.DataFrame({"FPR": FPR, "TPR": TPR, "Threshold": thresholds})
+            df_fpr_tpr = pd.DataFrame({"FPR": FPR, "TPR": TPR, "threshold": thresholds})
             ix_left = np.searchsorted(df_fpr_tpr["FPR"], fpr, side="left")
             ix_right = np.searchsorted(df_fpr_tpr["FPR"], fpr, side="right")
 
@@ -379,8 +369,8 @@ class Experiment:
                 )
             best = best.to_dict()
             if metric in REVERSE_DISTANCE_TO_SIMILARITY:
-                best["Threshold"] = REVERSE_DISTANCE_TO_SIMILARITY.get(metric)(
-                    best["Threshold"],
+                best["threshold"] = REVERSE_DISTANCE_TO_SIMILARITY.get(metric)(
+                    best["threshold"],
                 )
             threshold_at_fpr[metric] = best
         return threshold_at_fpr
@@ -512,7 +502,7 @@ class Experiment:
             OrderedDict: A dictionary containing the EER value and threshold for each
             metric.
                 The metrics are sorted in ascending order based on the EER values.
-                Example: {'metric1': {'EER': 0.123, 'Threshold': 0.456},
+                Example: {'metric1': {'EER': 0.123, 'threshold': 0.456},
                         ...}
 
         """
@@ -522,7 +512,6 @@ class Experiment:
             predicted = self.predicted_as_similarity(metric)
             actual = self.df["target"]
 
-            # Calculate False Positive Rate (FPR) and True Positive Rate (TPR)
             fpr, tpr, thresholds = roc_curve(
                 actual,
                 predicted,
@@ -531,8 +520,6 @@ class Experiment:
             )
             fnr = 1 - tpr
             eer_threshold = thresholds[np.nanargmin(np.absolute(fnr - fpr))].item()
-            # theoretically eer from fpr and eer from fnr should be identical but they
-            # can be slightly differ in reality
             eer_1 = fpr[np.nanargmin(np.absolute(fnr - fpr))].item()
             eer_2 = fnr[np.nanargmin(np.absolute(fnr - fpr))].item()
             if metric in REVERSE_DISTANCE_TO_SIMILARITY:
@@ -540,10 +527,50 @@ class Experiment:
                     eer_threshold,
                 )
 
-            # return the mean of eer from fpr and from fnr
-            self.eer[metric] = {"EER": (eer_1 + eer_2) / 2, "Threshold": eer_threshold}
+            self.eer[metric] = {"EER": (eer_1 + eer_2) / 2, "threshold": eer_threshold}
         self.eer = OrderedDict(
             sorted(self.eer.items(), key=lambda x: x[1]["EER"], reverse=False),
         )
 
         return self.eer
+
+    def tar_at_far(self, far_values: List[float]) -> OrderedDict:
+        """Calculates TAR at specified FAR values for each metric.
+
+        Args:
+            far_values (List[float]): A list of False Accept Rates (FAR) to get TAR
+            values for.
+
+        Returns:
+            OrderedDict: A dictionary with keys as metrics and values as dictionaries
+            of FAR:TAR pairs.
+
+        Raises:
+            ValueError: If any FAR in far_values is not between 0 and 1.
+        """
+        if isinstance(far_values, (float, int)):
+            far_values = [float(far_values)]
+
+        if not all(0 <= far <= 1 for far in far_values):
+            raise ValueError("All FAR values must be between 0 and 1.")
+
+        self.check_experiment_run()
+        tar_at_far_results = {}
+
+        for metric in self.metrics:
+            predicted = self.predicted_as_similarity(metric)
+            fpr, tpr, _ = roc_curve(self.df["target"], predicted, pos_label=1)
+
+            tar_values = {}
+            for far in far_values:
+                idx = np.searchsorted(fpr, far, side="right") - 1
+                idx = max(0, min(idx, len(fpr) - 1))  # Ensure idx is within bounds
+                tar_values[far] = tpr[idx].item()
+
+            tar_at_far_results[metric] = tar_values
+
+        self.tar_at_far_results = OrderedDict(
+            sorted(tar_at_far_results.items(), key=lambda x: list(x[1].keys())[0])
+        )
+
+        return self.tar_at_far_results
