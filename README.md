@@ -14,7 +14,7 @@
 </a>
 <a href="https://doi.org/10.5281/zenodo.6181723"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.6181723.svg" alt="DOI"></a>
 <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/python-3.7 | 3.8 | 3.9 | 3.10-blue.svg"
+    <img src="https://img.shields.io/badge/python-3.9 | 3.10 | 3.11 | 3.12-blue.svg"
         alt = "Python 3.7 | 3.8 | 3.9 | 3">
 </a>
 <a href="https://pypi.python.org/pypi/evalify">
@@ -27,9 +27,10 @@
 <a href="https://ma7555.github.io/evalify/">
     <img src="https://img.shields.io/website/https/ma7555.github.io/evalify/index.html.svg?label=docs&down_message=unavailable&up_message=available" alt="Documentation Status">
 </a>
-<a href="https://github.com/psf/black">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
+<a href="https://github.com/astral-sh/ruff">
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Code style: Ruff">
 </a>
+
 <a href="https://codecov.io/gh/ma7555/evalify">
   <img src="https://codecov.io/gh/ma7555/evalify/branch/main/graph/badge.svg" />
 </a>

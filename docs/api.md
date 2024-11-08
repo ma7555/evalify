@@ -1,1 +1,2 @@
-::: evalify
+::: evalify.evalify
+    handler: python

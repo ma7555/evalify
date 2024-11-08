@@ -1,8 +1,6 @@
 site_name: evalify
-# site_url: http://www.jieyu.ai
 repo_url: https://github.com/ma7555/evalify
 repo_name: evalify
-#strict: true
 nav:
   - home: index.md
   - installation: installation.md
@@ -33,8 +31,8 @@ theme:
     - navigation.tabs.sticky
 markdown_extensions:
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.critic
   - pymdownx.caret
   - pymdownx.mark
@@ -51,33 +49,16 @@ markdown_extensions:
   - toc:
       baselevel: 2
       permalink: true
-      slugify: !!python/name:pymdownx.slugs.uslugify
   - meta
 plugins:
   - include-markdown
   - search:
       lang: en
-  - mkdocstrings:
-      watch:
-        - evalify
+  - mkdocstrings
 extra:
   social:
-    - icon: fontawesome/brands/twitter
-    # replace with your own tweet link below
-    # link: http://www.jieyu.ai
-    # name: Tweet
-    # - icon: fontawesome/brands/facebook
-    # replace with your own facebook link below
-    # link: http://www.jieyu.ai
-    # name: Facebook
     - icon: fontawesome/brands/github
       link: https://github.com/ma7555/evalify
       name: Github
     - icon: material/email
-      link: "mailto:mah.alaa@nu.edu.eg"
-  # to enable disqus, uncomment the following and put your disqus id below
-  # disqus: disqus_id
-# uncomment the following and put your google tracking id below to enable GA
-#google_analytics:
-#- UA-xxx
-#- auto
+      link: "mailto:evalify@ma7555.anonaddy.com"

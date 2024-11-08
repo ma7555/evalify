@@ -1,40 +1,30 @@
-# Publish package on release branch if it's tagged with 'v*'
-
 name: release & publish workflow
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [release]
     tags:
-      - "v*.1.*"
+      - "v1.*.*"
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   release:
     name: Create Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-versions: [3.9]
+        python-versions: [3.12]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checks-out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: "Build Changelog"
         id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v2.9.0
+        uses: mikepenz/release-changelog-builder-action@v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-versions }}
       - name: Install dependencies
@@ -48,7 +38,7 @@ jobs:
           poetry run mkdocs build
 
       - name: publish documentation
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           publish_dir: ./site
@@ -74,8 +64,7 @@ jobs:
           prerelease: false
 
       - name: create pypi release
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@v1.12.2
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          skip_existing: true

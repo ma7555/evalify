@@ -20,3 +20,9 @@
 
 * Add EER calculation function.
 * Drop support for python 3.7
+
+## 1.0.0 (2024-11-08)
+
+* Bump dependencies.
+* Drop support for python 3.8
+* Add support for TAR @ FAR
