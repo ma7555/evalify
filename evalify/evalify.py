@@ -232,7 +232,7 @@ class Experiment:
 
         self.df = pd.DataFrame(
             data=all_pairs,
-            columns=["img_a", "img_b", "target_a", "target_b", "target"],
+            columns=["emb_a", "emb_b", "target_a", "target_b", "target"],
         )
         experiment_size = len(self.df)
         if shuffle:
@@ -247,19 +247,19 @@ class Experiment:
         if any(metric in METRICS_NEED_ORDER for metric in self.metrics):
             kwargs["p"] = p
 
-        img_a = self.df.img_a.to_numpy()
-        img_b = self.df.img_b.to_numpy()
+        emb_a = self.df.emb_a.to_numpy()
+        emb_b = self.df.emb_b.to_numpy()
 
-        img_a_s = np.array_split(img_a, np.ceil(experiment_size / batch_size))
-        img_b_s = np.array_split(img_b, np.ceil(experiment_size / batch_size))
+        emb_a_s = np.array_split(emb_a, np.ceil(experiment_size / batch_size))
+        emb_b_s = np.array_split(emb_b, np.ceil(experiment_size / batch_size))
 
         for metric, metric_fn in zip(self.metrics, metric_fns):
             self.df[metric] = np.hstack(
-                [metric_fn(X, i, j, **kwargs) for i, j in zip(img_a_s, img_b_s)],
+                [metric_fn(X, i, j, **kwargs) for i, j in zip(emb_a_s, emb_b_s)],
             )
         if return_embeddings:
-            self.df["img_a"] = X[img_a].tolist()
-            self.df["img_b"] = X[img_b].tolist()
+            self.df["emb_a"] = X[emb_a].tolist()
+            self.df["emb_b"] = X[emb_b].tolist()
 
         self.experiment_success = True
         return self.df
@@ -298,7 +298,11 @@ class Experiment:
             N, M = different_class_samples
             N = len(same_ixs_full) if N == "full" else min(N, len(same_ixs_full))
             if M != "full":
-                diff_df = diff_df.groupby("target").apply(lambda x: x[:M]).droplevel(0)
+                diff_df = (
+                    diff_df.groupby("target")
+                    .apply(lambda x: x[:M], include_groups=False)
+                    .droplevel(0)
+                )
 
         different_ixs = diff_df.sample_idx.to_numpy()
 
@@ -474,7 +478,7 @@ class Experiment:
                 predicted,
                 drop_intermediate=False,
             )
-            self.roc_auc[metric] = auc(fpr, tpr)
+            self.roc_auc[metric] = auc(fpr, tpr).item()
         self.roc_auc = OrderedDict(
             sorted(self.roc_auc.items(), key=lambda x: x[1], reverse=True),
         )
@@ -526,11 +530,11 @@ class Experiment:
                 drop_intermediate=False,
             )
             fnr = 1 - tpr
-            eer_threshold = thresholds[np.nanargmin(np.absolute(fnr - fpr))]
+            eer_threshold = thresholds[np.nanargmin(np.absolute(fnr - fpr))].item()
             # theoretically eer from fpr and eer from fnr should be identical but they
             # can be slightly differ in reality
-            eer_1 = fpr[np.nanargmin(np.absolute(fnr - fpr))]
-            eer_2 = fnr[np.nanargmin(np.absolute(fnr - fpr))]
+            eer_1 = fpr[np.nanargmin(np.absolute(fnr - fpr))].item()
+            eer_2 = fnr[np.nanargmin(np.absolute(fnr - fpr))].item()
             if metric in REVERSE_DISTANCE_TO_SIMILARITY:
                 eer_threshold = REVERSE_DISTANCE_TO_SIMILARITY.get(metric)(
                     eer_threshold,

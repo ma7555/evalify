@@ -106,7 +106,7 @@ class TestEvalify(unittest.TestCase):
         """Test run with return_embeddings"""
         experiment = Experiment()
         df = experiment.run(self.embs, self.targets, return_embeddings=True)
-        self.assertLessEqual(len(df.at[0, "img_a"]), self.emb_size)
+        self.assertLessEqual(len(df.at[0, "emb_a"]), self.emb_size)
 
     def test_run_evaluate_at_threshold(self):
         """Test run with evaluate_at_threshold"""
